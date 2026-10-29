@@ -10,6 +10,8 @@ const mocks = vi.hoisted(() => ({
   get: vi.fn(),
   create: vi.fn(),
   save: vi.fn(),
+  mutate: vi.fn(),
+  list: vi.fn(),
   remove: vi.fn(),
   reserve: vi.fn(),
   finish: vi.fn(),
@@ -27,6 +29,8 @@ vi.mock('@/server/data/sessions', () => ({
   getSession: mocks.get,
   createSession: mocks.create,
   saveSession: mocks.save,
+  updateSessionSnapshot: mocks.mutate,
+  listSessions: mocks.list,
   deleteSession: mocks.remove,
 }));
 vi.mock('@/server/data/operations', () => ({
@@ -161,7 +165,10 @@ beforeEach(() => {
   mocks.user.mockResolvedValue({ id: userId });
   mocks.get.mockImplementation(async () => sessionFixture());
   mocks.create.mockResolvedValue(undefined);
-  mocks.save.mockResolvedValue(undefined);
+  mocks.save.mockImplementation(async (session: SpeakingSession) => ({
+    ...session,
+    revision: (session.revision ?? 0) + 1,
+  }));
   mocks.remove.mockResolvedValue(undefined);
   mocks.reserve.mockResolvedValue({ created: true, state: 'reserved', result: null });
   mocks.finish.mockResolvedValue(undefined);
@@ -251,10 +258,12 @@ describe('HTTP authentication, validation and billable boundaries', () => {
     );
   });
   it('returns a successful replay and never calls the provider a second time', async () => {
-    const cached = sessionFixture();
+    const cached = sessionFixture({ revision: 1 });
+    const current = sessionFixture({ revision: 3, scene: 'Authoritative corrected session' });
+    mocks.get.mockResolvedValue(current);
     mocks.reserve.mockResolvedValue({ created: false, state: 'succeeded', result: cached });
     const response = await start(jsonRequest({ operationId, setup }));
-    expect(await response.json()).toEqual(cached);
+    expect(await response.json()).toEqual(current);
     expect(mocks.plan).not.toHaveBeenCalled();
     expect(mocks.create).not.toHaveBeenCalled();
   });

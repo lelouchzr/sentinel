@@ -158,7 +158,7 @@ test('unconfigured live conversation and photo extraction stay disabled while lo
   await expect(page.getByRole('button', { name: 'Vérifier le vocabulaire' })).toBeDisabled();
   await page.getByRole('button', { name: 'Fermer l’import' }).click();
   await page.getByRole('link', { name: 'Configurez les services et connectez-vous' }).click();
-  await expect(page.getByRole('heading', { name: 'Connexion et services' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Votre espace, vos données.' })).toBeVisible();
   await expect(page.getByRole('listitem').filter({ hasText: 'Appels IA activés' })).toContainText(
     'À configurer',
   );

@@ -1,106 +1,74 @@
 # Architecture
 
-Status: first local slice implemented. No remote database or provider connection has been provisioned or live-tested. Vocabulary remains in browser storage; authenticated speaking sessions use the Supabase migration when configured.
+Status: the local application, connected API paths, provider adapters and two SQL migrations are implemented. Automated checks use local fixtures, mocked HTTP and embedded PostgreSQL. No remote database migration, provider call or deployment has been performed.
 
-## Decisions
+## Decisions and layout
 
-Use one Next.js App Router application with React, strict TypeScript, and Tailwind CSS. Use Supabase for Auth, PostgreSQL, and private Storage. Deploy to Vercel after runtime validation. Use Zod for input and model-output contracts, Vitest for meaningful domain tests, and Playwright for browser journeys.
+The application uses Next.js App Router, React, strict TypeScript, Tailwind CSS and Zod. Supabase provides the planned runtime Auth, PostgreSQL and private Storage; Meta supplies text, image extraction and transcription; Azure supplies Korean speech synthesis. Vercel is the intended deployment target, pending validation.
 
-This keeps UI and server work in one codebase familiar to the owner. Start with HTTP requests for short recorded turns. A long-lived voice relay, vector database, background queue, or general agent framework is not needed for the agreed MVP.
+`src/app` contains routes and thin HTTP handlers; `src/features` contains imports, vocabulary, speaking and feedback UI; `src/lib` contains shared contracts, local guided practice and pure learning mutations; `src/server` contains verified authentication, data access, learning validation, provider adapters and usage enforcement. Versioned SQL is under `supabase/migrations`.
 
-## Application layout
+Short recorded turns use ordinary HTTP requests. The MVP has no vector database, background queue, voice relay or general agent framework.
 
-```text
-src/
-  app/                  Routes, layouts, and thin HTTP handlers
-  features/
-    imports/            Preview, correction, and confirmation
-    vocabulary/         Collections and short recall exercises
-    speaking/           Session preparation, recording, and playback
-    feedback/           Evidence and next-practice UI
-  lib/                  Shared pure types, schemas, and utilities
-  server/
-    auth/               Verified session and ownership checks
-    data/               Database operations
-    learning/           Selection, assistance, and review rules
-    providers/          Meta and Azure adapters
-    usage/              Reservations, limits, and reconciliation
-supabase/migrations/    Versioned SQL schema and policies
-tests/                  Unit, integration, and browser fixtures
-```
+## Local and connected boundaries
 
-Feature modules and server boundaries are implemented. Some later data flows remain described as planned below.
+The local guided mode runs on the device with predefined Korean partner replies and typed input. It identifies itself explicitly, does not call providers and does not judge language proficiency. Its results cannot contribute spoken evidence or oral-review progress. Local collections, archives and guided history remain in browser storage.
 
-## Boundaries
+Account collections and connected conversation history are separate from device data. Copying a device collection to the account is an explicit action; loading account data does not overwrite the local library. Changes use optimistic revisions, and the server preserves each conversation's original target-expression snapshot.
 
-The browser records microphone audio after user interaction and renders validated results. It never receives provider keys or a privileged Supabase credential. Authentication and ownership are checked before accepting any collection, session, upload, or turn ID.
+Sensitive modules import `server-only`. Provider credentials and the Supabase secret key never reach the browser. The server obtains identity through verified Auth, checks complete ownership chains and uses RLS for user reads. Privileged writes are scoped to that verified identity. Mutation endpoints validate origin, size and schemas before work.
 
-Server modules import `server-only`. Only non-sensitive public configuration may use `NEXT_PUBLIC_`. Prefer the authenticated user's database context and RLS; use privileged access only for a narrowly justified operation with an explicit ownership check.
+## Import and confirmation
 
-## Text and image import flow
+Text exports are parsed in the browser without a model. Mapping, editing and explicit confirmation produce practice-ready entries with per-field provenance. Canonical expression/meaning IDs and deterministic deduplication preserve separate meanings.
 
-1. Validate size and type before parsing or uploading.
-2. Parse supported text formats deterministically; do not spend model credits to split CSV rows.
-3. Upload permitted images directly to a private Storage location scoped to the user. The extraction endpoint receives an owned object ID, not an arbitrary URL to fetch.
-4. Extract a proposed list server-side and validate the model response.
-5. Store a draft with source information. Only explicit user confirmation creates practice-ready vocabulary.
-6. Remove abandoned uploads after a documented retention interval.
+Images upload to an owned path in the private `vocabulary-pages` bucket. Extraction accepts that path, never an arbitrary remote URL. The server checks ownership, actual format, dimensions and size, strips metadata by re-encoding, and resizes to at most 1600 pixels per edge. Extracted source text remains distinct from generated examples. The learner confirms the proposed vocabulary before using it.
 
-The image flow avoids proxying a large upload through an application route. Verify the current hosting limits before implementation.
+Client and server attempt source removal after extraction. The implemented maintenance endpoint removes abandoned images older than 24 hours in bounded batches; configuring its periodic invocation is a deployment task. Storage policies and a database trigger prevent new or late uploads during account deletion, including uploads attempted with a stale token after the Auth account has gone.
 
-## Spoken-turn flow
+## Connected speaking and learning
 
-```text
-Microphone clip
-  -> authenticated request + session ID + unique turn ID
-  -> validate ownership, duration, bytes, and quota
-  -> reserve operation budget
-  -> speech transcription
-  -> show/validate transcript and generate response
-  -> persist transcript, reply, assistance, and usage
-  -> synthesize the reply
-  -> play audio and allow the next learner turn
-```
+1. Snapshot three selected confirmed entries and the learner's scenario.
+2. Reserve an operation before dispatching a paid request.
+3. Record and validate a short WAV clip, then request transcription.
+4. Show the transcript for confirmation or correction. The turn carries its transcription operation ID.
+5. Verify that the completed transcription belongs to the same owner and conversation, then persist the reply, transcript and assistance state.
+6. Synthesize only an existing owned partner turn. Text remains available if audio playback fails.
+7. On completion, validate model observations against actual turns, opportunity and assistance before updating review selection.
 
-For the MVP, the UI is explicit about `recording`, `transcribing`, `responding`, `playing`, and `retryable_error`. Finish the durable state update before acknowledging completion. Never start unawaited work that a serverless runtime can discard.
+Typed input remains available and is labeled separately. A client-supplied “spoken” label cannot establish oral evidence. Unsupported feedback and uncertain transcription remain uncertain; absent opportunities remain unobserved. There is no fabricated pronunciation score.
 
-Model output proposes a reply and observations. Domain validation checks IDs, evidence, enums, assistance state, and whether an opportunity occurred. Keep session goals and completed turns in PostgreSQL; do not depend on a provider retaining conversation memory.
+Transcript amendments and feedback disputes run without a paid call, check revisions and invalidate affected observations. Audit history records the reason. Corrections clear stale provider replay content; replaying an old request returns current session state rather than resurrecting invalidated feedback. A deliberate feedback reevaluation, when requested, remains a separately budgeted operation.
 
-## Proposed HTTP responsibilities
+## Implemented HTTP surface
 
-| Route family | Responsibility |
+| Routes | Responsibility |
 | --- | --- |
-| `POST /api/imports/preview` | Parse a bounded text import |
-| `POST /api/imports/extract` | Extract from an already-uploaded owned image |
-| `POST /api/imports/confirm` | Save corrected entries once |
-| `POST /api/sessions` | Plan a bounded session from owned vocabulary |
-| `POST /api/sessions/:id/turns` | Process one recorded learner turn |
-| `POST /api/sessions/:id/hints` | Reveal and record progressive help |
-| `POST /api/sessions/:id/complete` | Finalize evidence and next practice |
-| `DELETE /api/sessions/:id` | Delete the session and associated content |
+| `GET /api/status` | Configuration booleans and verified account identity; no secrets |
+| `GET /api/collections`, `POST /api/collections` | Read or create confirmed account collections |
+| `PATCH /api/collections/:id`, `DELETE /api/collections/:id` | Revision-checked editing and deletion |
+| `POST /api/imports/extract` | Extract an already-uploaded owned image |
+| `GET /api/sessions`, `POST /api/sessions` | Paginated history or bounded scenario creation |
+| `GET /api/sessions/:id`, `DELETE /api/sessions/:id` | Recover or delete an owned conversation |
+| `POST /api/transcribe` | Validate bounded audio and return transcript provenance |
+| `POST /api/sessions/:id/turns` | Process confirmed typed or verified transcribed input |
+| `PATCH /api/sessions/:id/turns/:turnId` | Amend a transcript with revision and audit checks |
+| `POST /api/sessions/:id/hints`, `POST /api/sessions/:id/complete` | Progressive assistance and evidence validation |
+| `POST /api/sessions/:id/feedback/flags` | Dispute an observation and invalidate affected review evidence |
+| `POST /api/speech` | Synthesize an existing owned partner turn |
+| `GET /api/account`, `GET /api/account/export`, `DELETE /api/account` | Account state, bounded complete export and recoverable deletion |
+| `GET /api/usage` | Separate Meta/Azure estimates, pending reservations and unknown charges |
+| `POST /api/maintenance/uploads` | Private dry-run or bounded upload cleanup |
+| `POST /api/maintenance/reconcile` | Private documented billing reconciliation |
 
-Exact routes may change during implementation. They are not a published API contract yet.
+Text preview and confirmation are browser operations; they do not require separate import-preview APIs. Maintenance requires a dedicated server bearer secret, never the anonymous browser key.
 
-## Failure recovery
+## State, recovery and privacy
 
-- Use unique client operation IDs and database constraints to prevent double processing.
-- Reject microphone clips over the configured duration or byte limit before billing a provider.
-- If transcription is empty or visibly wrong, allow rerecording or correction; do not create a failure grade.
-- If speech synthesis fails after a valid reply, show the text and offer a playback retry. Reuse the stored reply rather than generating it again.
-- Reject invalid structured output. At most one bounded repair attempt may be introduced when it has an explicit cost reservation.
-- Apply short, bounded retries only where outcomes are known. Treat an ambiguous billable timeout as unresolved until reconciled.
-- When an operation exceeds hosting constraints, add a durable execution mechanism explicitly; do not hide it in a detached promise.
+PostgreSQL serializes reservations, corrections, deletion barriers and upload metadata changes. Operation IDs and request fingerprints prevent duplicate billing; session revisions prevent lost edits. Unresolved paid requests retain their reservation and exclusion until a documented administrative reconciliation. The application never silently retries an ambiguous billable timeout.
 
-## Visibility
+Reconciliation records a reason, external billing reference and explicit amount. A reconciled charge does not prove that the application received a usable result: replay is marked and refused as a business success. Minimal accounting can remain after account deletion while owner links and private replay content are scrubbed.
 
-Record status, model/version when available, prompt/schema version, latency, token/audio usage, estimated cost, and provider request IDs. Do not log raw media, secrets, temporary download links, or full learner conversations. See [the budget policy](budget.md).
+Account deletion first blocks new work, removes owned Storage objects in batches, then deletes Auth. A partial failure leaves a recoverable deletion state visible in settings. Account export pages owned records and fails explicitly if its per-table limit is exceeded; no partial download is presented as complete.
 
-## First implementation boundaries
-
-Text import parsing and confirmation run in the browser without model calls. The local library is not an account backup. Server routes use the verified Supabase session and durable PostgreSQL reservations before dispatching a provider request. Creating a conversation snapshots three explicitly selected entries; subsequent turns read that server snapshot after acquiring the session lock.
-
-`POST /api/transcribe` accepts bounded WAV audio and returns text for learner confirmation; `POST /api/sessions/:id/turns` sends that confirmed text. `POST /api/speech` synthesizes an existing owned partner turn only. `GET /api/status` exposes configuration booleans, not keys. `GET` and `DELETE /api/sessions/:id` support session recovery and content deletion. The text import preview/confirm endpoints in the original design are currently browser operations.
-
-Photos upload directly to the private `vocabulary-pages` bucket. Extraction validates ownership, actual image format, dimensions and size, strips metadata by re-encoding, and resizes to 1600 pixels per edge. Both client and server attempt source deletion. A scheduled cleanup for interrupted uploads remains required before deployment.
-
-No raw microphone recording or synthesized audio is stored on the server. Idempotent operation results can contain private transcripts/feedback; they are server-only and scrubbed on session deletion. The browser may cache playback temporarily. Post-session transcript corrections and a full account deletion UI remain future work.
+Raw microphone recordings and synthesized audio are transient. Browser playback may cache audio for the current view. Full transcripts are private conversation data, not telemetry. Provider status, request IDs and measured token/audio usage may be retained for accounting without logging secrets or media. See [the budget policy](budget.md) and [connection runbook](development.md).

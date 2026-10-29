@@ -1,53 +1,58 @@
 # Remaining hackathon roadmap
 
-Planning date: **29 October 2026**. Owner: **lelouchzr**. Track: indie developer. Theme: Build for Your World.
+Checkpoint: **29 October 2026**. Owner: **lelouchzr**. Track: indie developer. Theme: Build for Your World.
 
-The original event window is 26 October to 4 November. This plan uses the remaining calendar days, rather than assuming a new ten-day build period.
+The local application and connected implementation are prepared. The remaining critical work is real integration, Korean quality and delivery. No cloud account has been connected, no remote migration applied and no provider credit spent by this implementation.
 
-## Milestones
+## Completed locally
 
-| Date | Intended complete slice | Status at repository creation |
+- Text import mapping, editing and confirmation; device collection management; recall; local export/restore.
+- Clearly labeled guided practice with predefined replies and typed input, without AI assessment or oral-learning claims.
+- Separate account-library UI and API, explicit collection copying, revision conflicts and conversation history.
+- Connected scenario, transcription, dialogue, assistance, synthesis and image-extraction adapters.
+- Evidence validation, server-verified transcription provenance, transcript amendments, feedback disputes and review selection.
+- Authentication boundaries, two SQL migrations, RLS, budget/idempotency operations and safe retry handling.
+- Account export/deletion, upload-deletion barriers, private cleanup/reconciliation endpoints and usage reporting.
+- Local configuration checks and automated domain, provider, PostgreSQL and browser verification.
+
+These checks do not establish live provider access, speech quality, cloud policy behavior or deployed performance.
+
+## Remaining milestones
+
+| Date | Integration or delivery work | Current state |
 | --- | --- | --- |
-| 29 Oct | Private repository and documentation; then application shell and provider access checks during development | Documentation prepared; application work pending |
-| 30 Oct | Confirmed text import and one Korean audio conversation through real providers | Planned |
-| 31 Oct | Scenario planning from vocabulary, bounded turn state, and progressive hints | Planned |
-| 1 Nov | Evidence-linked feedback, independent/assisted outcomes, and next-practice selection | Planned |
-| 2 Nov | Printed-page extraction, confirmation, and complete source-to-speaking journey | Planned |
-| 3 Nov | Two-account access checks, failure recovery, mobile microphone tests, deployment, and demo rehearsal | Planned |
-| 4 Nov | Fix remaining blockers, freeze features, record final demo, and submit | Planned |
+| 29 Oct | Finish local implementation and prepare the connection runbook | Implemented locally; services remain disconnected |
+| 30 Oct | Configure the intended Supabase project, apply both migrations, check two accounts and verify provider entitlements | Pending deliberate configuration |
+| 31 Oct | Run a bounded original Korean conversation; measure transcription, reply quality, playback and actual tracked cost | Pending live access |
+| 1 Nov | Evaluate opportunity/assistance evidence, uncertain cases, amendments and review timing with real Korean examples | Pending evaluation |
+| 2 Nov | Validate one original vocabulary-page image through extraction, confirmation and connected speaking | Pending live integration |
+| 3 Nov | Test two-account privacy, deletion recovery, cleanup scheduling, desktop/mobile microphones and deployed origin; rehearse the demo | Pending integration and deployment |
+| 4 Nov | Fix remaining blockers, freeze scope, record and submit the final demonstration | Pending |
 
-Target an internal submission by **18:00 Europe/Paris on 4 November**. The event page's listed deadline, **4 November at 21:00 America/New_York**, converts to **5 November at 03:00 Europe/Paris**. Confirm the actual participant portal before relying on it.
+The public event deadline recorded for planning is **4 November at 21:00 America/New_York**, equivalent to **5 November at 03:00 Europe/Paris**. Target an internal submission by **18:00 Europe/Paris on 4 November**, and confirm the actual participant portal before relying on those dates.
 
-## Delivery order
+## Integration order
 
-### First real slice
+Start with Supabase while paid AI is disabled. Verify ownership, the private bucket, collection revisions, account switching, exports and deletion with two real test users. Apply the two migration files in order and verify their grants, policies and trigger. A local presence check cannot prove that the schema is installed.
 
-Use a tiny original vocabulary file, confirm the entries, record one Korean turn, obtain a transcript, generate a reply, and play it. Measure latency and errors early. A complete fixture-only product is not a substitute for verifying the core provider path.
+Then confirm model access and current prices. Use the original sample and one short Korean clip within the initial USD 5 envelope. Confirm the transcript, generate a reply and play it. Inspect measured usage and latency before expanding the experiment.
 
-### Learning behavior
+Evaluate the learning rules with meaningful opportunities, paraphrases, assistance, uncertain recognition and feedback disputes. A successful immediate repetition does not establish mastery. Verify that local scripted or typed-only sessions do not become evidence of oral ability.
 
-Add explicit session targets and opportunities, hint disclosure tracking, evidence validation, transcript correction, and a simple next-practice rule. A successful interaction is useful even before the reporting UI is polished.
-
-### Source flexibility
-
-Keep CSV/TSV and pasted text as the first import path. Add FlashCardStudy JSON against its actual exporter. Include a single printed vocabulary-page flow with confirmation. Native archive formats and account syncing remain future work.
-
-### Delivery and demonstration
-
-Check the complete journey, record honest evidence, and package a short demonstration. Keep source materials original or authorized. Document any reused components and dependencies, and distinguish earlier projects from work built for this event.
+Finally, test the printed-page journey and failure paths. Schedule the implemented cleanup endpoint after a dry-run, verify partial account-deletion recovery and rehearse the deployed experience. Keep local scripted practice visibly distinct during demonstrations.
 
 ## Scope controls
 
-The critical path is: confirmed vocabulary -> spoken session -> useful evidence -> next practice. Avoid adding payment flows, avatars, multiple languages, full-duplex streaming, social features, or a general curriculum during this build.
+The delivery path remains: confirmed vocabulary -> spoken session -> useful evidence -> next practice. Payments, avatars, additional languages, full-duplex voice, social features, native Anki archives, synchronization with other learning services and a general curriculum remain outside this release.
 
-If Korean recognition, synthesis latency, or model feedback fails validation, first narrow turn length and the scenario set. Bring a material scope or provider change to the owner with concrete evidence. Do not silently replace the promised learning experience with a fake demo.
+If Korean recognition, synthesis latency or feedback quality fails validation, first narrow turn length and scenarios. Present any material scope or provider change with concrete evidence. Do not replace the connected learning claims with an unlabeled scripted demo.
 
-## Submission requirements still to verify
+Usage threshold alerts and automatic provider-balance synchronization are not implemented. Administrative reconciliation is available, but each decision needs actual billing evidence and never initiates a provider retry.
 
-Read the participant portal's final rules, required artifacts, video length, team rules, third-party-service allowances, and rules for pre-existing code. The public event page is a scheduling reference, not evidence that every submission condition has been reviewed.
+## Submission gates
 
-Acceptance, allocated credits, and model availability are distinct facts. The owner confirmed acceptance and USD 150 credits; actual API entitlements and remaining balance still require verification during development.
+Read the participant portal's final rules, required artifacts, video length, team rules, third-party-service allowances and treatment of pre-existing code. The public event page is a scheduling reference, not evidence that every submission condition has been reviewed.
 
-## Implementation checkpoint — 29 October
+Prepare original or authorized source materials and document dependencies and reused components. Distinguish FlashCardStudy and Frameclue from work built for this event. Acceptance and the owner-confirmed USD 150 allocation do not establish model entitlements or remaining live balance.
 
-The first local application slice is now implemented: imports and confirmation, browser library/recall, speaking interface, provider adapters, ownership and budget migrations, and automated checks. No credentials have been added and no provider calls or remote migrations have run. Next: configure the intended development accounts, validate one bounded Korean conversation with actual speech and one original page, then address quality/latency findings before deployment and the submission recording.
+Follow [the development runbook](development.md), [budget policy](budget.md) and [quality/demo checks](quality-and-demo.md) before deployment and submission.

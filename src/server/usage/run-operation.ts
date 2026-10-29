@@ -30,6 +30,7 @@ export async function runOperation<T>(
   },
   execute: (markDispatched: () => void) => Promise<{ result: T; usage: ProviderUsage }>,
   replayable = true,
+  replayResolver?: (stored: unknown) => Promise<T>,
 ): Promise<T> {
   const provider = input.provider || 'meta';
   assertAiEnabled(provider);
@@ -48,14 +49,30 @@ export async function runOperation<T>(
     maxConcurrent: boundedNumber('AI_MAX_CONCURRENT_OPERATIONS', 2, 1, 2),
   });
   if (!reservation.created) {
-    if (replayable && reservation.state === 'succeeded' && reservation.result !== null)
-      return reservation.result as T;
+    if (reservation.reconciled)
+      throw new HttpError(
+        'OPERATION_RECONCILED',
+        'La facturation de cette opération a été vérifiée, mais son résultat n’est pas disponible. Rechargez la conversation avant de choisir une nouvelle action.',
+        409,
+        'none',
+      );
+    if (
+      replayable &&
+      reservation.state === 'succeeded' &&
+      (replayResolver || reservation.result !== null)
+    )
+      return replayResolver ? await replayResolver(reservation.result) : (reservation.result as T);
     throw new HttpError(
       'OPERATION_ALREADY_SUBMITTED',
       reservation.state === 'unresolved'
         ? 'Cette opération attend une vérification de facturation. Elle ne sera pas relancée automatiquement.'
         : 'Cette opération a déjà été envoyée. Rechargez la conversation avant de réessayer.',
       409,
+      reservation.state === 'failed'
+        ? 'new-operation'
+        : reservation.state === 'unresolved'
+          ? 'reconcile'
+          : 'same-operation',
     );
   }
   let dispatched = false;
@@ -83,6 +100,7 @@ export async function runOperation<T>(
       error instanceof ProviderError && error.usage
         ? Object.fromEntries(Object.entries(error.usage).filter(([, value]) => value !== undefined))
         : undefined;
+    let finalized = false;
     try {
       await finishOperation({
         id: input.id,
@@ -96,9 +114,14 @@ export async function runOperation<T>(
               : undefined,
         usage: failedUsage,
       });
+      finalized = true;
     } catch {
       /* Leave the durable reservation intact if finalization itself failed. */
     }
+    if (error instanceof Error)
+      Object.assign(error, {
+        retry: finalized && (knownUnbilled || beforeDispatch) ? 'new-operation' : 'reconcile',
+      });
     throw error;
   }
 }

@@ -4,7 +4,7 @@
 
 A standalone language-learning application that turns vocabulary from flashcards and books into personalized speaking practice. `language-speaking-app` is a temporary repository name; the product name will be chosen later.
 
-**Owner:** [lelouchzr](https://github.com/lelouchzr) · **Repository:** private · **Stage:** local application under development; live integrations await credentials.
+**Owner:** [lelouchzr](https://github.com/lelouchzr) · **Repository:** private · **Stage:** application implemented and checked locally; live integrations await configuration and validation.
 
 ## Why this project exists
 
@@ -32,7 +32,7 @@ For example, a learner imports a Korean vocabulary list about borrowing things, 
 - Text-based imports and one printed vocabulary-page image per import.
 - A short recall exercise, progressive help, evidence-linked feedback, and simple spaced oral review.
 
-Direct account synchronization, native Anki package parsing, unrestricted live voice interruption, pronunciation scoring, model training, payments, and a native mobile app are later work. See the [product specification](docs/product.md) for boundaries and acceptance criteria.
+Direct synchronization with other flashcard services, native Anki package parsing, unrestricted live voice interruption, pronunciation scoring, model training, payments, and a native mobile app are later work. This application's account library is implemented separately. See the [product specification](docs/product.md) for boundaries and acceptance criteria.
 
 ## Stack
 
@@ -52,22 +52,27 @@ Dependency versions are pinned in `package.json` and `package-lock.json`. The ap
 
 ## Current status and local use
 
-The first development slice includes vocabulary imports with editable confirmation, a local library and recall exercise, scenario setup, recorded or typed turns, progressive hints, and evidence-based feedback. The original sample can be imported without accounts or API keys. Local vocabulary is stored in this browser; it is not cloud-synced.
+Without credentials, the application supports text imports, editable confirmation, collection management, recall, local backup/restore and a complete guided practice journey. This local mode is explicitly labeled: partner replies are predefined, input is typed, and no AI assessment or oral-learning evidence is produced. It is useful for rehearsing the interface and writing responses, without representing a live AI conversation.
+
+The connected implementation includes Meta dialogue, transcription and image extraction, Azure playback, account collections, conversation history, transcript corrections, feedback disputes, review selection, account export/deletion and usage reporting. Device and account libraries are separate: publishing a collection is explicit, and loading account data does not replace browser data. Imported written-review history remains separate from oral observations.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open `http://127.0.0.1:3000`. See [development setup](docs/development.md) for account configuration and database migration steps. AI calls are disabled by default; the interface explains missing configuration instead of generating simulated conversations.
+Open `http://127.0.0.1:3000`. See [development setup](docs/development.md) for the configuration runbook. AI calls are disabled by default; the interface identifies the local scripted mode and explains what the connected mode still needs.
 
 ```sh
 npm run check
 npm run build
 npm run test:e2e
+npm run setup:check
 ```
 
-The test suite uses original fixtures, mocked provider HTTP, and an embedded PostgreSQL database for access policies and budget operations. Real providers are not called by tests. Full cloud integration, deployment, post-session transcript amendments, account-wide vocabulary sync, and scheduled abandoned-upload cleanup remain pending.
+The test suite uses original fixtures, mocked provider HTTP, and embedded PostgreSQL for access policies, budget operations, privacy and concurrent writes. Real providers are not called by tests. Both SQL migrations are prepared and have not been applied remotely. `setup:check` checks local configuration without contacting services or printing secrets; it cannot prove that credentials or model access work.
+
+The remaining integration work is to connect the intended Supabase/Meta/Azure accounts, validate two-user isolation and Korean speech/feedback, arrange execution of the implemented upload-cleanup endpoint, and verify the deployed journey. No credits have been spent and no deployment has been performed during this implementation.
 
 ## Documentation
 

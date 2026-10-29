@@ -18,10 +18,13 @@ const resultSchema = z.object({
   state: z.enum(['reserved', 'succeeded', 'failed', 'unresolved']),
   result: z.unknown().nullable(),
   created: z.boolean(),
+  // Billing reconciliation cannot establish that the application received a usable result.
+  reconciled: z.boolean().optional(),
 });
 export type Reservation = z.infer<typeof resultSchema>;
 
 const errorMessages: Record<string, { status: number; message: string }> = {
+  ACCOUNT_DELETING: { status: 409, message: 'La suppression du compte est en cours.' },
   OPERATION_CONFLICT: {
     status: 409,
     message: 'Cet identifiant est déjà utilisé pour une autre opération.',
@@ -89,4 +92,27 @@ export async function finishOperation(input: z.infer<typeof finishSchema>): Prom
     p_usage: value.usage ?? null,
   });
   if (error) throw databaseError(error.message);
+}
+
+/** ASR provenance is server-owned; client labels alone do not establish spoken evidence. */
+export async function getVerifiedTranscription(
+  operationId: string,
+  userId: string,
+  sessionId: string,
+): Promise<{ text: string } | null> {
+  z.string().uuid().parse(operationId);
+  z.string().uuid().parse(userId);
+  z.string().uuid().parse(sessionId);
+  const { data, error } = await createAdminSupabase()
+    .from('provider_operations')
+    .select('result')
+    .eq('id', operationId)
+    .eq('owner_id', userId)
+    .eq('session_id', sessionId)
+    .eq('kind', 'transcribe')
+    .eq('state', 'succeeded')
+    .maybeSingle();
+  if (error) throw new DataError('STORAGE_ERROR', 'Impossible de vérifier cette transcription.');
+  const result = z.object({ text: z.string().trim().min(1).max(2000) }).safeParse(data?.result);
+  return result.success ? result.data : null;
 }

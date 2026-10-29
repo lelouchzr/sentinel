@@ -10,10 +10,19 @@ export function RecallDialog({ items, onClose }: { items: VocabularyItem[]; onCl
   const [revealed, setRevealed] = useState(false);
   const item = items[index];
   useEffect(() => {
+    const opener = document.activeElement;
     dialog.current?.showModal();
+    return () => {
+      if (opener instanceof HTMLElement) opener.focus();
+    };
   }, []);
   return (
-    <dialog className="modal recall-modal" ref={dialog} onCancel={onClose}>
+    <dialog
+      className="modal recall-modal"
+      ref={dialog}
+      onCancel={onClose}
+      aria-labelledby="recall-title"
+    >
       <div className="modal-heading">
         <span className="eyebrow">Un instant pour se rappeler</span>
         <button className="icon-button" aria-label="Fermer le rappel" onClick={onClose}>
@@ -24,7 +33,7 @@ export function RecallDialog({ items, onClose }: { items: VocabularyItem[]; onCl
         {index + 1} / {items.length} · Pensez à l’expression en coréen.
       </p>
       <div className="recall-card">
-        <h2>{item.meaning}</h2>
+        <h2 id="recall-title">{item.meaning}</h2>
         {revealed ? (
           <>
             <p className="recall-answer" lang="ko">

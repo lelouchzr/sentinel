@@ -124,6 +124,23 @@ describe('evidence validation', () => {
     };
     expect(validateFeedback(primed, candidate()).observations[0]?.outcome).toBe('assisted_use');
   });
+  it('recognizes an already supplied inflected phrase as help even when the dictionary form differs', () => {
+    const primed = {
+      ...session,
+      turns: [
+        { ...session.turns[0]!, text: '«빌려도 될까요?»라고 말해 보세요.' },
+        session.turns[1]!,
+      ],
+    };
+    expect(validateFeedback(primed, candidate()).observations[0]?.outcome).toBe('assisted_use');
+  });
+  it('rejects duplicate turn IDs that make evidence ambiguous', () => {
+    const ambiguous = {
+      ...session,
+      turns: [...session.turns, { ...session.turns[0]!, id: 'learner-1' }],
+    };
+    expect(() => validateFeedback(ambiguous, candidate())).toThrow('unique');
+  });
   it('rejects duplicate or foreign target references', () => {
     const feedback = candidate();
     feedback.observations[1]!.targetId = 'borrow';
@@ -217,9 +234,19 @@ describe('spoken evidence provenance', () => {
   it('requires all evidence to be uncorrected spoken learner text', () => {
     const spoken = {
       ...session,
-      turns: session.turns.map((turn) => ({ ...turn, inputMode: 'spoken' as const })),
+      turns: session.turns.map((turn) => ({
+        ...turn,
+        inputMode: 'spoken' as const,
+        transcriptionOperationId: '55555555-5555-4555-8555-555555555555',
+      })),
     };
     expect(observationHasSpokenEvidence(observation, spoken)).toBe(true);
+    expect(
+      observationHasSpokenEvidence(observation, {
+        ...spoken,
+        turns: spoken.turns.map((turn) => ({ ...turn, transcriptionOperationId: undefined })),
+      }),
+    ).toBe(false);
     const corrected = {
       ...spoken,
       turns: spoken.turns.map((turn) => ({ ...turn, corrected: true })),

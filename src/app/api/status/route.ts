@@ -3,6 +3,7 @@ import type { ProviderStatus } from '@/lib/contracts';
 export const dynamic = 'force-dynamic';
 export async function GET() {
   let authenticated = false;
+  let userId: string | undefined;
   const storage = Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
@@ -10,7 +11,7 @@ export async function GET() {
   );
   if (storage) {
     try {
-      await requireUser();
+      userId = (await requireUser(undefined, { allowDeleting: true })).id;
       authenticated = true;
     } catch {
       /* Unconfigured or signed out. */
@@ -22,6 +23,8 @@ export async function GET() {
     speech: Boolean(process.env.AZURE_SPEECH_KEY && process.env.AZURE_SPEECH_REGION),
     storage,
     authenticated,
+    userId,
+    localPractice: true,
   };
   return Response.json(status, { headers: { 'Cache-Control': 'no-store' } });
 }

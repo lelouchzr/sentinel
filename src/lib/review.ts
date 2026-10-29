@@ -57,6 +57,13 @@ export function observationHasSpokenEvidence(
   observation: Observation,
   session: SpeakingSession,
 ): boolean {
+  if (session.mode === 'local') return false;
+  if (session.feedbackFlags?.some((flag) => flag.targetId === observation.targetId)) return false;
+  if (
+    session.feedbackRevision !== undefined &&
+    session.feedbackRevision !== (session.revision ?? 0)
+  )
+    return false;
   if (!observation.evidence.length) return false;
   return observation.evidence.every((evidence) => {
     const turn = session.turns.find((candidate) => candidate.id === evidence.turnId);
@@ -64,6 +71,7 @@ export function observationHasSpokenEvidence(
       turn?.role === 'learner' &&
       'inputMode' in turn &&
       turn.inputMode === 'spoken' &&
+      Boolean(turn.transcriptionOperationId) &&
       !turn.corrected &&
       turn.text.includes(evidence.quote)
     );

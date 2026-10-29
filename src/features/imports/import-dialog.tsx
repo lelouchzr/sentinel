@@ -36,7 +36,7 @@ export function ImportDialog({
   useSample?: boolean;
   canExtract: boolean;
   onClose: () => void;
-  onConfirm: (title: string, items: VocabularyItem[]) => void;
+  onConfirm: (title: string, items: VocabularyItem[]) => void | Promise<void>;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -57,7 +57,11 @@ export function ImportDialog({
   const selectedRows = rows.filter((row) => !excluded.has(row.id));
 
   useEffect(() => {
+    const opener = document.activeElement;
     dialog.current?.showModal();
+    return () => {
+      if (opener instanceof HTMLElement) opener.focus();
+    };
   }, []);
 
   function parse(
@@ -151,7 +155,7 @@ export function ImportDialog({
     );
   }
 
-  function confirm() {
+  async function confirm() {
     setError('');
     if (!title.trim()) {
       setError('Donnez un nom à cette collection.');
@@ -165,15 +169,19 @@ export function ImportDialog({
       return;
     }
     try {
-      onConfirm(title.trim(), selectedRows);
+      setBusy(true);
+      await onConfirm(title.trim(), selectedRows);
     } catch (failure) {
       setError(messageOf(failure));
+    } finally {
+      setBusy(false);
     }
   }
 
   return (
     <dialog
       className="modal import-modal"
+      aria-labelledby="import-title"
       ref={dialog}
       onCancel={(event) => {
         if (busy) event.preventDefault();
@@ -183,7 +191,9 @@ export function ImportDialog({
       <div className="modal-heading">
         <div>
           <span className="eyebrow">Votre vocabulaire, votre point de départ</span>
-          <h2>{preview ? 'Vérifiez vos expressions.' : 'Qu’allez-vous mettre en pratique ?'}</h2>
+          <h2 id="import-title">
+            {preview ? 'Vérifiez vos expressions.' : 'Qu’allez-vous mettre en pratique ?'}
+          </h2>
         </div>
         <button
           className="icon-button"
@@ -523,8 +533,8 @@ export function ImportDialog({
             </button>
             <button
               className="button button-primary"
-              disabled={!selectedRows.length}
-              onClick={confirm}
+              disabled={!selectedRows.length || busy}
+              onClick={() => void confirm()}
             >
               <Check size={18} /> Confirmer {selectedRows.length} expression
               {selectedRows.length > 1 ? 's' : ''}

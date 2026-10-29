@@ -23,7 +23,7 @@ test-results/
 
 # Private source material and local experiments
 private/
-uploads/
+/uploads/
 recordings/
 local-data/
 evals/private/

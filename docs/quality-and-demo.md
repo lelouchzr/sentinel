@@ -1,6 +1,6 @@
 # Quality, evaluation, and demonstration
 
-Status: local verification is underway with deterministic fixtures, provider mocks, and an embedded PostgreSQL database. Real provider benchmarks and cloud end-to-end verification are pending.
+Status: local verification uses deterministic fixtures, provider mocks, an embedded PostgreSQL database, and browser journeys. Real provider benchmarks and cloud end-to-end verification are pending.
 
 ## What the first release must demonstrate
 
@@ -20,9 +20,12 @@ Use original fixtures and test doubles for routine checks. No paid calls in CI.
 | Page extraction | Missing translation, ambiguous Hangul, generated vs extracted content, unconfirmed draft |
 | Evidence | Missing or foreign turn IDs, invented quotes, changed transcripts, contradictory outcomes |
 | Learning | Correct paraphrase, assisted reuse, absent opportunity, explicit inability, uncertain recognition |
-| Requests | Duplicate submit, interrupted audio, TTS failure after saved reply, ambiguous provider timeout |
-| Access | Other account's collection/session/upload ID, signed-link expiry, deletion and orphan cleanup |
-| Budget | Simultaneous reservations near the cap, unknown cost, failed reconciliation, disabled providers |
+| Requests | Duplicate submit, stale revisions, authoritative replay after correction, ambiguous provider timeout, lost finalization acknowledgement |
+| Access | Other account's collection/session/upload ID, account deletion barriers, late uploads, deleted-user JWT, bounded cleanup |
+| Budget | Reservations near the cap, unknown cost, reconciliation without a fabricated business result, disabled providers |
+| Browser | Import/edit/backup/restore, all three local scenes, reload, hint persistence, correction and reevaluation, connected history pagination |
+| Audio | Denied or pending permission, cancellation recovery, synthetic MediaRecorder stream, local playback without provider calls |
+| Accessibility | Keyboard navigation, named dialogs, responsive layout, automated WCAG A/AA checks on principal screens |
 
 ## Small real-provider evaluation
 
@@ -55,7 +58,7 @@ No numeric accuracy or learning-gain result is claimed before measurement. A suc
 7. Open the report: exact sentences, assistance status, and an unobserved or uncertain item if that is what happened.
 8. Show the proposed next practice and explain what was built during the hackathon.
 
-Record a backup demonstration for delivery reliability. If showing a recording or a fixture, identify it as such. Do not stage a false improvement or claim a pre-recorded response is a live provider call.
+Record a backup demonstration for delivery reliability. If showing a recording or a fixture, identify it as such. Do not stage a false improvement or claim a pre-recorded response is a live provider call. Before connecting services, use the explicit **Entraînement local** mode to review the interface: its prewritten scenes and unassessed summaries do not demonstrate AI quality or learning gains.
 
 ## Release gate
 
@@ -63,9 +66,10 @@ Before declaring the MVP complete, verify the actual end-to-end flow, tenant iso
 
 ## Local verification — 29 October 2026
 
-- 85 unit/integration cases passed, including actual PostgreSQL migration/RLS/accounting behavior, provider HTTP contract fixtures, WAV bytes, evidence validation, review scheduling and route authorization.
-- 6 Playwright browser journeys passed in local Chrome, with API mutations blocked and live AI disabled.
+- 191 unit/integration cases passed, including both actual PostgreSQL migrations, RLS/accounting/deletion behavior, ASR ownership proof, provider HTTP contracts, WAV bytes, evidence validation, review scheduling and route authorization.
+- 18 Playwright browser journeys passed in local Chrome. They cover local CRUD/import/backup, conversation limits, hints, reload, corrections, synthetic audio, denied/pending permissions, connected UI fixtures and settings. Live AI is disabled; local tests reject API mutations and connected tests fulfill every request with isolated fixtures.
 - Production build, TypeScript checks, and documentation checks passed.
-- Import editing, persistence after reload, recall, configuration states and responsive layout were also inspected in the browser.
+- Automated WCAG A/AA checks pass on the homepage, import, preview, conversation, feedback and settings screens, without suppressing rules. This is not a claim of a complete manual accessibility audit.
+- The setup checker reports missing configuration and migration order without printing values, contacting services, or spending credits.
 
 These results do not cover live Meta/Azure calls, a hosted Supabase instance, physical microphone quality, speech latency, or semantic correctness of generated Korean.

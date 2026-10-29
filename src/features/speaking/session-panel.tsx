@@ -14,7 +14,15 @@ import {
   WarningCircle,
 } from '@phosphor-icons/react';
 import type { ConversationTurn, Hint, ProviderStatus, SpeakingSession } from '@/lib/contracts';
-import { messageOf, request } from '@/features/app/client';
+import { messageOf } from '@/features/app/client';
+import {
+  sendPracticeTurn,
+  requestPracticeHint,
+  finishPractice,
+  deletePracticeSession,
+  getPracticeSession,
+} from '@/lib/practice-client';
+import { ApiClientError } from '@/lib/client-api';
 import { useRecorder } from './use-recorder';
 
 const relationLabels = {
@@ -43,10 +51,14 @@ export function SessionPanel({
   onComplete: (session: SpeakingSession) => void;
   onAbandon: () => void;
 }) {
+  const local = session.mode === 'local';
   const [draft, setDraft] = useState('');
   const [transcribed, setTranscribed] = useState(false);
-  const [busy, setBusy] = useState<'send' | 'hint' | 'complete' | 'abandon' | null>(null);
+  const [busy, setBusy] = useState<'send' | 'hint' | 'complete' | 'abandon' | 'reload' | null>(
+    null,
+  );
   const [error, setError] = useState('');
+  const [conflict, setConflict] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -56,6 +68,8 @@ export function SessionPanel({
   const mounted = useRef(true);
   const audioGeneration = useRef(0);
   const originalTranscript = useRef('');
+  const transcriptionOperation = useRef<string | undefined>(undefined);
+  const localAudio = useRef<HTMLAudioElement | null>(null);
   const operations = useRef(new Map<string, string>());
   function operationId(action: string, payload: unknown) {
     const key = `${action}:${JSON.stringify(payload)}`;
@@ -67,12 +81,17 @@ export function SessionPanel({
   }
   const end = useRef<HTMLDivElement>(null);
   const draftInput = useRef<HTMLTextAreaElement>(null);
-  const recorder = useRecorder(session.id, (text) => {
-    originalTranscript.current = text;
-    setDraft(text);
-    setTranscribed(true);
-    draftInput.current?.focus();
-  });
+  const recorder = useRecorder(
+    session.id,
+    (text, operationId) => {
+      originalTranscript.current = text;
+      transcriptionOperation.current = operationId;
+      setDraft(text);
+      setTranscribed(true);
+      draftInput.current?.focus();
+    },
+    local,
+  );
   const learnerCount = session.turns.filter((turn) => turn.role === 'learner').length;
   const ended = elapsed >= 300 || learnerCount >= 8;
   const microphoneBusy = recorder.state !== 'idle';
@@ -86,7 +105,10 @@ export function SessionPanel({
   }, [session.createdAt]);
 
   useEffect(() => {
-    end.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    end.current?.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'nearest',
+    });
   }, [session.turns.length]);
   useEffect(() => {
     mounted.current = true;
@@ -104,6 +126,7 @@ export function SessionPanel({
 
   function stopAudio() {
     audio.current?.pause();
+    localAudio.current?.pause();
     audioGeneration.current++;
     audio.current = null;
     setPlayingId(null);
@@ -119,18 +142,26 @@ export function SessionPanel({
         text: draft.trim(),
         inputMode: transcribed ? 'spoken' : 'typed',
         corrected: transcribed && draft.trim() !== originalTranscript.current.trim(),
+        transcriptionOperationId: transcribed ? transcriptionOperation.current : undefined,
       };
-      const next = await request<SpeakingSession>(`/api/sessions/${session.id}/turns`, {
-        method: 'POST',
-        body: JSON.stringify({
-          operationId: operationId('turn', { ...payload, afterTurn: session.turns.length }),
-          ...payload,
-        }),
+      const next = await sendPracticeTurn(session, {
+        operationId: operationId('turn', { ...payload, afterTurn: session.turns.length }),
+        text: payload.text,
+        inputMode: payload.inputMode as 'spoken' | 'typed',
+        corrected: payload.corrected,
+        transcriptionOperationId: payload.transcriptionOperationId,
       });
       onChange(next);
       setDraft('');
       setTranscribed(false);
+      transcriptionOperation.current = undefined;
     } catch (failure) {
+      if (failure instanceof ApiClientError && failure.retry === 'new-operation')
+        operations.current.clear();
+      setConflict(
+        failure instanceof ApiClientError &&
+          ['SESSION_CONFLICT', 'REVISION_CONFLICT'].includes(failure.code),
+      );
       setError(messageOf(failure));
     } finally {
       setBusy(null);
@@ -146,16 +177,19 @@ export function SessionPanel({
     setBusy('hint');
     setError('');
     try {
-      const next = await request<SpeakingSession>(`/api/sessions/${session.id}/hints`, {
-        method: 'POST',
-        body: JSON.stringify({
-          operationId: operationId('hint', { targetId, level }),
-          targetId,
-          level,
-        }),
+      const next = await requestPracticeHint(session, {
+        operationId: operationId('hint', { targetId, level }),
+        targetId,
+        level,
       });
       onChange(next);
     } catch (failure) {
+      if (failure instanceof ApiClientError && failure.retry === 'new-operation')
+        operations.current.clear();
+      setConflict(
+        failure instanceof ApiClientError &&
+          ['SESSION_CONFLICT', 'REVISION_CONFLICT'].includes(failure.code),
+      );
       setError(messageOf(failure));
     } finally {
       setBusy(null);
@@ -168,12 +202,35 @@ export function SessionPanel({
     setError('');
     stopAudio();
     try {
-      const next = await request<SpeakingSession>(`/api/sessions/${session.id}/complete`, {
-        method: 'POST',
-        body: JSON.stringify({ operationId: operationId('complete', {}) }),
-      });
+      const next = await finishPractice(
+        session,
+        operationId('complete', { revision: session.revision ?? 0 }),
+      );
       onChange(next);
       onComplete(next);
+    } catch (failure) {
+      if (failure instanceof ApiClientError && failure.retry === 'new-operation')
+        operations.current.clear();
+      setConflict(
+        failure instanceof ApiClientError &&
+          ['SESSION_CONFLICT', 'REVISION_CONFLICT'].includes(failure.code),
+      );
+      setError(messageOf(failure));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function reload() {
+    setBusy('reload');
+    setError('');
+    stopAudio();
+    try {
+      const updated = await getPracticeSession(session.id, session.mode ?? 'live');
+      onChange(updated);
+      if (updated.status === 'completed') onComplete(updated);
+      operations.current.clear();
+      setConflict(false);
     } catch (failure) {
       setError(messageOf(failure));
     } finally {
@@ -192,13 +249,15 @@ export function SessionPanel({
     setError('');
     stopAudio();
     try {
-      const response = await fetch(`/api/sessions/${session.id}`, { method: 'DELETE' });
-      if (!response.ok) {
-        const data = await response.json().catch(() => null);
-        throw new Error(data?.error?.message || 'Impossible de supprimer cette conversation.');
-      }
+      await deletePracticeSession(session);
       onAbandon();
     } catch (failure) {
+      if (failure instanceof ApiClientError && failure.retry === 'new-operation')
+        operations.current.clear();
+      setConflict(
+        failure instanceof ApiClientError &&
+          ['SESSION_CONFLICT', 'REVISION_CONFLICT'].includes(failure.code),
+      );
       setError(messageOf(failure));
     } finally {
       if (mounted.current) setBusy(null);
@@ -256,6 +315,10 @@ export function SessionPanel({
     } catch (failure) {
       if (mounted.current) {
         stopAudio();
+        setConflict(
+          failure instanceof ApiClientError &&
+            ['SESSION_CONFLICT', 'REVISION_CONFLICT'].includes(failure.code),
+        );
         setError(messageOf(failure));
       }
     } finally {
@@ -270,7 +333,8 @@ export function SessionPanel({
           <ArrowLeft size={17} /> Mes expressions
         </button>
         <div className="session-progress">
-          <span className="status-dot" /> Conversation · {learnerCount}/8 prises de parole{' '}
+          <span className="status-dot" /> {local ? 'Entraînement local · sans IA' : 'Conversation'}{' '}
+          · {learnerCount}/8 prises de parole{' '}
           <span className={ended ? 'time-over' : ''}>
             {Math.floor(Math.min(elapsed, 300) / 60)}:
             {String(Math.min(elapsed, 300) % 60).padStart(2, '0')} / 5:00
@@ -347,7 +411,11 @@ export function SessionPanel({
             </div>
             <div>
               <h2>Votre partenaire de conversation</h2>
-              <span>Coréen · réponses générées par l’IA</span>
+              <span>
+                {local
+                  ? 'Scène écrite à l’avance · aucune évaluation IA'
+                  : 'Coréen · réponses générées par l’IA'}
+              </span>
             </div>
           </div>
           <div className="conversation-messages" aria-live="polite" aria-relevant="additions text">
@@ -359,7 +427,7 @@ export function SessionPanel({
                     : 'Votre partenaire'}
                 </span>
                 <p lang="ko">{turn.text}</p>
-                {turn.role === 'partner' && status.speech && (
+                {turn.role === 'partner' && status.speech && !local && (
                   <button
                     className="message-audio"
                     disabled={!!loadingAudioId || microphoneBusy}
@@ -388,6 +456,26 @@ export function SessionPanel({
             <div ref={end} />
           </div>
           <div className="conversation-controls">
+            {recorder.state === 'requesting' && (
+              <button
+                className="text-button"
+                onClick={() => {
+                  recorder.cancelPermission();
+                  requestAnimationFrame(() => draftInput.current?.focus());
+                }}
+              >
+                Continuer à l’écrit
+              </button>
+            )}
+            {conflict && (
+              <button
+                className="button button-secondary"
+                disabled={!!busy || microphoneBusy}
+                onClick={() => void reload()}
+              >
+                Recharger la conversation
+              </button>
+            )}
             {ended ? (
               <div className="session-ended">
                 <Check size={24} />
@@ -408,6 +496,7 @@ export function SessionPanel({
                     className={`record-button ${recorder.state === 'recording' ? 'is-recording' : ''}`}
                     disabled={
                       !!busy ||
+                      (!local && !status.speech) ||
                       recorder.state === 'requesting' ||
                       recorder.state === 'transcribing' ||
                       !!loadingAudioId
@@ -431,18 +520,41 @@ export function SessionPanel({
                       {recorder.state === 'recording'
                         ? `Terminer · ${recorder.seconds}s`
                         : recorder.state === 'transcribing'
-                          ? 'Transcription…'
+                          ? local
+                            ? 'Préparation de l’audio…'
+                            : 'Transcription…'
                           : recorder.state === 'requesting'
                             ? 'Accès au micro…'
                             : 'À vous de parler'}
                     </span>
                   </button>
                   <span className="record-help">
-                    Une phrase à la fois.
-                    <br />
-                    30 secondes maximum.
+                    {!local && !status.speech ? (
+                      'Microphone disponible après configuration du service vocal.'
+                    ) : (
+                      <>
+                        Une phrase à la fois.
+                        <br />
+                        30 secondes maximum.
+                      </>
+                    )}
                   </span>
                 </div>
+                {local && (
+                  <p className="local-mode-note">
+                    Enregistrez-vous, écoutez-vous puis saisissez votre réponse. Rien n’est envoyé à
+                    un service vocal ; les répliques du partenaire suivent une scène fixe.
+                  </p>
+                )}
+                {local && recorder.localRecordingUrl && (
+                  <audio
+                    ref={localAudio}
+                    className="local-recording"
+                    controls
+                    src={recorder.localRecordingUrl}
+                    aria-label="Écouter mon enregistrement local"
+                  />
+                )}
                 <label className="field reply-field">
                   <span>
                     {transcribed
@@ -495,9 +607,11 @@ export function SessionPanel({
             )}
             <div className="end-session-row">
               <span>
-                {status.speech
-                  ? 'Écoutez les réponses avec le bouton audio.'
-                  : 'Lecture audio non configurée · les réponses restent lisibles.'}
+                {local
+                  ? 'Enregistrement local uniquement · aucune transcription automatique.'
+                  : status.speech
+                    ? 'Écoutez les réponses avec le bouton audio.'
+                    : 'Lecture audio non configurée · les réponses restent lisibles.'}
               </span>
               <button
                 className="text-button"

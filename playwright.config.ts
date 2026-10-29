@@ -25,6 +25,14 @@ export default defineConfig({
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
-    env: { AI_ENABLED: 'false' },
+    env: {
+      AI_ENABLED: 'false',
+      NEXT_PUBLIC_SUPABASE_URL: '',
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: '',
+      SUPABASE_SECRET_KEY: '',
+      META_API_KEY: '',
+      AZURE_SPEECH_KEY: '',
+      AZURE_SPEECH_REGION: '',
+    },
   },
 });

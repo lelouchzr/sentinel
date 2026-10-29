@@ -1,7 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { SessionSetup } from '@/lib/contracts';
 import sharp from 'sharp';
-import { extractVocabulary, planSession, transcribeAudio } from '@/server/providers/meta';
+import {
+  evaluateSession,
+  extractVocabulary,
+  planSession,
+  transcribeAudio,
+} from '@/server/providers/meta';
+import {
+  completedSessionFixture,
+  feedbackFixture,
+  fixtureOperationId,
+  secondOperationId,
+} from './session-fixtures';
 import { synthesizeSpeech } from '@/server/providers/azure';
 import { validateWav } from '@/server/providers/audio';
 import { providerRequest } from '@/server/providers/http';
@@ -160,6 +171,42 @@ describe('Meta provider boundary', () => {
       providerRequest('https://api.meta.ai/v1/chat/completions', {}),
     ).rejects.toMatchObject({ code: 'PROVIDER_OUTCOME_UNKNOWN', ambiguous: true });
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+  it('keeps private correction history out of the prompt and cannot reinstate disputed feedback', async () => {
+    const session = completedSessionFixture({
+      feedbackFlags: [
+        {
+          operationId: fixtureOperationId,
+          targetId: 'borrow',
+          reason: 'PRIVATE_DISPUTE_REASON',
+          createdAt: '2026-10-29T12:01:00.000Z',
+          revision: 5,
+        },
+      ],
+      amendments: [
+        {
+          operationId: secondOperationId,
+          turnId: 'learner-1',
+          previousText: 'PRIVATE_PREVIOUS_TRANSCRIPT',
+          text: '충전기를 잠깐 빌려도 될까요?',
+          createdAt: '2026-10-29T12:02:00.000Z',
+          revision: 6,
+        },
+      ],
+      revision: 6,
+    });
+    const fetchMock = vi.fn().mockResolvedValue(completion(feedbackFixture()));
+    vi.stubGlobal('fetch', fetchMock);
+    const result = await evaluateSession(session);
+    const body = JSON.parse(fetchMock.mock.calls[0]![1].body);
+    const context = JSON.parse(body.messages[1].content);
+    expect(context.excludedTargetIds).toEqual(['borrow']);
+    expect(JSON.stringify(body)).not.toContain('PRIVATE_');
+    expect(result.data.observations[0]).toMatchObject({
+      targetId: 'borrow',
+      outcome: 'uncertain',
+      evidence: [],
+    });
   });
 });
 

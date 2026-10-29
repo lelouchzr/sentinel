@@ -15,8 +15,21 @@ export function validateFeedback(session: SpeakingSession, candidate: unknown): 
   ) {
     throw new Error('Feedback must contain exactly one observation for each session target.');
   }
+  if (new Set(session.turns.map((turn) => turn.id)).size !== session.turns.length) {
+    throw new Error('Conversation turn IDs must be unique.');
+  }
   const learnerTurns = session.turns.filter((turn) => turn.role === 'learner');
   const observations = feedback.observations.map((observation): Observation => {
+    if (session.feedbackFlags?.some((flag) => flag.targetId === observation.targetId)) {
+      return {
+        ...observation,
+        outcome: 'uncertain',
+        evidence: [],
+        explanation: 'Vous avez signalé ce retour. Il reste exclu du suivi de révision orale.',
+        nextPractice:
+          'Reprenez cette expression dans une nouvelle situation lorsque vous le souhaitez.',
+      };
+    }
     if (!observation.opportunity) {
       return {
         ...observation,
@@ -52,7 +65,11 @@ export function validateFeedback(session: SpeakingSession, candidate: unknown): 
           ) ||
           session.turns
             .slice(0, turnIndex)
-            .some((turn) => turn.role === 'partner' && turn.text.includes(target.expression))
+            .some(
+              (turn) =>
+                turn.role === 'partner' &&
+                (turn.text.includes(target.expression) || turn.text.includes(evidence.quote)),
+            )
         );
       });
       if (assisted)

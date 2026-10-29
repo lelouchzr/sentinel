@@ -38,6 +38,10 @@ git diff --check
 
 Use the pinned Node/npm versions and the single lockfile. Run focused checks for the changed risk. Normal checks use deterministic fixtures and do not call paid providers.
 
+The explicitly selected local practice mode uses prewritten scenes, never provider-shaped fallback responses. Its sessions cannot update oral review dates. Keep live account history out of anonymous browser backups. Browser checks include isolated connected-state fixtures, synthetic audio, and accessibility assertions; they do not validate actual provider or physical-device quality.
+
+Run `npm run setup:check` to inspect configuration names and migration order without printing secrets or contacting services. Follow [development setup](docs/development.md) for real integration and maintenance checks.
+
 Real provider experiments are explicit development actions with a recorded purpose and bounded budget. Keep credentials and personal content outside tracked artifacts. See [budget controls](docs/budget.md) and [evaluation](docs/quality-and-demo.md).
 
 ## Reviews and pull requests

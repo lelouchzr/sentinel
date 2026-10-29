@@ -6,14 +6,22 @@ import { toSpeechWav } from './audio';
 
 type RecorderState = 'idle' | 'requesting' | 'recording' | 'transcribing';
 
-export function useRecorder(sessionId: string, onTranscript: (text: string) => void) {
+export function useRecorder(
+  sessionId: string,
+  onTranscript: (text: string, operationId: string) => void,
+  localOnly = false,
+) {
   const [state, setState] = useState<RecorderState>('idle');
   const [seconds, setSeconds] = useState(0);
   const [error, setError] = useState('');
+  const [localRecordingUrl, setLocalRecordingUrl] = useState<string | null>(null);
+  const recordingUrl = useRef<string | null>(null);
   const recorder = useRef<MediaRecorder | null>(null);
   const stream = useRef<MediaStream | null>(null);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const mounted = useRef(true);
+  const requestGeneration = useRef(0);
+  const pendingPermission = useRef<number | null>(null);
   const transcriptHandler = useRef(onTranscript);
   transcriptHandler.current = onTranscript;
 
@@ -28,14 +36,25 @@ export function useRecorder(sessionId: string, onTranscript: (text: string) => v
     mounted.current = true;
     return () => {
       mounted.current = false;
+      requestGeneration.current++;
+      pendingPermission.current = null;
       if (recorder.current?.state === 'recording') recorder.current.stop();
       releaseMicrophone();
+      if (recordingUrl.current) URL.revokeObjectURL(recordingUrl.current);
     };
   }, []);
 
   function stop() {
     if (recorder.current?.state === 'recording') recorder.current.stop();
     releaseMicrophone();
+  }
+
+  function cancelPermission() {
+    // Browser permission prompts cannot be aborted; a late grant is discarded below.
+    if (pendingPermission.current === null) return;
+    requestGeneration.current++;
+    pendingPermission.current = null;
+    setState('idle');
   }
 
   async function start() {
@@ -48,15 +67,18 @@ export function useRecorder(sessionId: string, onTranscript: (text: string) => v
       );
       return;
     }
+    const generation = ++requestGeneration.current;
+    pendingPermission.current = generation;
     setState('requesting');
     try {
       const media = await navigator.mediaDevices.getUserMedia({
         audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true },
       });
-      if (!mounted.current) {
+      if (!mounted.current || generation !== requestGeneration.current) {
         media.getTracks().forEach((track) => track.stop());
         return;
       }
+      pendingPermission.current = null;
       stream.current = media;
       const mime = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus'].find((type) =>
         MediaRecorder.isTypeSupported(type),
@@ -92,13 +114,20 @@ export function useRecorder(sessionId: string, onTranscript: (text: string) => v
             throw new Error(
               'L’enregistrement est vide ou trop volumineux. Essayez une phrase plus courte.',
             );
+          if (localOnly) {
+            if (recordingUrl.current) URL.revokeObjectURL(recordingUrl.current);
+            const url = URL.createObjectURL(new Blob(chunks, { type: active.mimeType }));
+            recordingUrl.current = url;
+            setLocalRecordingUrl(url);
+            return;
+          }
           const wav = await toSpeechWav(new Blob(chunks, { type: active.mimeType }));
           if (!mounted.current) return;
           const form = new FormData();
           form.append('audio', wav, 'speech.wav');
           form.append('sessionId', sessionId);
           form.append('operationId', crypto.randomUUID());
-          const result = await request<{ text: string }>('/api/transcribe', {
+          const result = await request<{ text: string; operationId: string }>('/api/transcribe', {
             method: 'POST',
             body: form,
           });
@@ -107,7 +136,11 @@ export function useRecorder(sessionId: string, onTranscript: (text: string) => v
               throw new Error(
                 'Aucune parole reconnue. Rapprochez-vous du microphone ou écrivez votre réponse.',
               );
-            transcriptHandler.current(result.text);
+            if (!result.operationId)
+              throw new Error(
+                'La transcription ne peut pas être vérifiée. Recommencez l’enregistrement.',
+              );
+            transcriptHandler.current(result.text, result.operationId);
           }
         } catch (failure) {
           if (mounted.current) setError(messageOf(failure));
@@ -124,6 +157,8 @@ export function useRecorder(sessionId: string, onTranscript: (text: string) => v
         if (elapsed >= 30) stop();
       }, 200);
     } catch (failure) {
+      if (!mounted.current || generation !== requestGeneration.current) return;
+      pendingPermission.current = null;
       releaseMicrophone();
       if (mounted.current) {
         const denied = failure instanceof DOMException && failure.name === 'NotAllowedError';
@@ -137,5 +172,5 @@ export function useRecorder(sessionId: string, onTranscript: (text: string) => v
     }
   }
 
-  return { state, seconds, error, start, stop };
+  return { state, seconds, error, start, stop, cancelPermission, localRecordingUrl };
 }

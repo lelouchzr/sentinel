@@ -22,7 +22,7 @@ import {
   type ProviderUsage,
 } from './types';
 
-export const PROMPT_VERSION = 'ko-fr-v1';
+export const PROMPT_VERSION = 'ko-fr-v2';
 const MAX_TEXT_INPUT_BYTES = 65_536;
 const MAX_OUTPUT_TOKENS = 8192;
 const modelSchema = z.literal('muse-spark-1.3');
@@ -198,7 +198,13 @@ If targets/goal cannot fit any coherent everyday conversation, set compatible=fa
 
 function sessionContext(input: SpeakingSession) {
   const session = sessionSchema.parse(input);
-  return { setup: session.setup, scene: session.scene, turns: session.turns, hints: session.hints };
+  return {
+    setup: session.setup,
+    scene: session.scene,
+    turns: session.turns,
+    hints: session.hints,
+    excludedTargetIds: [...new Set(session.feedbackFlags?.map((flag) => flag.targetId) ?? [])],
+  };
 }
 
 export async function replyToSession(
@@ -254,6 +260,7 @@ export async function evaluateSession(input: SpeakingSession): Promise<ProviderR
     'evaluate',
     `Evaluate only the supplied conversation. Produce exactly one observation for each targetId.
 goalAchieved is communication success (yes, partly, no, uncertain), independent of exact target use. summary/explanation/nextPractice are concise French.
+A target in excludedTargetIds was disputed by the learner: keep its outcome uncertain, evidence empty, and do not silently restore it as success or failure.
 Each evidence entry MUST quote an exact, nonempty substring of a learner turn and reference that turn's existing id. Never use partner lines as evidence.
 inputMode=typed (also the default when absent) means a written answer; it may demonstrate communication or written use, not spoken retrieval. inputMode=spoken with corrected=true means the learner edited the transcription; describe only the confirmed text and do not claim oral retrieval from it. In French explanations make this distinction explicit, while still giving useful conversation feedback. Never label typed or corrected evidence as proof of oral ability.
 independent_use: supported valid use without help before that attempt. assisted_use: supported valid use after relevant help. needs_practice: supported misuse or explicit learner admission of inability AFTER a meaningful opportunity. not_observed: no meaningful opportunity or no evidence for this expression. uncertain: ambiguous wording/transcription or unsupported inference.

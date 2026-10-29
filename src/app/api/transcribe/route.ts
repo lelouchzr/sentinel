@@ -28,21 +28,20 @@ export const POST = route(async (request) => {
   const data = new Uint8Array(await audio.arrayBuffer());
   validateWav(data);
   assertCanAddTurn(await loadSession(sessionId, user.id));
-  return Response.json(
-    await runOperation(
-      {
-        id: operationId,
-        userId: user.id,
-        sessionId,
-        kind: 'transcribe',
-        fingerprint: fingerprint({ sessionId, audio: Buffer.from(data).toString('base64') }),
-      },
-      async (markDispatched) => {
-        assertCanAddTurn(await loadSession(sessionId, user.id));
-        markDispatched();
-        const output = await transcribeAudio({ data, mimeType: 'audio/wav', fileName: 'turn.wav' });
-        return { result: output.data, usage: output.usage };
-      },
-    ),
+  const transcription = await runOperation(
+    {
+      id: operationId,
+      userId: user.id,
+      sessionId,
+      kind: 'transcribe',
+      fingerprint: fingerprint({ sessionId, audio: Buffer.from(data).toString('base64') }),
+    },
+    async (markDispatched) => {
+      assertCanAddTurn(await loadSession(sessionId, user.id));
+      markDispatched();
+      const output = await transcribeAudio({ data, mimeType: 'audio/wav', fileName: 'turn.wav' });
+      return { result: output.data, usage: output.usage };
+    },
   );
+  return Response.json({ ...transcription, operationId });
 });

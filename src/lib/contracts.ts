@@ -41,6 +41,7 @@ export const turnSchema = z.object({
   text: z.string().trim().min(1).max(2000),
   corrected: z.boolean().default(false),
   inputMode: z.enum(['spoken', 'typed']).optional(),
+  transcriptionOperationId: z.string().uuid().optional(),
   createdAt: z.string().datetime(),
 });
 export type ConversationTurn = z.infer<typeof turnSchema>;
@@ -76,6 +77,34 @@ export const feedbackSchema = z.object({
 export type Feedback = z.infer<typeof feedbackSchema>;
 export const sessionSchema = z.object({
   id: z.string().uuid(),
+  mode: z.enum(['local', 'live']).optional(),
+  revision: z.number().int().nonnegative().optional(),
+  feedbackRevision: z.number().int().nonnegative().optional(),
+  amendments: z
+    .array(
+      z.object({
+        operationId: z.string().uuid(),
+        turnId: z.string().min(1).max(100),
+        previousText: z.string().max(2000),
+        text: z.string().min(1).max(2000),
+        createdAt: z.string().datetime(),
+        revision: z.number().int().nonnegative(),
+      }),
+    )
+    .max(50)
+    .optional(),
+  feedbackFlags: z
+    .array(
+      z.object({
+        operationId: z.string().uuid(),
+        targetId: z.string().min(1).max(100),
+        reason: z.string().max(1000),
+        createdAt: z.string().datetime(),
+        revision: z.number().int().nonnegative(),
+      }),
+    )
+    .max(50)
+    .optional(),
   setup: sessionSetupSchema,
   status: z.enum(['active', 'completed']),
   scene: z.string().max(1500),
@@ -91,5 +120,8 @@ export type ProviderStatus = {
   speech: boolean;
   storage: boolean;
   authenticated: boolean;
+  userId?: string;
+  localPractice?: boolean;
 };
-export type ApiError = { error: { code: string; message: string } };
+export type RetryAdvice = 'new-operation' | 'same-operation' | 'reconcile' | 'none';
+export type ApiError = { error: { code: string; message: string; retry?: RetryAdvice } };

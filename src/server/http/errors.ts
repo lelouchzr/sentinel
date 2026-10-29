@@ -1,11 +1,13 @@
 import 'server-only';
 import { ZodError } from 'zod';
+import type { RetryAdvice } from '@/lib/contracts';
 
 export class HttpError extends Error {
   constructor(
     public code: string,
     message: string,
     public status = 400,
+    public retry: RetryAdvice = 'none',
   ) {
     super(message);
   }
@@ -22,10 +24,21 @@ export function errorResponse(error: unknown): Response {
       { status: 400 },
     );
   }
-  const known = error as { code?: string; status?: number; message?: string } | null;
+  const known = error as {
+    code?: string;
+    status?: number;
+    message?: string;
+    retry?: RetryAdvice;
+  } | null;
   if (known && typeof known.code === 'string' && typeof known.status === 'number') {
     return Response.json(
-      { error: { code: known.code, message: known.message || 'Opération indisponible.' } },
+      {
+        error: {
+          code: known.code,
+          message: known.message || 'Opération indisponible.',
+          retry: known.retry ?? 'none',
+        },
+      },
       { status: known.status },
     );
   }
@@ -35,6 +48,7 @@ export function errorResponse(error: unknown): Response {
       error: {
         code: 'INTERNAL_ERROR',
         message: 'L’opération a échoué. Aucun résultat ne peut être confirmé pour le moment.',
+        retry: known?.retry ?? 'same-operation',
       },
     },
     { status: 500 },
