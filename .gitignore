@@ -1,0 +1,45 @@
+# Local secrets and provider state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.vercel/
+.supabase/
+supabase/.temp/
+
+# Dependencies and generated application output
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+
+# Private source material and local experiments
+private/
+uploads/
+recordings/
+local-data/
+evals/private/
+*.apkg
+*.colpkg
+*.sqlite
+*.sqlite3
+*.db
+*.log
+
+# Editor and operating system state
+.DS_Store
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+.venv/
+*.swp
+*.swo
