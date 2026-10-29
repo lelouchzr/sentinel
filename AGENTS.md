@@ -6,7 +6,7 @@ These instructions apply to the entire repository. The project owner is `lelouch
 
 1. Read `README.md` and the focused document for the task. Use `docs/README.md` as the index.
 2. Inspect the working directory, Git status, current branch, and remote before changing files. Preserve unrelated work.
-3. Distinguish implemented behavior from plans. This repository starts as documentation only; do not invent installed packages, passing application tests, provider access, or a running demo.
+3. Distinguish implemented behavior from plans. The repository includes a local application; distinguish tested local behavior from unverified cloud integration. Do not invent provider access, deployed services, or successful live calls.
 4. Implement the smallest complete slice needed for the current task. Ask only when a missing decision blocks progress or changes the agreed scope substantially.
 
 ## Product invariants

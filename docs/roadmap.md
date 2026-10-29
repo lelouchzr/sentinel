@@ -47,3 +47,7 @@ If Korean recognition, synthesis latency, or model feedback fails validation, fi
 Read the participant portal's final rules, required artifacts, video length, team rules, third-party-service allowances, and rules for pre-existing code. The public event page is a scheduling reference, not evidence that every submission condition has been reviewed.
 
 Acceptance, allocated credits, and model availability are distinct facts. The owner confirmed acceptance and USD 150 credits; actual API entitlements and remaining balance still require verification during development.
+
+## Implementation checkpoint — 29 October
+
+The first local application slice is now implemented: imports and confirmation, browser library/recall, speaking interface, provider adapters, ownership and budget migrations, and automated checks. No credentials have been added and no provider calls or remote migrations have run. Next: configure the intended development accounts, validate one bounded Korean conversation with actual speech and one original page, then address quality/latency findings before deployment and the submission recording.

@@ -50,3 +50,12 @@ These facts come from the owner's instructions, not from provider dashboards.
 - Product name, domain, and any future public release policy.
 
 Do not convert these open items into completed claims without evidence. The public event page still refers readers to final rules; participant acceptance does not substitute for reviewing them.
+
+## Implementation references checked on 29 October 2026
+
+- [Meta chat completions](https://dev.meta.ai/docs/protocols/chat-completions) and [structured output](https://dev.meta.ai/docs/structured-output): request envelope, JSON Schema and token limits.
+- [Meta image understanding](https://dev.meta.ai/docs/image-understanding): image input and resizing considerations.
+- [Azure REST synthesis](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech): regional SSML endpoint and audio output format.
+- [Next.js installation](https://nextjs.org/docs/app/getting-started/installation) and [Supabase server clients](https://supabase.com/docs/guides/auth/server-side/creating-a-client): current runtime and authenticated cookie boundaries.
+
+These documentation checks support the implementation; they are not live provider compatibility results.

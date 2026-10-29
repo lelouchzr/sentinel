@@ -44,3 +44,13 @@ Use a configurable price table verified at implementation time. Do not bake a tr
 5. Record measured latency, usage, and failures; adjust the next experiment from evidence.
 
 No fine-tuning, training job, bulk evaluation, or speculative multi-agent fan-out is needed for the MVP. Native account usage limits should complement application-side controls when available.
+
+## First implemented controls
+
+The server now enforces `AI_ENABLED`, authentication, bounded request bodies, per-session exclusion, global concurrent-operation limits, idempotent request fingerprints and atomic reservations in PostgreSQL. The initial `META_RUN_LIMIT_USD=5` is cumulative across the database ledger, bounded above by `META_DEVELOPMENT_LIMIT_USD=120`. It is not a daily reset and not the provider's live account balance.
+
+Each operation reserves USD 1. Successful Meta usage settles an **estimate** using standard Muse Spark input USD 1.25/M tokens and output USD 4.25/M tokens, or ASR USD 0.18/hour rounded up to whole processed seconds, checked on 29 October 2026. Cached-input discounts are intentionally not subtracted. Unknown usage and ambiguous failures retain the full reservation. An unambiguous pre-dispatch failure releases it. These rates must be reviewed before real experiments and whenever models/prices change.
+
+Azure uses an independent `AZURE_RUN_LIMIT_USD=5` envelope; without a verified regional price, each successful synthesis conservatively retains its USD 1 reservation. No exact Azure cost is claimed. Browser playback may reuse its current audio; raw audio is not kept in the operation ledger.
+
+No credit has been spent by this implementation. No automatic reconciliation, provider-balance synchronization, or threshold-notification UI is implemented yet. The reservation model limits tracked operations; other tools using the same account can still spend credits outside this ledger.

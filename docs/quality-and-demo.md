@@ -1,6 +1,6 @@
 # Quality, evaluation, and demonstration
 
-Status: verification plan. No application checks or provider benchmarks have run in the documentation baseline.
+Status: local verification is underway with deterministic fixtures, provider mocks, and an embedded PostgreSQL database. Real provider benchmarks and cloud end-to-end verification are pending.
 
 ## What the first release must demonstrate
 
@@ -60,3 +60,12 @@ Record a backup demonstration for delivery reliability. If showing a recording o
 ## Release gate
 
 Before declaring the MVP complete, verify the actual end-to-end flow, tenant isolation, secret boundaries, bounded spending, known failure states, and deployment. Record what was checked and what remains uncertain. Preserve enough schedule margin to submit without last-minute feature additions.
+
+## Local verification — 29 October 2026
+
+- 85 unit/integration cases passed, including actual PostgreSQL migration/RLS/accounting behavior, provider HTTP contract fixtures, WAV bytes, evidence validation, review scheduling and route authorization.
+- 6 Playwright browser journeys passed in local Chrome, with API mutations blocked and live AI disabled.
+- Production build, TypeScript checks, and documentation checks passed.
+- Import editing, persistence after reload, recall, configuration states and responsive layout were also inspected in the browser.
+
+These results do not cover live Meta/Azure calls, a hosted Supabase instance, physical microphone quality, speech latency, or semantic correctness of generated Korean.

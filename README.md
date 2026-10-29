@@ -4,7 +4,7 @@
 
 A standalone language-learning application that turns vocabulary from flashcards and books into personalized speaking practice. `language-speaking-app` is a temporary repository name; the product name will be chosen later.
 
-**Owner:** [lelouchzr](https://github.com/lelouchzr) · **Repository:** private · **Stage:** project documentation, before application implementation.
+**Owner:** [lelouchzr](https://github.com/lelouchzr) · **Repository:** private · **Stage:** local application under development; live integrations await credentials.
 
 ## Why this project exists
 
@@ -34,7 +34,7 @@ For example, a learner imports a Korean vocabulary list about borrowing things, 
 
 Direct account synchronization, native Anki package parsing, unrestricted live voice interruption, pronunciation scoring, model training, payments, and a native mobile app are later work. See the [product specification](docs/product.md) for boundaries and acceptance criteria.
 
-## Planned stack
+## Stack
 
 | Layer | Choice | Purpose |
 | --- | --- | --- |
@@ -46,22 +46,28 @@ Direct account synchronization, native Anki package parsing, unrestricted live v
 | Speech recognition | Meta Muse Voice Transcribe | Korean speech transcription |
 | Speech synthesis | Azure AI Speech | Read replies using a Korean neural voice |
 | Delivery | Vercel | Planned application hosting |
-| Verification | Vitest and Playwright | Planned unit and browser checks |
+| Verification | Vitest and Playwright | Unit and browser checks |
 
-These are implementation decisions, not installed or deployed components. Versions will be selected and pinned during application setup. Model access, Korean quality, audio formats, and latency must be validated with real calls when development begins.
+Dependency versions are pinned in `package.json` and `package-lock.json`. The application runs locally. Supabase migrations and provider adapters are implemented; account access, Korean quality, speech latency, and the deployed flow still require real integration checks.
 
 ## Current status and local use
 
-This repository currently contains documentation, repository guidance, and original sample vocabulary. There is no application runtime, dependency manifest, database migration, configured cloud service, or deployed demo yet.
-
-Check the documentation with Python 3:
+The first development slice includes vocabulary imports with editable confirmation, a local library and recall exercise, scenario setup, recorded or typed turns, progressive hints, and evidence-based feedback. The original sample can be imported without accounts or API keys. Local vocabulary is stored in this browser; it is not cloud-synced.
 
 ```sh
-python3 scripts/check_docs.py
-git diff --check
+npm ci
+npm run dev
 ```
 
-Read [development setup](docs/development.md) before starting implementation. Do not run nonexistent application commands or claim that planned tests have already passed.
+Open `http://127.0.0.1:3000`. See [development setup](docs/development.md) for account configuration and database migration steps. AI calls are disabled by default; the interface explains missing configuration instead of generating simulated conversations.
+
+```sh
+npm run check
+npm run build
+npm run test:e2e
+```
+
+The test suite uses original fixtures, mocked provider HTTP, and an embedded PostgreSQL database for access policies and budget operations. Real providers are not called by tests. Full cloud integration, deployment, post-session transcript amendments, account-wide vocabulary sync, and scheduled abandoned-upload cleanup remain pending.
 
 ## Documentation
 
@@ -85,7 +91,7 @@ This project is being prepared for the Meta Global AI Developer Hackathon, indie
 
 The current [event page](https://cerebralvalley.ai/e/meta-ai-developer-hackathon) lists submission for **4 November 2026 at 21:00 America/New_York**, equivalent to **5 November at 03:00 Europe/Paris**. Confirm the participant portal requirements before submission. The implementation plan is based on the remaining days, not a fresh ten-day period.
 
-No paid model calls are part of this documentation setup. Credit controls and the first development validation are described in [the budget plan](docs/budget.md).
+No paid model calls have been made during this implementation. Credit controls and the first development validation are described in [the budget plan](docs/budget.md).
 
 ## Ownership and access
 

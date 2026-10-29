@@ -1,65 +1,51 @@
 # Development setup
 
-## What exists now
+## Run locally
 
-The baseline contains documentation, repository metadata, a small original vocabulary fixture, and a Python standard-library documentation checker. No Node dependencies, application server, database schema, provider keys, or deployed services exist yet.
-
-Run the checks that are available:
+Use Node `26.13.0` (recorded in `.nvmrc`) and npm `11.20.0`. Dependencies are pinned in `package.json`; `package-lock.json` is the only lockfile.
 
 ```sh
-python3 scripts/check_docs.py
+npm ci
+npm run dev
+```
+
+Open `http://127.0.0.1:3000`. Without credentials, import the original Korean/French sample or your own text export, correct the draft, confirm it, and prepare a practice session. Vocabulary and oral history are device-local. There is no fake conversation fallback when AI is unavailable.
+
+## Checks
+
+```sh
+npm run typecheck
+npm test
+npm run build
+npm run test:e2e
+npm run check:docs
 git diff --check
 ```
 
-GitHub Actions runs the same documentation checker without application secrets or paid provider calls. The workflow uses a commit-pinned official checkout action.
+`npm run check` generates Next.js route types, checks TypeScript and formatting, then runs unit/integration tests and documentation checks. Use `npm run format` to format source and tests. Unit tests do not contact providers. Database tests run the actual SQL migration in embedded PostgreSQL with Auth/Storage stubs; they verify RLS and budget logic, but do not replace testing a configured Supabase project. Browser tests require Chrome or a Playwright Chromium installation; see `playwright.config.ts`. No separate lint command is claimed.
 
-## Application setup sequence
-
-During the first implementation task:
-
-1. Select compatible stable Next.js, React, and TypeScript releases, and a supported Node LTS release. Record the exact versions and package manager in the manifest/runtime files.
-2. Scaffold the minimal application and feature directories described in [architecture](architecture.md). Pin one package-manager version and commit one lockfile.
-3. Add lint, typecheck, unit-test, browser-test, build, and development scripts; update this file with the commands that actually run.
-4. Add Zod contracts and provider interfaces. Ordinary tests use deterministic fixtures.
-5. Create database migrations and RLS tests before storing learner data. Apply remote migrations only to the intended, explicitly configured development project.
-6. Add the authenticated microphone-to-transcript-to-reply path and perform a bounded real-provider experiment when development is authorized and credentials are configured.
-
-There is no `npm install`, `pnpm dev`, or build command to run before the application manifest is created. Do not fabricate a lockfile or install unspecified latest packages during documentation-only work.
-
-## Environment configuration
-
-The tracked [`.env.example`](../.env.example) is a proposed variable contract. Copy it to an ignored `.env.local` when implementing the runtime. Keep `AI_ENABLED=false` until the authorization, quota, and provider boundaries are implemented and a real experiment is deliberately started.
-
-Public variables contain only the app origin and appropriate Supabase public configuration. Provider API keys and privileged Supabase credentials are server-only. Never request or paste credentials into an issue, PR, or chat transcript; configure them in the normal local or hosting secret store.
-
-The example's limits are intended policy values, not currently enforced behavior. Model identifiers and the voice candidate must be confirmed against the owner's actual account and region. Azure usage is separate from the Meta credits.
-
-## Local experiments
-
-Use `examples/` for original, non-personal fixtures. Keep real textbook scans, audio, exports, and provider responses under ignored `private/` or `evals/private/`. A fixture's presence does not mean a real provider or hosted Auth/Storage has been verified.
-
-Record each real experiment's purpose, model, prompt/schema version, latency, usage, and result in an appropriate private log. Publish only aggregate non-sensitive evidence to the repository. Unknown billing values remain unknown.
-
-## Git workflow
-
-Before committing or pushing, inspect:
+## Configure services when ready
 
 ```sh
-git status --short --branch
-git remote -v
-git config --get user.name
-git config --get user.email
-gh api user --jq .login
+cp .env.example .env.local
 ```
 
-The remote must belong to `lelouchzr`, remain private, and receive commits authored/committed using that owner's configured identity. Use local configuration changes only when needed. Follow [CONTRIBUTING.md](../CONTRIBUTING.md) for branch and commit conventions.
+Keep secrets in that ignored file. Never paste them in chat, commits, screenshots or issue bodies. Configure the intended development Supabase project URL, publishable key and server secret key. Review and apply the SQL in `supabase/migrations/` to that project through your normal migration workflow; no migration has been applied automatically. The migration creates a private `vocabulary-pages` bucket. Configure Auth to allow the local app origin and `/auth/callback` redirect URL.
 
-## First deployment checklist
+Set `NEXT_PUBLIC_APP_URL` to the actual origin you use, for example `http://127.0.0.1:3000`. Restart the dev server after changing environment variables. `/settings` shows presence checks and email-link sign-in; it does not prove that model access or database setup works.
 
-- Verify the app build and the complete provider-free browser flow.
-- Validate Supabase policies using two independent accounts.
-- Check allowed microphone origins, callback URLs, upload size limits, and actual hosting request durations.
-- Configure separate development and production secrets intentionally.
-- Confirm model access and the current available budget before enabling paid calls.
-- Confirm raw-audio handling, image cleanup, account deletion, and logs.
-- Deploy only within an explicit implementation/deployment task; the initial repository publication does not deploy the product.
+For paid operations, configure Meta and optionally Azure Speech. Azure is billed separately. Review current prices and remaining credits, then deliberately set `AI_ENABLED=true` for a bounded integration experiment. Defaults enforce a cumulative `$5` Meta experiment envelope within the `$120` development allocation. The application reserves `$1` per pending operation before dispatch and settles known Meta usage at documented estimated rates. Unknown charges keep their reservation. See [budget policy](budget.md).
+
+Text conversation uses Meta and Supabase. Audio input additionally uses Meta transcription. Reply playback requires Azure; the text reply remains available if playback fails. No provider requests run during build or startup.
+
+## Private content and cleanup
+
+Real recordings, book pages and exports belong outside tracked artifacts, for example under ignored `private/`. Audio is transient. Extracted source images are removed after the request where possible, but interrupted uploads need a scheduled cleanup before deployment. Local vocabulary is not backed up to an account. Session deletion clears its transcripts/feedback and operation replay content, while retaining minimal accounting records.
+
+An unresolved provider operation keeps its reservation and session exclusion. Inspect the provider dashboard and the private operation record before reconciling it through a deliberate administrative procedure. No automatic timeout-based unlock or billable retry is implemented.
+
+## Delivery gate
+
+The implementation remains local. Before deployment: test real provider access and Korean quality, run the full authenticated journey, verify two real Supabase users cannot access each other's data, check microphone behavior on intended browsers, implement abandoned-upload retention, review account deletion, and confirm the participant portal submission rules.
+
+Use `feature/<topic>` branches and only the owner's `lelouchzr` Git identity. Do not include tooling attribution or generated build files. Deployment and remote migrations are separate external operations.

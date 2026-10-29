@@ -1,6 +1,6 @@
 # Architecture
 
-Status: planned. No application, database, or provider connection is provisioned in this baseline.
+Status: first local slice implemented. No remote database or provider connection has been provisioned or live-tested. Vocabulary remains in browser storage; authenticated speaking sessions use the Supabase migration when configured.
 
 ## Decisions
 
@@ -8,7 +8,7 @@ Use one Next.js App Router application with React, strict TypeScript, and Tailwi
 
 This keeps UI and server work in one codebase familiar to the owner. Start with HTTP requests for short recorded turns. A long-lived voice relay, vector database, background queue, or general agent framework is not needed for the agreed MVP.
 
-## Planned layout
+## Application layout
 
 ```text
 src/
@@ -29,7 +29,7 @@ supabase/migrations/    Versioned SQL schema and policies
 tests/                  Unit, integration, and browser fixtures
 ```
 
-This is a target layout, not a list of directories already implemented.
+Feature modules and server boundaries are implemented. Some later data flows remain described as planned below.
 
 ## Boundaries
 
@@ -94,3 +94,13 @@ Exact routes may change during implementation. They are not a published API cont
 ## Visibility
 
 Record status, model/version when available, prompt/schema version, latency, token/audio usage, estimated cost, and provider request IDs. Do not log raw media, secrets, temporary download links, or full learner conversations. See [the budget policy](budget.md).
+
+## First implementation boundaries
+
+Text import parsing and confirmation run in the browser without model calls. The local library is not an account backup. Server routes use the verified Supabase session and durable PostgreSQL reservations before dispatching a provider request. Creating a conversation snapshots three explicitly selected entries; subsequent turns read that server snapshot after acquiring the session lock.
+
+`POST /api/transcribe` accepts bounded WAV audio and returns text for learner confirmation; `POST /api/sessions/:id/turns` sends that confirmed text. `POST /api/speech` synthesizes an existing owned partner turn only. `GET /api/status` exposes configuration booleans, not keys. `GET` and `DELETE /api/sessions/:id` support session recovery and content deletion. The text import preview/confirm endpoints in the original design are currently browser operations.
+
+Photos upload directly to the private `vocabulary-pages` bucket. Extraction validates ownership, actual image format, dimensions and size, strips metadata by re-encoding, and resizes to 1600 pixels per edge. Both client and server attempt source deletion. A scheduled cleanup for interrupted uploads remains required before deployment.
+
+No raw microphone recording or synthesized audio is stored on the server. Idempotent operation results can contain private transcripts/feedback; they are server-only and scrubbed on session deletion. The browser may cache playback temporarily. Post-session transcript corrections and a full account deletion UI remain future work.

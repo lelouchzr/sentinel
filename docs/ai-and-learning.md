@@ -1,6 +1,6 @@
 # AI and learning behavior
 
-Status: planned integrations. No provider has been called or evaluated by this repository yet.
+Status: server adapters, bounded prompts, response validation, evidence guards, and oral-review rules implemented and tested with fixtures. No real provider has been called or evaluated yet.
 
 ## Provider responsibilities
 
@@ -60,3 +60,13 @@ Book text, vocabulary, user goals, and transcripts are untrusted input. Wrap the
 Validate model output before persistence. Schema failure produces a recoverable state. A bounded repair can be added only with explicit quota accounting. Unsupported claims or uncertain interpretations are withheld from scoring; malformed JSON must never become a successful evaluation.
 
 Read [evaluation](quality-and-demo.md) and [budget controls](budget.md) before real provider experiments. Reference links are collected in [sources](sources.md).
+
+## Implemented request contracts
+
+Meta chat uses `POST /v1/chat/completions`, standard `muse-spark-1.3`, structured JSON output, and a bounded completion budget. Prompts carry version `ko-fr-v1`. The text payload including its output schema is limited to 64 KiB. Image extraction separately limits input and resolution.
+
+Recorded ASR requires RIFF/WAVE mono PCM16 at 16 or 24 kHz. The browser converts its recorded clip to 24 kHz WAV; the server validates the header, sample format, bytes, and actual duration before dispatch. The multipart `request` contains `audioEncoding: WAV`, `mode: PUSH_TO_TALK`, and Korean/French language hints. A browser WebM file is not sent directly to Meta.
+
+Feedback quotes must be exact substrings of existing learner turns. Missing or invalid evidence becomes uncertain; absent opportunity becomes unobserved. Relevant earlier help downgrades independent use to assisted use. These checks protect traceability, but do not establish the semantic correctness of a model judgment. Transcript editing is supported before submission; amendments after evaluation are pending.
+
+Typed responses and corrected transcripts can receive conversation feedback, but do not change the oral-review schedule. Only exact evidence from uncorrected spoken turns qualifies. This is a conservative provenance rule, not a pronunciation assessment.

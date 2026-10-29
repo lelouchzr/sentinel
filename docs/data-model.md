@@ -1,6 +1,6 @@
 # Planned data model
 
-Status: design only. This document does not create tables or apply migrations.
+Status: first migration implemented in `supabase/migrations/202610290001_initial.sql`. No remote migration has been applied. The entity table below describes the broader target model; the first slice uses a session snapshot rather than separate tables for each turn and observation.
 
 ## Entities
 
@@ -18,7 +18,7 @@ Status: design only. This document does not create tables or apply migrations.
 | `oral_review_state` | Owner/item, last practice, next due time, review policy version |
 | `provider_operations` | Idempotency key, provider request ID, state, usage, reservation, estimated/actual cost |
 
-Exact SQL column types and indexes will be defined in versioned migrations when implementation begins.
+Current SQL stores collections, session snapshots, provider operations, and private image objects. Vocabulary and oral-review history in the current UI are browser-local. The remaining normalized entities are planned, not deployed.
 
 ## Source provenance
 

@@ -1,6 +1,6 @@
 # Vocabulary imports
 
-Status: format requirements; importers are not implemented yet.
+Status: deterministic text importers and editable confirmation are implemented with original fixtures. The photo upload/extraction path is implemented but awaits live service validation.
 
 ## First supported sources
 
@@ -32,7 +32,7 @@ Deduplication must consider normalized expression, meaning, languages, and user 
 
 ## Image-specific behavior
 
-Allow JPEG, PNG, or WebP only after checking actual file content, decoded dimensions, and size. Store images privately. A model may extract layout imperfectly, especially with columns, small Hangul, or mixed languages. Let users crop or submit a clearer image through ordinary upload UX when useful.
+Allow JPEG, PNG, or WebP only after checking actual file content, decoded dimensions, and size. The first photo extractor proposes at most 50 legible entries per page (text imports allow 500); warnings identify unreadable or additional content. Store images privately. A model may extract layout imperfectly, especially with columns, small Hangul, or mixed languages. Let users crop or submit a clearer image through ordinary upload UX when useful.
 
 The preview distinguishes:
 

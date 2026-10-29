@@ -1,8 +1,8 @@
-name: Documentation
+name: Application checks
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'feature/**', 'fix/**']
   pull_request:
 
 permissions:
@@ -11,13 +11,26 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Validate documentation and original sample
-        run: python3 scripts/check_docs.py
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci
+      - name: Validate application and documentation
+        run: npm run check
+      - name: Build production application
+        run: npm run build
+      - name: Install browser for local journey tests
+        run: npx playwright install --with-deps chromium
+      - name: Verify browser journeys without providers
+        run: npm run test:e2e
       - name: Check patch whitespace
         run: git show --format= --check HEAD

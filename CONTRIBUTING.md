@@ -6,7 +6,7 @@ This is a private project maintained by `lelouchzr`. Coordinate changes with the
 
 Read the [README](README.md), [repository instructions](AGENTS.md), and the relevant [focused document](docs/README.md). Identify the user-visible result, acceptance criteria, and any required external operation before editing.
 
-The initial repository is documentation only. Application scaffolding, service provisioning, and provider calls are separate development work.
+The application runs locally. Service provisioning, applying remote migrations, and real provider experiments require explicit setup; routine development and CI do not call providers.
 
 ## Branches and commits
 
@@ -27,14 +27,16 @@ Provide loading, empty, error, retry, and narrow-screen states. Microphone acces
 
 ## Checks
 
-Current documentation checks:
+Current application and documentation checks:
 
 ```sh
-python3 scripts/check_docs.py
+npm run check
+npm run build
+npm run test:e2e
 git diff --check
 ```
 
-When the app exists, add and document scripts for lint, type checking, unit tests, browser tests, and production build. Run focused checks for the changed risk. Normal checks use deterministic fixtures and do not call paid providers.
+Use the pinned Node/npm versions and the single lockfile. Run focused checks for the changed risk. Normal checks use deterministic fixtures and do not call paid providers.
 
 Real provider experiments are explicit development actions with a recorded purpose and bounded budget. Keep credentials and personal content outside tracked artifacts. See [budget controls](docs/budget.md) and [evaluation](docs/quality-and-demo.md).
 
