@@ -17,6 +17,9 @@ dependencies = [
 [project.scripts]
 slim = "slim.cli:app"
 
+[project.optional-dependencies]
+upstream = ["urllib3>=2,<3", "charset-normalizer>=3,<4", "asgiref>=3.8,<4", "sqlparse>=0.5,<1", "markupsafe>=3,<4"]
+
 [dependency-groups]
 dev = ["pytest>=8.3,<10", "pytest-cov>=6,<8", "ruff>=0.11,<1", "build>=1.2,<2"]
 
