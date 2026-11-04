@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import copy
 import importlib.util
 import re
 import subprocess
@@ -143,11 +144,12 @@ class Codebase:
         except (ImportError, ValueError):
             raise SlimError(f"Cannot resolve relative import in {module.name}") from None
 
-    def closure(self, entry: str, overrides: dict[tuple[str, int], ast.stmt] | None = None) -> tuple[set[tuple[str, int]], set[str], list[tuple[str, str]], list[Diagnostic]]:
+    def closure(self, entry: str, overrides: dict[tuple[str, int], ast.stmt] | None = None) -> tuple[dict[tuple[str, int], ast.stmt], set[str], list[tuple[str, str]], list[Diagnostic]]:
         module_name, separator, name = entry.partition(":")
         if not separator or module_name not in self.modules or name not in self.modules[module_name].bindings:
             raise SlimError(f"Unknown entry {entry}. Select module:function from analysis.", "unknown_symbol")
-        selected: set[tuple[str, int]] = set()
+        selected: dict[tuple[str, int], ast.stmt] = {}
+        visited: set[tuple[str, str]] = set()
         external: set[str] = set()
         edges: set[tuple[str, str]] = set()
         diagnostics: list[Diagnostic] = []
@@ -155,13 +157,28 @@ class Codebase:
         overrides = overrides or {}
         while pending:
             current_module, current_name = pending.pop()
+            if (current_module, current_name) in visited:
+                continue
+            visited.add((current_module, current_name))
             module = self.modules[current_module]
             for index in module.bindings.get(current_name, []):
                 key = (current_module, index)
-                if key in selected:
-                    continue
-                selected.add(key)
                 node = overrides.get(key, module.tree.body[index])
+                if isinstance(node, ast.Import | ast.ImportFrom):
+                    node = copy.deepcopy(node)
+                    node.names = [alias for alias in node.names if (alias.asname or (alias.name.split('.')[0] if isinstance(node, ast.Import) else alias.name)) == current_name]
+                    previous = selected.get(key)
+                    if isinstance(previous, ast.Import | ast.ImportFrom):
+                        existing = {alias.asname or alias.name for alias in previous.names}
+                        merged = copy.deepcopy(previous)
+                        merged.names.extend(alias for alias in node.names if (alias.asname or alias.name) not in existing)
+                        selected[key] = merged
+                    else:
+                        selected[key] = node
+                elif key in selected:
+                    continue
+                else:
+                    selected[key] = node
                 refs = global_references(node)
                 for ref in sorted(refs & module.bindings.keys()):
                     if ref != current_name:
@@ -207,7 +224,7 @@ class Codebase:
         symbols: dict[str, Symbol] = {}
         for module_name, index in sorted(selected):
             module = self.modules[module_name]
-            for binding in sorted(bound_names(module.tree.body[index])):
+            for binding in sorted(bound_names(selected[(module_name, index)])):
                 symbol = module.symbol(binding)
                 symbol.path = str(module.path.relative_to(self.root))
                 symbol.dependencies = [b for a, b in edges if a == symbol.id]

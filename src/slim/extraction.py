@@ -116,7 +116,7 @@ def build_package(codebase: Codebase, request: PlanRequest, plan: Plan, destinat
             if isinstance(statement, ast.ImportFrom) and statement.module == "__future__":
                 body.append(copy.deepcopy(statement))
         for index in indices:
-            statement = overrides.get((module_name, index), module.tree.body[index])
+            statement = selected[(module_name, index)]
             if isinstance(statement, ast.ImportFrom) and statement.module == "__future__":
                 continue
             body.append(copy.deepcopy(statement))
