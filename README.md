@@ -1,6 +1,6 @@
 # Storyscape
 
-**Des images qui prennent vie.**
+**Images that come to life.**
 
 Source repository: [lelouchzr/storyscape](https://github.com/lelouchzr/storyscape).
 The application lives at the repository root. Its original FRAME development
@@ -11,15 +11,21 @@ The deployed Site remains owner-private. The existing Site URL and project ID
 continue to serve the same D1/R2 data and existing creator drafts.
 
 Storyscape turns an illustration into a browser escape game. The gallery includes four
-curated long adventures: _Le dernier service_, _Le Secret de la serre_,
-_Le Phare des marées_ and _La Vigie de la Lune_. Each has four illustrated chapters,
+curated long adventures: _The Last Service_, _The Greenhouse Secret_,
+_The Tidal Lighthouse_ and _Moonwatch_. Each has four illustrated chapters,
 20 interactions and two choice-dependent conclusions (about 30 minutes, estimated).
-_Le dernier service_ now includes 28 interactions, three manipulation puzzles,
+_The Last Service_ now includes 28 interactions, three manipulation puzzles,
 explicit key use and about 45 minutes of play (estimated). The homepage starts with an
 image import (PNG, JPEG or WebP, up to 10 MB) or a prompt for Muse Image. Creators can edit
 objects and clues, ask Meta Muse Spark to propose a scenario, use SAM 3.1 to
 segment an interactive object, play-test the result and publish an immutable
 version to a shared gallery.
+
+All application copy, curated adventures and generation instructions use English.
+Known saved French stories have an English presentation layer; the original
+snapshots, puzzle codes, session capabilities and generation provenance are preserved.
+English routes are `/studio`, `/my-creations` and `/play/<slug>`. Existing French
+routes and story links remain valid for saved bookmarks and play sessions.
 
 ## Run locally
 
@@ -37,7 +43,7 @@ guide. Interactive regions are visible by default. On small screens discoveries
 and code inputs sit immediately below the scene; focus follows the returned
 interaction. The server restores only already-earned discovery messages with a
 saved session, including the ending. Restarting an unfinished game requires a
-confirmation. Creators can use **Jouer en privé** in their library to test an
+confirmation. Creators can use **Play privately** in their library to test an
 owned draft without publishing it; draft authorization still applies.
 
 ```sh
@@ -173,6 +179,8 @@ images or all model generations work.
 
 - `components/storyscape/`: gallery, player, editor, creator library and shared UI.
 - `lib/game.ts`: schema, deterministic transitions and reachability checks.
+- `lib/language.ts`, `lib/legacy-english.json`: English presentation of known saved prose, without changing rules or original snapshots.
+- `lib/story-links.ts`: English story slugs and compatibility with existing save keys.
 - `lib/server.ts`: authenticated API, D1 persistence, R2 assets and publications.
 - `lib/meta.ts`: Muse Spark and SAM API adapters.
 - `db/schema.ts`, `drizzle/`: schema and versioned migrations.
@@ -197,8 +205,10 @@ The long editions use 16 Muse Image illustrations. Thirteen were generated for
 these chapters using real `muse-image-1.0` calls; three starting scenes were copied
 byte-for-byte from the previously approved FRAME publications (before the Storyscape rename).
 `public/stories/manifest.json` and `base-manifest.json` retain original PNG hashes,
-credits, prompts and available generation provenance. Their narrative text is
-manually authored and is not presented as a model-generated output.
+credits, prompts and available generation provenance. The narratives were originally authored manually. Their English localization uses
+Meta Muse Spark and was reviewed against the puzzle contracts.
+`evidence/english-translation.json` records the translation runs; original
+generation prompts and historical evidence remain unchanged.
 `node scripts/author-illustrations.mjs <prompt-list.json>` accepts hidden TTY
 stdin authorization, reuses completed assets and never automatically retries a
 paid failed call. `scripts/collect-story-art.mjs` similarly accepts hidden private

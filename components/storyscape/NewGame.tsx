@@ -32,16 +32,16 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
     [intent, setIntent] = useState<CreationIntent | null>(null),
     [proposal, setProposal] = useState<Room | null>(null),
     [brief, setBrief] = useState(
-      "Une histoire en plusieurs actes avec des personnages, des secrets à éclaircir, des objets à manipuler et à utiliser, des indices à recouper et un choix final qui donne deux conclusions différentes.",
+      "A story in several acts with characters, secrets to uncover, objects to manipulate and use, clues to cross-check and a final choice leading to two different endings.",
     ),
-    [returnTo, setReturnTo] = useState("/atelier"),
+    [returnTo, setReturnTo] = useState("/studio"),
     [format, setFormat] = useState<"long" | "short">("long");
   const started = useRef<string | null>(null);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("creation");
     setReturnTo(
-      id ? `/atelier?creation=${encodeURIComponent(id)}` : "/atelier",
+      id ? `/studio?creation=${encodeURIComponent(id)}` : "/studio",
     );
     if (viewer === undefined) return;
     if (!viewer || !id) {
@@ -63,7 +63,7 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
           setLoading(false);
         } else if (record.phase === "working" || record.phase === "failed") {
           setError(
-            "Cette création n’a pas abouti. Vous pouvez réessayer ou choisir un autre point de départ.",
+            "This creation did not succeed. You can try again or choose another starting point.",
           );
           setLoading(false);
         } else void prepare(record);
@@ -102,21 +102,21 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
       if (record.kind === "import") {
         if (!record.file)
           throw new Error(
-            "Votre illustration n’est plus disponible. Choisissez à nouveau le fichier.",
+            "Your illustration is no longer available. Choose the file again.",
           );
         const dataUrl = await prepareIllustration(record.file);
         const result = await post("assets", { dataUrl });
         next = {
-          title: "Nouvelle aventure",
+          title: "New Adventure",
           image: result.image,
           credits: [
             {
               title:
-                (record.filename ?? "Illustration importée")
+                (record.filename ?? "Imported illustration")
                   .trim()
-                  .slice(0, 150) || "Illustration importée",
-              author: "Source importée par le créateur",
-              license: "Illustration fournie par le créateur",
+                  .slice(0, 150) || "Imported illustration",
+              author: "Source imported by the creator",
+              license: "Illustration provided by the creator",
               url: "https://frame-escape-atelier.lelouchrz.chatgpt.site",
             },
           ],
@@ -124,11 +124,11 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
       } else {
         if (!record.prompt)
           throw new Error(
-            "Votre description est vide. Saisissez un nouveau prompt.",
+            "Your description is empty. Enter a new prompt.",
           );
         const result = await post("meta/image", { brief: record.prompt });
         next = {
-          title: "Nouvelle aventure",
+          title: "New Adventure",
           image: result.image,
           credits: result.credits,
           imageProvenance: result.imageProvenance,
@@ -171,7 +171,7 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
     try {
       const result = await post("drafts", { room: proposal });
       if (intent) await removeCreation(intent.id).catch(() => {});
-      window.location.assign(`/atelier/${result.id}`);
+      window.location.assign(`/studio/${result.id}`);
     } catch (e) {
       setError(errorText(e));
       setBusy("");
@@ -179,36 +179,36 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
   }
 
   if (viewer === undefined || loading)
-    return <Loading>Ouverture de votre création…</Loading>;
+    return <Loading>Opening your creation…</Loading>;
   if (!viewer) return <SignIn returnTo={returnTo} />;
   return (
     <div className="new-game page-width">
       <a href="/" className="text-link">
         <ArrowLeft size={15} />
-        Retour à l’accueil
+        Back to home
       </a>
       <div className="new-game-heading">
-        <div className="section-kicker">Une nouvelle aventure</div>
+        <div className="section-kicker">A new adventure</div>
         <h1>
           {scene
-            ? "Votre univers prend vie."
-            : "Comment commence votre histoire ?"}
+            ? "Your world comes to life."
+            : "How does your story begin?"}
         </h1>
         <p>
           {scene
-            ? "Composez maintenant les énigmes qui feront vivre cette image."
-            : "Partez de votre illustration ou créez le décor que vous avez en tête."}
+            ? "Now design the puzzles that will bring this image to life."
+            : "Start from your illustration or create the setting you have in mind."}
         </p>
       </div>
-      <ol className="creation-steps" aria-label="Étapes de création">
+      <ol className="creation-steps" aria-label="Creation steps">
         <li className={scene ? "done" : "current"}>
-          <span>{scene ? <Check size={13} /> : "1"}</span>Votre illustration
+          <span>{scene ? <Check size={13} /> : "1"}</span>Your illustration
         </li>
         <li className={scene && !proposal ? "current" : proposal ? "done" : ""}>
-          <span>{proposal ? <Check size={13} /> : "2"}</span>Les énigmes
+          <span>{proposal ? <Check size={13} /> : "2"}</span>The puzzles
         </li>
         <li>
-          <span>3</span>Votre atelier
+          <span>3</span>Your studio
         </li>
       </ol>
       {error && <Notice message={error} />}
@@ -223,13 +223,13 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
           </span>
           <h2>
             {intent?.kind === "generate"
-              ? "Votre décor prend forme."
-              : "Votre illustration arrive dans l’atelier."}
+              ? "Your setting is taking shape."
+              : "Your illustration is arriving in the studio."}
           </h2>
           <p>
             {intent?.kind === "generate"
-              ? "Muse Image compose la pièce à partir de votre prompt."
-              : "Nous préparons votre image et la conservons dans votre espace privé."}
+              ? "Muse Image composes the room from your prompt."
+              : "We are preparing your image and keeping it in your private space."}
           </p>
           <LoaderCircle className="spin" size={21} />
         </div>
@@ -238,14 +238,14 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
           <div className="new-game-art">
             <div className="new-art-label">
               <ImageIcon size={16} />
-              <span>Votre illustration</span>
-              <a href="/atelier" className="text-link">
-                Changer d’image
+              <span>Your illustration</span>
+              <a href="/studio" className="text-link">
+                Change image
               </a>
             </div>
             <img
               src={scene.image}
-              alt="Votre illustration pour le nouvel escape game"
+              alt="Your illustration for the new escape game"
             />
             <div className="art-credit">
               {scene.credits.map((c) => (
@@ -257,7 +257,7 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
             {intent?.kind === "generate" && (
               <p className="scene-origin">
                 <Sparkles size={13} />
-                Décor créé avec Muse Image
+                Setting created with Muse Image
               </p>
             )}
           </div>
@@ -267,17 +267,17 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                 <div className="proposal-ready">
                   <Check size={16} />
                   {proposal.provenance.method === "meta"
-                    ? "Scénario proposé par Muse Spark"
-                    : "Base de création manuelle"}
+                    ? "Scenario suggested by Muse Spark"
+                    : "Manual creation base"}
                 </div>
                 <h2>{proposal.title}</h2>
                 <p className="proposal-scope">
                   {proposal.chapters
-                    ? `${proposal.chapters.length} actes · `
+                    ? `${proposal.chapters.length} acts · `
                     : ""}
-                  {proposal.objects.length} objets ·{" "}
+                  {proposal.objects.length} objects ·{" "}
                   {proposal.objects.filter((o) => o.puzzle).length}{" "}
-                  manipulations · {proposal.duration} min estimées
+                  hands-on puzzles · {proposal.duration} estimated min
                 </p>
                 <p className="scenario-story">{proposal.story}</p>
                 <ol className="proposal-objects">
@@ -290,8 +290,8 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                 </ol>
                 <p className="scenario-review-note">
                   {proposal.provenance.method === "meta"
-                    ? "Vous pourrez ajuster les objets, les indices et les zones dans l’atelier avant de tester votre jeu."
-                    : "Placez les deux premières zones sur votre image, puis écrivez vos indices et ajoutez vos objets dans l’atelier."}
+                    ? "You can adjust the objects, clues and zones in the studio before testing your game."
+                    : "Place the first two zones on your image, then write your clues and add your objects in the studio."}
                 </p>
                 <button
                   className="button primary full"
@@ -303,7 +303,7 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                   ) : (
                     <Pencil size={17} />
                   )}
-                  Ouvrir mon jeu dans l’atelier
+                  Open my game in the studio
                   <ArrowRight size={17} />
                 </button>
                 <button
@@ -312,7 +312,7 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                   onClick={() => setProposal(null)}
                 >
                   <RotateCcw size={14} />
-                  Revoir mon brief
+                  Review my brief
                 </button>
               </>
             ) : (
@@ -320,13 +320,12 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                 <span className="large-icon">
                   <Sparkles size={22} />
                 </span>
-                <h2>Que se passe-t-il dans cette pièce ?</h2>
+                <h2>What is happening in this room?</h2>
                 <p>
-                  Décrivez l’ambiance et les énigmes. Muse Spark s’appuie sur
-                  votre illustration pour proposer le jeu.
+                  Describe the mood and the puzzles. Muse Spark uses your illustration to suggest the game.
                 </p>
                 <fieldset className="story-format">
-                  <legend>La taille de votre aventure</legend>
+                  <legend>The size of your adventure</legend>
                   <label>
                     <input
                       type="radio"
@@ -337,10 +336,9 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                       onChange={() => setFormat("long")}
                     />
                     <span>
-                      <strong>Histoire longue et interactive</strong>
+                      <strong>Long interactive story</strong>
                       <small>
-                        3 à 4 actes dans votre illustration · manipulations · 2
-                        conclusions
+                        3 to 4 acts in your illustration · hands-on puzzles · 2 endings
                       </small>
                     </span>
                   </label>
@@ -354,13 +352,13 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                       onChange={() => setFormat("short")}
                     />
                     <span>
-                      <strong>Une courte échappée</strong>
-                      <small>Une pièce · 4 à 8 objets · une sortie</small>
+                      <strong>A short escape</strong>
+                      <small>One room · 4 to 8 objects · one exit</small>
                     </span>
                   </label>
                 </fieldset>
                 <label htmlFor="new-game-brief">
-                  L’aventure que vous imaginez
+                  The adventure you imagine
                   <textarea
                     id="new-game-brief"
                     value={brief}
@@ -381,20 +379,17 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                     <Sparkles size={16} />
                   )}{" "}
                   {busy === "scenario"
-                    ? "Muse Spark écrit et relie les actes…"
-                    : "Imaginer mon jeu"}
+                    ? "Muse Spark is writing and connecting the acts…"
+                    : "Imagine my game"}
                   <ArrowRight size={16} />
                 </button>
                 {busy === "scenario" && (
                   <p className="generation-patience" role="status">
-                    Meta écrit les actes, relie les indices et prépare les
-                    manipulations. Une histoire longue peut prendre plusieurs
-                    minutes. Gardez cette page ouverte.
+                    Meta writes the acts, connects the clues and prepares the manipulations. A long story can take several minutes. Keep this page open.
                   </p>
                 )}
                 <p className="scenario-review-note">
-                  Vous relisez la proposition avant de créer le brouillon. Votre
-                  image et ses crédits sont conservés.
+                  You review the suggestion before creating the draft. Your image and its credits are kept.
                 </p>
                 <button
                   className="text-link"
@@ -404,7 +399,7 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                     setProposal(manualRoom(scene));
                   }}
                 >
-                  <Pencil size={14} /> Composer les énigmes moi-même
+                  <Pencil size={14} /> Compose the puzzles myself
                 </button>
               </>
             )}
@@ -417,10 +412,10 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
             onClick={() => void prepare({ ...intent, phase: "requested" })}
           >
             <RotateCcw size={16} />
-            Réessayer
+            Try again
           </button>
-          <a href="/atelier" className="button secondary">
-            Choisir un autre point de départ
+          <a href="/studio" className="button secondary">
+            Choose another starting point
           </a>
         </div>
       ) : (

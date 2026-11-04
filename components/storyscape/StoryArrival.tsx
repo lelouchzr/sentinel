@@ -15,15 +15,15 @@ export default function StoryArrival({
   return (
     <Modal title={chapter.title} onClose={onContinue}>
       <div className="arrival-illustration">
-        <img src={room.image} alt={`Le lieu : ${chapter.title}`} />
+        <img src={room.image} alt={`The place: ${chapter.title}`} />
         <span>
-          Chapitre {number} · {room.chapters?.length}
+          Chapter {number} · {room.chapters?.length}
         </span>
       </div>
       <p className="arrival-subtitle">{chapter.subtitle}</p>
       {number === 1 && room.introduction !== room.story && (
         <div className="arrival-prologue">
-          <span className="section-kicker">Avant d’entrer</span>
+          <span className="section-kicker">Before entering</span>
           {room.introduction.split(/\n\s*\n/).map((p, i) => (
             <p key={i}>{p}</p>
           ))}
@@ -38,12 +38,12 @@ export default function StoryArrival({
       <div className="arrival-objective">
         <BookOpen size={18} />
         <div>
-          <span>Votre objectif</span>
+          <span>Your objective</span>
           <p>{room.objective}</p>
         </div>
       </div>
       <button className="button primary full" onClick={onContinue}>
-        Explorer ce lieu <ArrowRight size={17} />
+        Explore this place <ArrowRight size={17} />
       </button>
     </Modal>
   );

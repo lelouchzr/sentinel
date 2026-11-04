@@ -55,16 +55,16 @@ export const icons = {
   choose: MessageCircle,
 };
 export const actionNames = {
-  inspect: "Observer",
-  collect: "Récupérer",
-  code: "Ouvrir avec un code",
-  unlock: "Déverrouiller",
-  exit: "Sortir",
-  choose: "Décider",
+  inspect: "Observe",
+  collect: "Collect",
+  code: "Open with a code",
+  unlock: "Unlock",
+  exit: "Exit",
+  choose: "Decide",
 };
 
 export function Loading({
-  children = "Chargement…",
+  children = "Loading…",
 }: {
   children?: ReactNode;
 }) {
@@ -89,7 +89,7 @@ export function Notice({
       {onClose && (
         <button
           className="icon-button"
-          aria-label="Fermer le message"
+          aria-label="Close the message"
           onClick={onClose}
         >
           <X size={16} />
@@ -99,8 +99,8 @@ export function Notice({
   );
 }
 export function SignIn({
-  what = "créer votre aventure",
-  returnTo = "/atelier",
+  what = "create your adventure",
+  returnTo = "/studio",
 }: {
   what?: string;
   returnTo?: string;
@@ -110,20 +110,19 @@ export function SignIn({
       <div className="large-icon">
         <Frame size={32} />
       </div>
-      <h2>Votre atelier vous attend.</h2>
+      <h2>Your studio awaits you.</h2>
       <p>
-        Connectez-vous pour {what}, enregistrer vos brouillons et publier vos
-        jeux.
+        Sign in to {what}, save your drafts and publish your games.
       </p>
       <a
         className="button primary"
-        href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo.startsWith("/") && !returnTo.startsWith("//") ? returnTo : "/atelier")}`}
+        href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo.startsWith("/") && !returnTo.startsWith("//") ? returnTo : "/studio")}`}
         target="_top"
       >
-        Se connecter avec ChatGPT <ArrowUpRight size={17} />
+        Sign in with ChatGPT <ArrowUpRight size={17} />
       </a>
       <a className="text-link" href="/">
-        Explorer les aventures <ArrowRight size={15} />
+        Explore the adventures <ArrowRight size={15} />
       </a>
     </div>
   );
@@ -185,7 +184,7 @@ export function Modal({
       >
         <div className="modal-title">
           <h2>{title}</h2>
-          <button className="icon-button" aria-label="Fermer" onClick={onClose}>
+          <button className="icon-button" aria-label="Close" onClick={onClose}>
             <X size={20} />
           </button>
         </div>

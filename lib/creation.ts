@@ -22,7 +22,7 @@ function open(): Promise<IDBDatabase> {
     if (!globalThis.indexedDB) {
       reject(
         new Error(
-          "Le stockage local est indisponible. Autorisez-le pour reprendre votre création dans l’atelier.",
+          "Local storage is unavailable. Allow it to resume your creation in the studio.",
         ),
       );
       return;
@@ -33,11 +33,11 @@ function open(): Promise<IDBDatabase> {
     request.onsuccess = () => resolve(request.result);
     request.onerror = () =>
       reject(
-        new Error("Impossible de conserver votre création dans ce navigateur."),
+        new Error("Unable to keep your creation in this browser."),
       );
     request.onblocked = () =>
       reject(
-        new Error("Fermez les autres onglets Storyscape, puis réessayez."),
+        new Error("Close the other Storyscape tabs, then try again."),
       );
   });
 }
@@ -51,11 +51,11 @@ export async function putCreation(intent: CreationIntent) {
       transaction.onerror = () =>
         reject(
           new Error(
-            "Impossible d’enregistrer cette création. L’image est peut-être trop volumineuse.",
+            "Unable to save this creation. The image may be too large.",
           ),
         );
       transaction.onabort = () =>
-        reject(new Error("L’enregistrement local a été interrompu."));
+        reject(new Error("Local saving was interrupted."));
     });
   } finally {
     db.close();
@@ -63,7 +63,7 @@ export async function putCreation(intent: CreationIntent) {
 }
 export async function getCreation(id: string): Promise<CreationIntent> {
   if (!/^[a-f0-9-]{36}$/.test(id))
-    throw new Error("Le lien de création est invalide.");
+    throw new Error("The creation link is invalid.");
   const db = await open();
   let value: CreationIntent | undefined;
   try {
@@ -71,17 +71,17 @@ export async function getCreation(id: string): Promise<CreationIntent> {
       const request = db.transaction("intents").objectStore("intents").get(id);
       request.onsuccess = () => resolve(request.result);
       request.onerror = () =>
-        reject(new Error("Impossible de retrouver votre création."));
+        reject(new Error("Unable to find your creation."));
     });
   } finally {
     db.close();
   }
   if (!value || Date.now() - value.createdAt > 86_400_000)
     throw new Error(
-      "Cette création a expiré ou vient d’un autre navigateur. Importez votre image ou saisissez à nouveau votre prompt.",
+      "This creation has expired or comes from another browser. Import your image or enter your prompt again.",
     );
   if (value.kind !== "import" && value.kind !== "generate")
-    throw new Error("Cette création est invalide.");
+    throw new Error("This creation is invalid.");
   return value;
 }
 export async function removeCreation(id: string) {
@@ -92,7 +92,7 @@ export async function removeCreation(id: string) {
       transaction.objectStore("intents").delete(id);
       transaction.oncomplete = () => resolve();
       transaction.onerror = () =>
-        reject(new Error("Impossible de nettoyer la création locale."));
+        reject(new Error("Unable to clean up the local creation."));
     });
   } finally {
     db.close();
@@ -101,11 +101,11 @@ export async function removeCreation(id: string) {
 
 export function checkIllustration(file: Blob) {
   if (!["image/png", "image/jpeg", "image/webp"].includes(file.type))
-    throw new Error("Choisissez une image PNG, JPG ou WebP.");
+    throw new Error("Choose a PNG, JPG or WebP image.");
   if (file.size > 10_000_000)
-    throw new Error("Choisissez une illustration de moins de 10 Mo.");
+    throw new Error("Choose an illustration under 10 MB.");
   if (!file.size)
-    throw new Error("Ce fichier est vide. Choisissez une autre image.");
+    throw new Error("This file is empty. Choose another image.");
 }
 /** Normalize supported browser formats to the server's bounded PNG contract. */
 export async function prepareIllustration(file: Blob): Promise<string> {
@@ -118,18 +118,18 @@ export async function prepareIllustration(file: Blob): Promise<string> {
       image.onerror = () =>
         reject(
           new Error(
-            "Cette image ne peut pas être lue. Essayez un autre fichier.",
+            "This image cannot be read. Try another file.",
           ),
         );
       image.src = url;
     });
     if (image.naturalWidth < 100 || image.naturalHeight < 100)
       throw new Error(
-        "L’illustration doit mesurer au moins 100 pixels de chaque côté.",
+        "The illustration must measure at least 100 pixels on each side.",
       );
     if (image.naturalWidth * image.naturalHeight > 60_000_000)
       throw new Error(
-        "Cette image est trop grande. Exportez une version plus petite.",
+        "This image is too large. Export a smaller version.",
       );
     let scale = Math.min(
       1,
@@ -141,11 +141,11 @@ export async function prepareIllustration(file: Blob): Promise<string> {
       canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
       if (canvas.width < 100 || canvas.height < 100)
         throw new Error(
-          "Cette image est trop allongée. Choisissez un cadrage moins étroit.",
+          "This image is too elongated. Choose a less narrow crop.",
         );
       const context = canvas.getContext("2d");
       if (!context)
-        throw new Error("Ce navigateur ne permet pas de préparer l’image.");
+        throw new Error("This browser cannot prepare the image.");
       context.drawImage(image, 0, 0, canvas.width, canvas.height);
       const data = canvas.toDataURL("image/png");
       if ((data.length - data.indexOf(",") - 1) * 0.75 <= 5_000_000)
@@ -153,7 +153,7 @@ export async function prepareIllustration(file: Blob): Promise<string> {
       scale *= 0.8;
     }
     throw new Error(
-      "L’image reste trop volumineuse. Exportez une version plus légère.",
+      "The image is still too large. Export a lighter version.",
     );
   } finally {
     URL.revokeObjectURL(url);

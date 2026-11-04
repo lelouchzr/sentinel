@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Storyscape · Des images qui prennent vie.",
+  title: "Storyscape · Images that come to life.",
   description:
-    "Importez votre illustration ou générez un décor avec un prompt. Créez votre escape game avec les modèles Meta, puis testez et partagez votre aventure.",
+    "Import your illustration or generate a setting with a prompt. Create your escape game with Meta models, then test and share your adventure.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="en">
       <body className="antialiased">{children}</body>
     </html>
   );

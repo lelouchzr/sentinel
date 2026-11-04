@@ -40,20 +40,20 @@ export default function MyCreations({
     }
   }
   if (viewer === undefined) return <Loading />;
-  if (!viewer) return <SignIn what="retrouver vos créations" />;
+  if (!viewer) return <SignIn what="find your creations" />;
   return (
     <div className="page-width creations-page">
       <div className="section-heading">
         <div>
-          <p className="section-kicker">Votre espace</p>
-          <h1>Les aventures commencent ici.</h1>
+          <p className="section-kicker">Your space</p>
+          <h1>Adventures start here.</h1>
           <p className="muted">
-            Vos brouillons restent privés jusqu’à leur publication.
+            Your drafts stay private until they are published.
           </p>
         </div>
-        <a href="/atelier" className="button primary">
+        <a href="/studio" className="button primary">
           <Plus size={17} />
-          Nouvelle aventure
+          New Adventure
         </a>
       </div>
       {error && <Notice message={error} />}{" "}
@@ -62,12 +62,12 @@ export default function MyCreations({
       ) : !data.drafts.length ? (
         <div className="empty-state large">
           <Frame size={34} />
-          <h2>Une page blanche. Toutes les possibilités.</h2>
+          <h2>A blank page. Every possibility.</h2>
           <p>
-            Importez votre illustration ou imaginez un décor avec un prompt.
+            Import your illustration or imagine a setting with a prompt.
           </p>
-          <a className="button primary" href="/atelier">
-            Ouvrir mon atelier <ArrowRight size={17} />
+          <a className="button primary" href="/studio">
+            Open my studio <ArrowRight size={17} />
           </a>
         </div>
       ) : (
@@ -76,46 +76,46 @@ export default function MyCreations({
             <article className="draft-card" key={draft.id}>
               <img
                 src={draft.room.image}
-                alt={`Illustration de ${draft.room.title}`}
+                alt={`Illustration: ${draft.room.title}`}
               />
               <div className="draft-body">
                 <span className="section-kicker">
-                  Brouillon privé · version {draft.revision}
+                  Private draft · version {draft.revision}
                 </span>
                 <h2>{draft.room.title}</h2>
                 <p>{draft.room.description}</p>
                 <div className="draft-actions">
                   <a
                     className="button primary small"
-                    href={`/atelier/${draft.id}?test=1`}
+                    href={`/studio/${draft.id}?test=1`}
                   >
                     <Play size={14} />
-                    Jouer en privé
+                    Play privately
                   </a>
                   <a
                     className="button secondary small"
-                    href={`/atelier/${draft.id}`}
+                    href={`/studio/${draft.id}`}
                   >
                     <Pencil size={14} />
-                    Continuer à créer
+                    Keep creating
                   </a>
                 </div>
                 {data.publications
                   .filter((p: any) => p.draft_id === draft.id && p.active)
                   .map((p: any) => (
                     <div className="publication-row" key={p.id}>
-                      <a href={`/jouer/${p.slug}`}>
+                      <a href={`/play/${p.slug}`}>
                         <Globe size={14} />
                         {p.visibility === "public"
-                          ? "Dans la galerie"
-                          : "Accessible par lien"}
+                          ? "In the gallery"
+                          : "Available by link"}
                         <ExternalLink size={12} />
                       </a>
                       <button
                         disabled={busy === p.id}
                         onClick={() => void unpublish(p.id)}
                       >
-                        Retirer
+                        Remove
                       </button>
                     </div>
                   ))}

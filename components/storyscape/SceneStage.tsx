@@ -31,7 +31,7 @@ export default function SceneStage({
       <div className="scene-composition" key={`${image}-${retry}`}>
         <img
           src={retry ? `${image}?retry=${retry}` : image}
-          alt={`La scène de ${title}`}
+          alt={`Scene: ${title}`}
           draggable={false}
           onLoad={(e) => {
             setRatio(
@@ -65,13 +65,13 @@ export default function SceneStage({
       {!ready && !failed && (
         <div className="scene-loading" role="status">
           <span />
-          Le lieu apparaît…
+          The place appears…
         </div>
       )}
       {failed && (
         <div className="scene-failed" role="alert">
           <ImageOff size={26} />
-          <p>L’illustration n’a pas pu se charger.</p>
+          <p>The illustration could not be loaded.</p>
           <button
             className="button secondary"
             onClick={() => {
@@ -80,7 +80,7 @@ export default function SceneStage({
             }}
           >
             <RotateCcw size={15} />
-            Réessayer
+            Try again
           </button>
         </div>
       )}

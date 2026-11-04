@@ -52,7 +52,7 @@ export default function Editor({
     [notice, setNotice] = useState(""),
     [loading, setLoading] = useState(true),
     [brief, setBrief] = useState(
-      "Une aventure courte avec des énigmes d’observation adaptées aux objets de cette image, des indices cohérents et une sortie à déverrouiller.",
+      "A short adventure with observation puzzles suited to the objects in this image, consistent clues and an exit to unlock.",
     ),
     [metaReady, setMetaReady] = useState(false),
     [proposal, setProposal] = useState<Room | null>(null),
@@ -118,7 +118,7 @@ export default function Editor({
     });
   }
   async function save() {
-    if (!room) throw new Error("Scénario indisponible.");
+    if (!room) throw new Error("Scenario unavailable.");
     if (id && !dirty) return { id, revision };
     const result = id
       ? await api(`drafts/${id}`, {
@@ -130,7 +130,7 @@ export default function Editor({
     setRevision(result.revision);
     setDirty(false);
     setTested(false);
-    if (!id) history.replaceState(null, "", `/atelier/${result.id}`);
+    if (!id) history.replaceState(null, "", `/studio/${result.id}`);
     return result;
   }
   async function saveButton() {
@@ -138,7 +138,7 @@ export default function Editor({
     setNotice("");
     try {
       await save();
-      setNotice("Brouillon enregistré. Votre aventure reste privée.");
+      setNotice("Draft saved. Your adventure stays private.");
     } catch (e) {
       setNotice(errorText(e));
     } finally {
@@ -175,7 +175,7 @@ export default function Editor({
     try {
       const result = await post("meta/segment", { room, objectId: selected });
       setPendingMask({ ...result, objectId: selected });
-      setNotice("SAM a proposé un contour. Vérifiez-le avant de le conserver.");
+      setNotice("SAM suggested an outline. Check it before keeping it.");
     } catch (e) {
       setNotice(errorText(e));
     } finally {
@@ -186,7 +186,7 @@ export default function Editor({
     if (
       dirty &&
       !window.confirm(
-        "Charger cette illustration et remplacer les modifications non enregistrées ?",
+        "Load this illustration and replace unsaved changes?",
       )
     )
       return;
@@ -201,7 +201,7 @@ export default function Editor({
       setDirty(false);
       setTested(false);
       setPublished(undefined);
-      history.replaceState(null, "", "/atelier");
+      history.replaceState(null, "", "/studio");
     } catch (e) {
       setNotice(errorText(e));
     } finally {
@@ -214,11 +214,11 @@ export default function Editor({
     setNotice("");
     try {
       if (file.size > 5_000_000)
-        throw new Error("Choisissez un PNG de moins de 5 Mo.");
+        throw new Error("Choose a PNG under 5 MB.");
       const dataUrl = await new Promise<string>((resolve, reject) => {
         const r = new FileReader();
         r.onload = () => resolve(String(r.result));
-        r.onerror = () => reject(new Error("Impossible de lire cette image."));
+        r.onerror = () => reject(new Error("Unable to read this image."));
         r.readAsDataURL(file);
       });
       const result = await post("assets", { dataUrl });
@@ -231,8 +231,8 @@ export default function Editor({
               credits: [
                 {
                   title: file.name,
-                  author: viewer?.displayName ?? "Créateur",
-                  license: "Illustration fournie par le créateur",
+                  author: viewer?.displayName ?? "Creator",
+                  license: "Illustration provided by the creator",
                   url: "https://frame-escape-atelier.lelouchrz.chatgpt.site",
                 },
               ],
@@ -242,7 +242,7 @@ export default function Editor({
           ),
         );
       setNotice(
-        "Illustration importée. Générez un scénario adapté ou ajustez les objets et leurs zones.",
+        "Illustration imported. Generate a matching scenario or adjust the objects and their zones.",
       );
     } catch (e) {
       setNotice(errorText(e));
@@ -264,8 +264,8 @@ export default function Editor({
       setPublish(false);
       setNotice(
         visibility === "public"
-          ? "Votre aventure est publiée dans la galerie."
-          : "Votre aventure est accessible uniquement avec son lien.",
+          ? "Your adventure is published in the gallery."
+          : "Your adventure is accessible only with its link.",
       );
     } catch (e) {
       setNotice(errorText(e));
@@ -287,19 +287,19 @@ export default function Editor({
       <Player
         draftId={id}
         onBack={() => {
-          history.replaceState(null, "", `/atelier/${id}`);
+          history.replaceState(null, "", `/studio/${id}`);
           setTesting(false);
         }}
         onComplete={() => setTested(true)}
       />
     );
-  if (loading) return <Loading>Ouverture de votre atelier…</Loading>;
+  if (loading) return <Loading>Opening your studio…</Loading>;
   if (!room)
     return (
       <div className="page-width error-page">
-        <Notice message={notice || "Le brouillon n’a pas pu être chargé."} />
-        <a className="button secondary" href="/atelier">
-          Nouvelle aventure
+        <Notice message={notice || "The draft could not be loaded."} />
+        <a className="button secondary" href="/studio">
+          New Adventure
         </a>
       </div>
     );
@@ -328,16 +328,16 @@ export default function Editor({
     <div className="editor-shell">
       <div className="editor-heading">
         <div>
-          <div className="section-kicker">L’atelier</div>
-          <h1>Donnez vie à votre image.</h1>
+          <div className="section-kicker">The Studio</div>
+          <h1>Bring your image to life.</h1>
           <span className="save-status">
             {dirty
-              ? "Modifications non enregistrées"
+              ? "Unsaved changes"
               : id
-                ? "Brouillon enregistré"
-                : "Votre première aventure"}
+                ? "Draft saved"
+                : "Your first adventure"}
             {room.provenance.method === "meta" && (
-              <span> · Scénario proposé par Meta</span>
+              <span> · Scenario suggested by Meta</span>
             )}
           </span>
         </div>
@@ -348,7 +348,7 @@ export default function Editor({
             onClick={saveButton}
           >
             <Save size={16} />
-            <span>Enregistrer</span>
+            <span>Save</span>
           </button>
           <button
             className="button secondary"
@@ -356,7 +356,7 @@ export default function Editor({
             onClick={testGame}
           >
             <Play size={16} />
-            Tester
+            Test
           </button>
           <button
             className="button primary"
@@ -364,7 +364,7 @@ export default function Editor({
             onClick={() => setPublish(true)}
           >
             <Globe size={16} />
-            Publier
+            Publish
           </button>
         </div>
       </div>
@@ -373,7 +373,7 @@ export default function Editor({
         <div className="published-banner">
           <CheckCircle2 size={21} />
           <div>
-            <strong>Votre jeu a son adresse.</strong>
+            <strong>Your game has its address.</strong>
             <a href={published}>
               {new URL(published, window.location.origin).href}
             </a>
@@ -383,27 +383,27 @@ export default function Editor({
             onClick={() => {
               void navigator.clipboard
                 .writeText(new URL(published, location.origin).href)
-                .then(() => setNotice("Lien copié."))
-                .catch(() => setNotice("Copiez le lien affiché ci-dessus."));
+                .then(() => setNotice("Link copied."))
+                .catch(() => setNotice("Copy the link shown above."));
             }}
           >
             <Copy size={15} />
-            Copier
+            Copy
           </button>
           <a href={published} className="button primary small">
-            Jouer <ArrowUpRight size={15} />
+            Play <ArrowUpRight size={15} />
           </a>
         </div>
       )}
       <div className="editor-layout">
         <aside className="object-panel">
           <div className="panel-heading">
-            <h2>Objets de ce lieu</h2>
+            <h2>Objects in this place</h2>
             <span>{sceneObjects.length}</span>
           </div>
           {room.chapters && (
             <label className="editor-chapter-select">
-              Chapitre à modifier
+              Chapter to edit
               <select
                 value={chapter?.id}
                 onChange={(e) => {
@@ -462,16 +462,16 @@ export default function Editor({
                   {
                     id: objectId,
                     ...(chapter ? { chapterId: chapter.id } : {}),
-                    name: "Nouvel objet",
+                    name: "New object",
                     prompt: "object",
                     action: "inspect",
                     region: { x: 0.4, y: 0.4, w: 0.15, h: 0.15 },
                     requires: [],
                     code: null,
                     itemName: null,
-                    message: "Décrivez ce que le joueur découvre.",
-                    lockedMessage: "Il manque encore quelque chose.",
-                    hint: "Regardez les détails de la pièce.",
+                    message: "Describe what the player discovers.",
+                    lockedMessage: "Something is still missing.",
+                    hint: "Look at the details of the room.",
                   },
                 ],
               });
@@ -479,13 +479,12 @@ export default function Editor({
             }}
           >
             <Plus size={15} />
-            Ajouter un objet
+            Add an object
           </button>
           <div className="object-panel-note">
             <MousePointer2 size={17} />
             <p>
-              Sélectionnez un objet pour modifier ses règles et sa zone dans
-              l’image.
+              Select an object to edit its rules and its zone in the image.
             </p>
           </div>
           <div className={`test-status ${tested ? "is-tested" : ""}`}>
@@ -493,13 +492,13 @@ export default function Editor({
             <div>
               <strong>
                 {tested
-                  ? "Partie de test terminée"
-                  : "À tester avant publication"}
+                  ? "Test playthrough complete"
+                  : "To test before publishing"}
               </strong>
               <p>
                 {tested
-                  ? "Cette version a été jouée jusqu’à la sortie."
-                  : "Jouez votre aventure pour vérifier les indices."}
+                  ? "This version was played through to the exit."
+                  : "Play your adventure to check the clues."}
               </p>
             </div>
           </div>
@@ -508,7 +507,7 @@ export default function Editor({
           <div className="canvas-bar">
             <span>
               <ImageIcon size={15} />
-              L’illustration
+              The illustration
             </span>
             <div>
               <button
@@ -516,14 +515,14 @@ export default function Editor({
                 disabled={!!busy}
                 onClick={() => void loadTemplate("kitchen")}
               >
-                Cuisine
+                Kitchen
               </button>
               <button
                 className="text-link"
                 disabled={!!busy}
                 onClick={() => void loadTemplate("japanese")}
               >
-                Pièce japonaise
+                Japanese room
               </button>
               <IllustrationMaker
                 room={sceneRoom}
@@ -531,14 +530,14 @@ export default function Editor({
                 onApply={(proposal) => {
                   change(replaceIllustration(room, proposal, chapter?.id));
                   setNotice(
-                    "Illustration Meta appliquée. Adaptez les objets et générez un scénario pour cette nouvelle pièce.",
+                    "Meta illustration applied. Adapt the objects and generate a scenario for this new room.",
                   );
                 }}
               />
               <button
                 className="icon-button"
                 disabled={!!busy}
-                aria-label="Importer une illustration PNG"
+                aria-label="Import a PNG illustration"
                 onClick={() => uploadRef.current?.click()}
               >
                 <Upload size={16} />
@@ -583,7 +582,7 @@ export default function Editor({
               };
               if (r.w >= 0.008 && r.h >= 0.008)
                 patchObject({ region: r, mask: undefined });
-              else setNotice("Dessinez une zone un peu plus grande.");
+              else setNotice("Draw a slightly larger zone.");
               setDrag(null);
               setBox(null);
               setDrawing(false);
@@ -591,7 +590,7 @@ export default function Editor({
           >
             <img
               src={sceneRoom.image}
-              alt="Illustration de votre escape game avec les zones interactives"
+              alt="Illustration of your escape game with interactive zones"
               draggable={false}
             />
             <Hotspots
@@ -616,10 +615,10 @@ export default function Editor({
           <div className="canvas-footer">
             <span>
               {drawing
-                ? "Tracez la zone de l’objet dans l’image."
-                : "Les zones numérotées sont les objets que le joueur peut explorer."}
+                ? "Draw the object's zone in the image."
+                : "The numbered zones are the objects the player can explore."}
             </span>
-            <span>{sceneObjects.length} objets dans ce lieu</span>
+            <span>{sceneObjects.length} objects in this place</span>
           </div>
           <section className="meta-studio">
             <div className="meta-heading">
@@ -627,17 +626,17 @@ export default function Editor({
                 <Sparkles size={19} />
               </div>
               <div>
-                <h2>Un coup de pouce à l’imagination.</h2>
+                <h2>A boost for the imagination.</h2>
                 <p>
-                  Muse Spark propose l’histoire, les énigmes et leurs liens.
+                  Muse Spark suggests the story, the puzzles and their connections.
                 </p>
               </div>
               <span className={`model-status ${metaReady ? "ready" : ""}`}>
-                {metaReady ? "Meta connecté" : "Meta à configurer"}
+                {metaReady ? "Meta connected" : "Meta to set up"}
               </span>
             </div>
             <label className="sr-only" htmlFor="adventure-brief">
-              Décrivez l’aventure à générer
+              Describe the adventure to generate
             </label>
             <textarea
               id="adventure-brief"
@@ -645,13 +644,13 @@ export default function Editor({
               onChange={(e) => setBrief(e.target.value)}
               maxLength={2000}
               rows={3}
-              placeholder="L’ambiance, les énigmes, ce que vous imaginez…"
+              placeholder="The mood, the puzzles, what you imagine…"
             />
             <div className="meta-bottom">
               <p>
                 {room.chapters
-                  ? "Cette histoire comporte plusieurs chapitres. Modifiez les lieux et leurs objets ci-dessous ; une nouvelle proposition Meta remplace le scénario entier."
-                  : "Vous gardez le dernier mot sur chaque proposition."}
+                  ? "This story has several chapters. Edit the places and their objects below; a new Meta suggestion replaces the entire scenario."
+                  : "You have the final word on every suggestion."}
               </p>
               <button
                 className="button primary"
@@ -669,16 +668,16 @@ export default function Editor({
                   <Sparkles size={16} />
                 )}{" "}
                 {busy === "generate"
-                  ? "Muse Spark imagine…"
-                  : "Imaginer avec Meta"}
+                  ? "Muse Spark is writing…"
+                  : "Imagine with Meta"}
               </button>
             </div>
           </section>
           {chapter && (
             <section className="room-settings">
-              <h2>Ce chapitre</h2>
+              <h2>This chapter</h2>
               <label>
-                Titre du lieu
+                Place title
                 <input
                   value={chapter.title}
                   maxLength={100}
@@ -695,7 +694,7 @@ export default function Editor({
                 />
               </label>
               <label>
-                Objectif
+                Objective
                 <textarea
                   value={chapter.objective}
                   maxLength={300}
@@ -713,7 +712,7 @@ export default function Editor({
                 />
               </label>
               <label>
-                Récit à l’arrivée
+                Story on arrival
                 <textarea
                   value={chapter.story}
                   maxLength={2400}
@@ -731,7 +730,7 @@ export default function Editor({
                 />
               </label>
               <label>
-                Objets à résoudre pour accéder à ce lieu
+                Objects to solve to access this place
                 <select
                   multiple
                   disabled={room.chapters?.[0].id === chapter.id}
@@ -768,11 +767,11 @@ export default function Editor({
           )}
           {room.ending && (
             <section className="room-settings">
-              <h2>Les conclusions</h2>
+              <h2>The endings</h2>
               {room.ending.variants.map((v, i) => (
                 <div key={v.choiceId}>
                   <label>
-                    Titre de la conclusion {i + 1}
+                    Ending title {i + 1}
                     <input
                       value={v.title}
                       maxLength={120}
@@ -790,7 +789,7 @@ export default function Editor({
                     />
                   </label>
                   <label>
-                    Conclusion
+                    Ending
                     <textarea
                       value={v.text}
                       maxLength={3000}
@@ -813,9 +812,9 @@ export default function Editor({
             </section>
           )}
           <section className="room-settings">
-            <h2>Votre aventure</h2>
+            <h2>Your adventure</h2>
             <label>
-              Titre
+              Title
               <input
                 maxLength={80}
                 value={room.title}
@@ -823,7 +822,7 @@ export default function Editor({
               />
             </label>
             <label>
-              Présentation
+              Overview
               <textarea
                 rows={2}
                 maxLength={400}
@@ -834,7 +833,7 @@ export default function Editor({
               />
             </label>
             <label>
-              Début de l’histoire
+              Start of the story
               <textarea
                 rows={3}
                 maxLength={2400}
@@ -844,7 +843,7 @@ export default function Editor({
             </label>
             <div className="field-row">
               <label>
-                Thème
+                Theme
                 <select
                   value={room.theme}
                   onChange={(e) =>
@@ -859,7 +858,7 @@ export default function Editor({
                 </select>
               </label>
               <label>
-                Difficulté
+                Difficulty
                 <select
                   value={room.difficulty}
                   onChange={(e) =>
@@ -877,7 +876,7 @@ export default function Editor({
                 </select>
               </label>
               <label>
-                Durée (min)
+                Duration (min)
                 <input
                   type="number"
                   min={1}
@@ -895,12 +894,12 @@ export default function Editor({
           {object ? (
             <>
               <div className="panel-heading">
-                <h2>Les règles de l’objet</h2>
+                <h2>The object's rules</h2>
                 <Pencil size={15} />
               </div>
               <fieldset disabled={!!busy}>
                 <label>
-                  Nom de l’objet
+                  Object name
                   <input
                     value={object.name}
                     maxLength={80}
@@ -929,13 +928,13 @@ export default function Editor({
                             ? [
                                 {
                                   id: "option-a",
-                                  label: "Premier choix",
-                                  reply: "La première voie s’ouvre.",
+                                  label: "First choice",
+                                  reply: "The first path opens.",
                                 },
                                 {
                                   id: "option-b",
-                                  label: "Second choix",
-                                  reply: "La seconde voie s’ouvre.",
+                                  label: "Second choice",
+                                  reply: "The second path opens.",
                                 },
                               ]
                             : undefined,
@@ -953,7 +952,7 @@ export default function Editor({
                   </select>
                 </label>
                 <label>
-                  Animation de l’objet
+                  Object animation
                   <select
                     value={object.animation ?? ""}
                     onChange={(e) =>
@@ -963,15 +962,15 @@ export default function Editor({
                       })
                     }
                   >
-                    <option value="">Aucune</option>
+                    <option value="">None</option>
                     {[
-                      ["drawer", "Tiroir qui s’ouvre"],
-                      ["fruits", "Fruits déplacés"],
-                      ["door", "Porte qui s’ouvre"],
-                      ["lid", "Couvercle soulevé"],
-                      ["page", "Page tournée"],
-                      ["lever", "Levier actionné"],
-                      ["light", "Lumière allumée"],
+                      ["drawer", "Drawer opening"],
+                      ["fruits", "Fruits moved"],
+                      ["door", "Door opening"],
+                      ["lid", "Lid lifted"],
+                      ["page", "Page turned"],
+                      ["lever", "Lever pulled"],
+                      ["light", "Light turned on"],
                     ].map(([id, label]) => (
                       <option key={id} value={id}>
                         {label}
@@ -993,11 +992,11 @@ export default function Editor({
                           ? {
                               kind: e.target.value as "move" | "sequence",
                               instruction:
-                                "Manipulez les éléments en vous aidant des indices.",
+                                "Handle the elements using the clues.",
                               pieces: [
-                                { id: "premier", label: "Premier élément" },
-                                { id: "deuxieme", label: "Deuxième élément" },
-                                { id: "troisieme", label: "Troisième élément" },
+                                { id: "premier", label: "First element" },
+                                { id: "deuxieme", label: "Second element" },
+                                { id: "troisieme", label: "Third element" },
                               ],
                               ...(e.target.value === "sequence"
                                 ? {
@@ -1013,15 +1012,15 @@ export default function Editor({
                       })
                     }
                   >
-                    <option value="">Aucune</option>
-                    <option value="move">Déplacer pour découvrir</option>
-                    <option value="sequence">Remettre dans l’ordre</option>
+                    <option value="">None</option>
+                    <option value="move">Move to discover</option>
+                    <option value="sequence">Put back in order</option>
                   </select>
                 </label>
                 {object.puzzle && (
                   <div className="editor-puzzle">
                     <label>
-                      Consigne
+                      Instruction
                       <textarea
                         rows={3}
                         maxLength={300}
@@ -1038,7 +1037,7 @@ export default function Editor({
                     </label>
                     {object.puzzle.pieces.map((piece, i) => (
                       <label key={piece.id}>
-                        Élément {i + 1}
+                        Element {i + 1}
                         <input
                           maxLength={80}
                           value={piece.label}
@@ -1057,7 +1056,7 @@ export default function Editor({
                     ))}
                     {object.puzzle.kind === "sequence" && (
                       <div className="sequence-order-editor">
-                        <span>Ordre attendu</span>
+                        <span>Expected order</span>
                         {object.puzzle.solution?.map((id, i) => (
                           <label key={i}>
                             Position {i + 1}
@@ -1088,7 +1087,7 @@ export default function Editor({
                   </div>
                 )}
                 <label>
-                  Objet à utiliser ici
+                  Object to use here
                   <select
                     value={object.useItem ?? ""}
                     disabled={!!object.puzzle || object.action === "code"}
@@ -1101,7 +1100,7 @@ export default function Editor({
                       })
                     }
                   >
-                    <option value="">Aucun</option>
+                    <option value="">None</option>
                     {room.objects
                       .filter((o) => o.id !== object.id && o.itemName)
                       .map((o) => (
@@ -1113,7 +1112,7 @@ export default function Editor({
                 </label>
                 {object.action === "code" && (
                   <label>
-                    Code à trouver
+                    Code to find
                     <input
                       value={object.code ?? ""}
                       maxLength={16}
@@ -1123,11 +1122,11 @@ export default function Editor({
                 )}
                 {object.choices && (
                   <div className="editor-choices">
-                    <h3>Les réponses proposées</h3>
+                    <h3>Suggested answers</h3>
                     {object.choices.map((c, i) => (
                       <div key={c.id}>
                         <label>
-                          Réponse {i + 1}
+                          Answer {i + 1}
                           <input
                             value={c.label}
                             maxLength={120}
@@ -1141,7 +1140,7 @@ export default function Editor({
                           />
                         </label>
                         <label>
-                          Conséquence
+                          Consequence
                           <textarea
                             value={c.reply}
                             rows={4}
@@ -1159,7 +1158,7 @@ export default function Editor({
                     ))}
                   </div>
                 )}
-                <div className="form-label">À résoudre avant cet objet</div>
+                <div className="form-label">To solve before this object</div>
                 <div className="dependency-list">
                   {room.objects
                     .filter((o) => o.id !== object.id)
@@ -1181,7 +1180,7 @@ export default function Editor({
                     ))}
                 </div>
                 <label>
-                  Ce que le joueur découvre
+                  What the player discovers
                   <textarea
                     rows={4}
                     maxLength={1800}
@@ -1190,7 +1189,7 @@ export default function Editor({
                   />
                 </label>
                 <label>
-                  Message si l’objet est bloqué
+                  Message if the object is locked
                   <textarea
                     rows={3}
                     maxLength={300}
@@ -1201,7 +1200,7 @@ export default function Editor({
                   />
                 </label>
                 <label>
-                  Indice à la demande
+                  On-demand hint
                   <textarea
                     rows={3}
                     maxLength={300}
@@ -1211,11 +1210,11 @@ export default function Editor({
                 </label>
                 {object.action !== "exit" && (
                   <label>
-                    Objet ajouté à l’inventaire
+                    Object added to inventory
                     <input
                       value={object.itemName ?? ""}
                       maxLength={80}
-                      placeholder="Aucun"
+                      placeholder="None"
                       onChange={(e) =>
                         patchObject({ itemName: e.target.value || null })
                       }
@@ -1223,16 +1222,16 @@ export default function Editor({
                   </label>
                 )}
                 <div className="region-tools">
-                  <h3>Zone interactive</h3>
+                  <h3>Interactive area</h3>
                   <div className="region-grid">
                     {(["x", "y", "w", "h"] as const).map((key) => (
                       <label key={key}>
                         {
                           {
-                            x: "Gauche",
-                            y: "Haut",
-                            w: "Largeur",
-                            h: "Hauteur",
+                            x: "Left",
+                            y: "Top",
+                            w: "Width",
+                            h: "Height",
                           }[key]
                         }{" "}
                         %
@@ -1263,7 +1262,7 @@ export default function Editor({
                     }}
                   >
                     <ScanLine size={16} />
-                    {drawing ? "Annuler le tracé" : "Redessiner la zone"}
+                    {drawing ? "Cancel the outline" : "Redraw the region"}
                   </button>
                   <button
                     className="button secondary full"
@@ -1275,11 +1274,11 @@ export default function Editor({
                     ) : (
                       <Sparkles size={16} />
                     )}
-                    Détourer avec SAM 3.1
+                    Outline with SAM 3.1
                   </button>
                   {pendingMask && (
                     <div className="mask-review">
-                      <p>Le contour vous convient ?</p>
+                      <p>Does this outline suit you?</p>
                       <button
                         className="button primary full"
                         onClick={() => {
@@ -1296,17 +1295,17 @@ export default function Editor({
                                 : o,
                             ),
                           });
-                          setNotice("Contour SAM conservé dans le brouillon.");
+                          setNotice("SAM outline kept in the draft.");
                         }}
                       >
                         <Check size={15} />
-                        Conserver le contour
+                        Keep the outline
                       </button>
                       <button
                         className="text-link"
                         onClick={() => setPendingMask(null)}
                       >
-                        Garder la zone précédente
+                        Keep the previous zone
                       </button>
                     </div>
                   )}
@@ -1315,7 +1314,7 @@ export default function Editor({
                       className="text-link"
                       onClick={() => patchObject({ mask: undefined })}
                     >
-                      Revenir à une zone rectangulaire
+                      Return to a rectangular zone
                     </button>
                   )}
                 </div>
@@ -1337,23 +1336,22 @@ export default function Editor({
                     );
                   }}
                 >
-                  Supprimer cet objet
+                  Delete this object
                 </button>
               </fieldset>
             </>
           ) : (
-            <p>Sélectionnez un objet dans l’image.</p>
+            <p>Select an object in the image.</p>
           )}
         </aside>
       </div>
       {proposal && (
         <Modal
-          title="Une nouvelle aventure vous attend."
+          title="A new adventure awaits you."
           onClose={() => setProposal(null)}
         >
           <p className="modal-intro">
-            Muse Spark propose ce scénario. Relisez-le, puis testez les énigmes
-            dans votre atelier.
+            Muse Spark suggests this scenario. Read it over, then test the puzzles in your studio.
           </p>
           <h3 className="proposal-title">{proposal.title}</h3>
           <p>{proposal.story}</p>
@@ -1370,7 +1368,7 @@ export default function Editor({
               className="button secondary"
               onClick={() => setProposal(null)}
             >
-              Garder mon scénario
+              Keep my scenario
             </button>
             <button
               className="button primary"
@@ -1379,27 +1377,25 @@ export default function Editor({
                 setSelected(proposal.objects[0]?.id);
                 setProposal(null);
                 setNotice(
-                  "Scénario Meta appliqué. Relisez les indices et lancez une partie de test.",
+                  "Meta scenario applied. Review the clues and start a test playthrough.",
                 );
               }}
             >
-              Utiliser cette proposition <Check size={16} />
+              Use this suggestion <Check size={16} />
             </button>
           </div>
         </Modal>
       )}
       {publish && (
         <Modal
-          title="Publier votre aventure dans Storyscape"
+          title="Publish your adventure in Storyscape"
           onClose={() => !busy && setPublish(false)}
         >
           <p className="modal-intro">
-            Votre jeu sera publié sous le nom {viewer.displayName}. Vous pourrez
-            continuer à modifier votre brouillon sans changer la version
-            publiée. Les règles d’accès du site s’appliquent aussi à vos jeux.
+            Your game will be published under the name {viewer.displayName}. You can keep editing your draft without changing the published version. The site's access rules also apply to your games.
           </p>
           <div className="publish-preview">
-            <img src={room.image} alt="Aperçu de la publication" />
+            <img src={room.image} alt="Publishing preview" />
             <div>
               <h3>{room.title}</h3>
               <span>
@@ -1416,9 +1412,9 @@ export default function Editor({
             />
             <Globe size={20} />
             <span>
-              <strong>Dans la galerie du site</strong>
+              <strong>In the site gallery</strong>
               <small>
-                Visible par les personnes qui ont accès à Storyscape.
+                Visible to people who have access to Storyscape.
               </small>
             </span>
           </label>
@@ -1431,8 +1427,8 @@ export default function Editor({
             />
             <Link2 size={20} />
             <span>
-              <strong>Accessible par lien</strong>
-              <small>Partagez-la avec les personnes de votre choix.</small>
+              <strong>Accessible via link</strong>
+              <small>Share it with whoever you choose.</small>
             </span>
           </label>
           <label className="rights-check">
@@ -1441,14 +1437,12 @@ export default function Editor({
               checked={rights}
               onChange={(e) => setRights(e.target.checked)}
             />
-            Je dispose des droits pour publier cette illustration. Ses crédits
-            accompagneront le jeu.
+            I have the rights to publish this illustration. Its credits will accompany the game.
           </label>
           {!tested && (
             <p className="publish-warning">
               <Play size={17} />
-              Terminez une partie de test de cette version pour pouvoir la
-              publier.
+              Complete a test playthrough of this version to publish it.
             </p>
           )}
           <button
@@ -1461,7 +1455,7 @@ export default function Editor({
             ) : (
               <Globe size={16} />
             )}
-            Publier l’aventure
+            Publish the adventure
           </button>
           {!tested && (
             <button
@@ -1471,7 +1465,7 @@ export default function Editor({
                 void testGame();
               }}
             >
-              Tester mon aventure
+              Test my adventure
             </button>
           )}
         </Modal>

@@ -42,6 +42,7 @@ import {
   type PublicRoom,
   type PlayData,
 } from "./shared";
+import { savedStorySlug } from "@/lib/story-links";
 import HowToPlay from "./HowToPlay";
 import SceneStage from "./SceneStage";
 import StoryArrival from "./StoryArrival";
@@ -90,7 +91,7 @@ export default function Player({
   }, []);
   const discoveryRef = useRef<HTMLDivElement>(null);
   // Preserve the original capability keys for games already in progress.
-  const storageKey = `frame-play-${slug ?? draftId}`;
+  const storageKey = `frame-play-${savedStorySlug(slug ?? draftId ?? "")}`;
   useEffect(() => {
     const media = window.matchMedia("(max-width: 950px)");
     const update = () => setCompact(media.matches);
@@ -128,16 +129,16 @@ export default function Player({
           const r = await api(`rooms/${slug}`);
           if (alive) {
             setRoom(r.room);
-            setLongEdition(r.longEdition);
+            setLongEdition(r.longEdition?.slug);
           }
           const fresh =
-            new URLSearchParams(window.location.search).get("nouvelle") === "1";
+            ["new", "nouvelle"].some((key) => new URLSearchParams(window.location.search).get(key) === "1");
           if (r.longEdition) {
             const saved = JSON.parse(
               localStorage.getItem(storageKey) ?? "null",
             );
             if (!saved || fresh) {
-              window.location.replace(`/jouer/${r.longEdition}`);
+              window.location.replace(`/play/${r.longEdition.slug}`);
               return;
             }
           }
@@ -154,7 +155,7 @@ export default function Player({
                 setSession({ ...restored, token: saved.token });
                 setRoom(restored.room);
                 if (restored.state.moves === 0 && r.longEdition) {
-                  window.location.replace(`/jouer/${r.longEdition}`);
+                  window.location.replace(`/play/${r.longEdition.slug}`);
                   return;
                 }
                 if (
@@ -200,6 +201,7 @@ export default function Player({
       setArrival(!!r.room.chapters);
       if (r.room.chapters) setLongEdition(undefined);
       const address = new URL(window.location.href);
+      address.searchParams.delete("new");
       address.searchParams.delete("nouvelle");
       history.replaceState(null, "", address.pathname + address.search);
       try {
@@ -209,7 +211,7 @@ export default function Player({
         );
       } catch {
         setError(
-          "Cette partie fonctionne, mais ce navigateur ne permet pas de conserver la progression après fermeture.",
+          "This part works, but this browser cannot keep progress after closing.",
         );
       }
     } catch (e) {
@@ -335,13 +337,13 @@ export default function Player({
       ? (room?.chapters?.filter((c) => c.unlocked && !c.visited) ?? [])
       : [];
 
-  if (loading) return <Loading>La pièce se prépare…</Loading>;
+  if (loading) return <Loading>The room is getting ready…</Loading>;
   if (!room)
     return (
       <div className="page-width error-page">
-        <Notice message={error || "Cette aventure est introuvable."} />
+        <Notice message={error || "This adventure cannot be found."} />
         <a href="/" className="button secondary">
-          Retour à la galerie
+          Back to the gallery
         </a>
       </div>
     );
@@ -379,7 +381,7 @@ export default function Player({
             !session?.state.resolved.includes(object.id) &&
             (outcome === "needs_choice" || outcome === "hint") && (
               <div className="story-choices">
-                <p>Ce choix déterminera la conclusion de votre histoire.</p>
+                <p>This choice will determine the ending of your story.</p>
                 {object.choices?.map((choice) => (
                   <button
                     className="button secondary"
@@ -405,7 +407,7 @@ export default function Player({
                 void interact(selected, code);
               }}
             >
-              <label htmlFor="puzzle-code">Le code du cadenas</label>
+              <label htmlFor="puzzle-code">The padlock code</label>
               <div>
                 <input
                   id="puzzle-code"
@@ -413,7 +415,7 @@ export default function Player({
                   onChange={(e) => setCode(e.target.value)}
                   autoComplete="off"
                   maxLength={16}
-                  placeholder="Votre code"
+                  placeholder="Your code"
                 />
                 <button
                   className="button primary"
@@ -421,7 +423,7 @@ export default function Player({
                   type="submit"
                 >
                   <ArrowRight size={18} />
-                  <span className="sr-only">Essayer le code</span>
+                  <span className="sr-only">Try the code</span>
                 </button>
               </div>
             </form>
@@ -440,7 +442,7 @@ export default function Player({
                   else void interact(object.id);
                 }}
               >
-                Manipuler cet objet <Hand size={16} />
+                Manipulate this object <Hand size={16} />
               </button>
             )}
           {!session?.state.complete && (
@@ -450,7 +452,7 @@ export default function Player({
               onClick={() => void interact(selected, undefined, true)}
             >
               <Lightbulb size={15} />
-              Un petit indice
+              A little hint
             </button>
           )}
         </>
@@ -458,9 +460,9 @@ export default function Player({
         <div className="first-discovery">
           <MousePointer2 size={24} />
           <p>
-            Un détail, une serrure, un objet…
+            A detail, a lock, an object…
             <br />
-            L’exploration commence par un clic.
+            Exploration begins with a click.
           </p>
         </div>
       )}
@@ -472,19 +474,19 @@ export default function Player({
         {onBack ? (
           <button className="text-link" onClick={onBack}>
             <ArrowLeft size={16} />
-            Retour à l’atelier
+            Back to the studio
           </button>
         ) : (
           <a className="text-link" href="/">
             <ArrowLeft size={16} />
-            La galerie
+            The gallery
           </a>
         )}
-        <span>{draftId ? "PARTIE DE TEST" : themeName[room.theme]}</span>
+        <span>{draftId ? "TEST PLAY" : themeName[room.theme]}</span>
         <div className="player-utilities">
           <button className="text-link" onClick={() => setHelp(true)}>
             <CircleHelp size={15} />
-            Comment jouer
+            How to play
           </button>
           <button
             className="text-link"
@@ -496,7 +498,7 @@ export default function Player({
             }
           >
             <RotateCcw size={14} />
-            Recommencer
+            Restart
           </button>
         </div>
       </div>
@@ -517,14 +519,13 @@ export default function Player({
         <div className="edition-note">
           <BookOpen size={18} />
           <p>
-            Une version plus complète et animée de cette histoire est
-            disponible. Votre partie actuelle est conservée.
+            A fuller, animated version of this story is available. Your current playthrough is kept.
           </p>
           <a
             className="button secondary"
-            href={`/jouer/${longEdition}?nouvelle=1`}
+            href={`/play/${longEdition}?new=1`}
           >
-            Découvrir la nouvelle version <ArrowRight size={16} />
+            Discover the new version <ArrowRight size={16} />
           </a>
         </div>
       )}
@@ -534,7 +535,7 @@ export default function Player({
       {resumed && !session?.state.complete && (
         <p className="resume-note">
           <BookOpen size={15} />
-          Partie reprise · Vos objets et vos découvertes ont été conservés.
+          Playthrough resumed · Your objects and discoveries have been kept.
         </p>
       )}
       <div className="game-layout">
@@ -543,7 +544,7 @@ export default function Player({
             <div className="chapter-current">
               <div>
                 <span className="section-kicker">
-                  Chapitre{" "}
+                  Chapter{" "}
                   {(room.chapters?.findIndex((c) => c.id === room.chapterId) ??
                     0) + 1}{" "}
                   / {room.chapters?.length}
@@ -553,7 +554,7 @@ export default function Player({
               </div>
               <button className="text-link" onClick={() => setArrival(true)}>
                 <BookOpen size={16} />
-                Relire la scène
+                Re-read the scene
               </button>
             </div>
           )}
@@ -570,18 +571,18 @@ export default function Player({
                     <div className="start-content">
                       <span className="eyebrow">
                         {room.chapters
-                          ? `${room.chapters.length} chapitres · Deux conclusions`
-                          : "Une courte évasion"}
+                          ? `${room.chapters.length} chapters · Two endings`
+                          : "A short escape"}
                       </span>
                       <h2>
                         {room.chapters
-                          ? "Une histoire vous attend."
-                          : "Trouvez votre sortie."}
+                          ? "A story awaits you."
+                          : "Find your exit."}
                       </h2>
                       <p>
                         {room.chapters
-                          ? "Explorez plusieurs lieux, retrouvez les traces du passé et choisissez la suite de l’histoire."
-                          : "Explorez les objets de l’image, reliez les indices et ouvrez la porte."}
+                          ? "Explore several places, find traces of the past and choose how the story continues."
+                          : "Explore the objects in the image, connect the clues and open the door."}
                       </p>
                       <button
                         className="button primary"
@@ -593,10 +594,10 @@ export default function Player({
                         ) : (
                           <Play size={17} />
                         )}
-                        Commencer l’aventure
+                        Start the adventure
                       </button>
                       <p className="start-reassurance">
-                        Sans chronomètre · Progression conservée
+                        No timer · Progress saved
                       </p>
                     </div>
                   </div>
@@ -607,13 +608,13 @@ export default function Player({
                       <div className="win-icon">
                         <DoorOpen size={34} />
                       </div>
-                      <span className="eyebrow">Aventure terminée</span>
-                      <h2>{room.ending?.title ?? "La porte est ouverte."}</h2>
+                      <span className="eyebrow">Adventure complete</span>
+                      <h2>{room.ending?.title ?? "The door is open."}</h2>
                       <div className="ending-prose">
                         {(
                           room.ending?.text ||
                           message ||
-                          "Vous avez trouvé votre chemin jusqu’à la sortie."
+                          "You found your way to the exit."
                         )
                           .split(/\n\s*\n/)
                           .map((p, i) => (
@@ -623,18 +624,18 @@ export default function Player({
                       <div className="win-stats">
                         <span>{session.state.moves} actions</span>
                         <span>
-                          {session.state.hints} indice
+                          {session.state.hints} clue
                           {session.state.hints > 1 ? "s" : ""}
                         </span>
                       </div>
                       <div className="button-row">
                         {onBack ? (
                           <button className="button primary" onClick={onBack}>
-                            Retourner à l’atelier <ArrowRight size={16} />
+                            Return to the studio <ArrowRight size={16} />
                           </button>
                         ) : (
-                          <a className="button primary" href="/#galerie">
-                            Jouer une autre histoire <ArrowRight size={16} />
+                          <a className="button primary" href="/#gallery">
+                            Play another story <ArrowRight size={16} />
                           </a>
                         )}
                         <button
@@ -642,7 +643,7 @@ export default function Player({
                           disabled={busy}
                           onClick={start}
                         >
-                          Rejouer
+                          Play again
                         </button>
                       </div>
                     </div>
@@ -672,7 +673,7 @@ export default function Player({
           <div className="scene-toolbar">
             <span>
               <MousePointer2 size={14} />
-              Touchez un objet pour l’explorer.
+              Touch an object to explore it.
             </span>
             <button
               className={`text-link ${show ? "accent" : ""}`}
@@ -680,7 +681,7 @@ export default function Player({
               onClick={() => setShow(!show)}
             >
               <ScanLine size={15} />
-              {show ? "Masquer les repères" : "Afficher les repères"}
+              {show ? "Hide the markers" : "Show the markers"}
             </button>
           </div>
           {room.chapters && (
@@ -691,7 +692,7 @@ export default function Player({
                 onClick={() => setMotion(!motion)}
               >
                 {motion ? <Pause size={15} /> : <Sparkles size={15} />}
-                Animations {motion ? "activées" : "en pause"}
+                Animations {motion ? "enabled" : "paused"}
               </button>
               <button
                 className="text-link"
@@ -699,7 +700,7 @@ export default function Player({
                 onClick={() => void sound.toggle()}
               >
                 {sound.enabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-                Ambiance sonore {sound.enabled ? "activée" : "désactivée"}
+                Background audio {sound.enabled ? "enabled" : "disabled"}
               </button>
             </div>
           )}
@@ -707,7 +708,7 @@ export default function Player({
             <div className="new-place" role="status">
               <MapPin size={19} />
               <div>
-                <span>Un nouveau lieu vous attend</span>
+                <span>A new place awaits you</span>
                 {newPlaces.map((c) => (
                   <button
                     key={c.id}
@@ -724,7 +725,7 @@ export default function Player({
           )}
           {compact && discovery}
           {room.chapters && (
-            <nav className="chapter-map" aria-label="Les lieux de l’histoire">
+            <nav className="chapter-map" aria-label="Story map">
               {room.chapters.map((c, i) => (
                 <button
                   key={c.id}
@@ -744,12 +745,12 @@ export default function Player({
                     <strong>{c.title}</strong>
                     <small>
                       {!c.unlocked
-                        ? "À découvrir"
+                        ? "To discover"
                         : c.id === room.chapterId
-                          ? "Vous êtes ici"
+                          ? "You are here"
                           : c.visited
-                            ? "Revenir dans ce lieu"
-                            : "Nouveau lieu"}
+                            ? "Return to this place"
+                            : "New place"}
                     </small>
                   </span>
                   {c.unlocked && <ArrowRight size={16} />}
@@ -761,7 +762,7 @@ export default function Player({
           <div className="inventory">
             <div className="inventory-title">
               <KeyRound size={17} />
-              <h3>Votre inventaire</h3>
+              <h3>Your inventory</h3>
               <span>{session?.state.inventory.length ?? 0}</span>
             </div>
             <div className="inventory-items">
@@ -775,8 +776,7 @@ export default function Player({
                 ))
               ) : (
                 <p>
-                  Choisissez un objet dans votre inventaire lorsqu’une serrure
-                  ou une manipulation vous le demande.
+                  Choose an object from your inventory when a lock or manipulation asks you to.
                 </p>
               )}
             </div>
@@ -784,14 +784,14 @@ export default function Player({
           <div className="art-credit">
             {room.image === "/stories/kitchen-base.png" && (
               <span>
-                Calque de la coupe vide :{" "}
+                Empty bowl layer:{" "}
                 <a href="https://openai.com" target="_blank" rel="noreferrer">
                   OpenAI Imagegen
                 </a>{" "}
                 ·{" "}
               </span>
             )}
-            Illustration :{" "}
+            Illustration:{" "}
             {room.credits.map((c, i) => (
               <span key={i}>
                 <a href={c.url} target="_blank" rel="noreferrer">
@@ -805,16 +805,16 @@ export default function Player({
         <aside className="game-aside">
           <div className="notebook-header">
             <BookOpen size={19} />
-            <h2>Le carnet</h2>
+            <h2>The notebook</h2>
             <span>
               {session
                 ? `${session.state.resolved.length} / ${room.totalObjects ?? room.objects.length}`
-                : "À vous de jouer"}
+                : "Your turn to play"}
             </span>
           </div>
           <div className="story">
             <span className="section-kicker">
-              {chapter ? "Dans ce chapitre" : "L’histoire"}
+              {chapter ? "In this chapter" : "The story"}
             </span>
             {room.story.split(/\n\s*\n/).map((p, i) => (
               <p key={i}>{p}</p>
@@ -822,7 +822,7 @@ export default function Player({
           </div>
           {!compact && discovery}
           <details className="object-access">
-            <summary>Explorer les objets au clavier</summary>
+            <summary>Explore objects with the keyboard</summary>
             <div>
               {room.objects.map((o) => (
                 <button
@@ -843,7 +843,7 @@ export default function Player({
           </details>
           {notes.length > 0 && (
             <details className="notes">
-              <summary>Vos découvertes ({notes.length})</summary>
+              <summary>Your discoveries ({notes.length})</summary>
               {[...notes].reverse().map((n, i) => (
                 <p key={i}>{n}</p>
               ))}
@@ -871,30 +871,30 @@ export default function Player({
         <StoryArrival room={room} onContinue={() => setArrival(false)} />
       )}
       {help && (
-        <Modal title="Comment jouer ?" onClose={() => setHelp(false)}>
+        <Modal title="How to play?" onClose={() => setHelp(false)}>
           <HowToPlay />
           <button
             className="button primary full"
             onClick={() => setHelp(false)}
           >
-            J’ai compris <Check size={16} />
+            Got it <Check size={16} />
           </button>
         </Modal>
       )}
       {restart && (
         <Modal
-          title="Recommencer cette histoire ?"
+          title="Restart this story?"
           onClose={() => setRestart(false)}
         >
           <p className="modal-intro">
-            Votre progression actuelle sera remplacée par une nouvelle partie.
+            Your current progress will be replaced by a new game.
           </p>
           <div className="button-row">
             <button
               className="button secondary"
               onClick={() => setRestart(false)}
             >
-              Continuer ma partie
+              Continue my game
             </button>
             <button
               className="button primary"
@@ -903,7 +903,7 @@ export default function Player({
                 void start();
               }}
             >
-              Recommencer
+              Restart
             </button>
           </div>
         </Modal>

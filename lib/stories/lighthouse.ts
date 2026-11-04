@@ -2,16 +2,10 @@ import type { Room } from "../game.ts";
 import { artwork } from "./art.ts";
 
 export const lighthouse: Room = {
-  title: "Le Phare des marées",
+  title: "The Tidal Lighthouse",
   description:
-    "Votre première relève commence par un signal en panne et un bateau sans lumière. Des cartes à la grotte de marée, suivez les lettres de trois générations, réparez la lanterne et décidez à qui confier le registre d’une ancienne disparition.",
-  story: `La dernière navette a emporté Abel avec ses deux valises, son manteau de travail et une caisse de boutures. Après trente-deux années au phare, il vous laisse les clés. Il n’a pas voulu de cérémonie : seulement une poignée de main et cette recommandation, prononcée quand le moteur du bateau couvrait déjà sa voix : « Lisez les dates avant de croire les histoires. »
-
-Vous avez signé pour entretenir une lumière, accueillir les rares visiteurs et tenir un registre. La première nuit devait être consacrée à l’inventaire. Pourtant, au-delà de la vitre, une barque demeure immobile dans l’anse. Aucun feu à son bord. À chaque rotation du mécanisme, la grande lanterne devrait balayer l’eau ; ce soir, elle reste noire.
-
-Sur le bureau, une lettre d’Abel vous attend sous une boussole. Une seconde enveloppe porte un prénom inconnu : Nora. Entre elles se trouve une photographie ancienne dont la légende a été soigneusement décollée. Au verso, quelqu’un a écrit : « Jeanne Arven, avant le départ. » Vous avez entendu ce nom au village. On parle de la jeune apprentie du phare comme d’une personne disparue en mer, une nuit de grandes marées, trente ans plus tôt.
-
-Une conduite cogne derrière le mur. L’eau monte dans le passage inférieur ; le mécanisme ne repartira pas sans intervention. Vous disposez des outils du gardien et de ses consignes, mais il faudra aussi reprendre une transmission laissée inachevée depuis longtemps. Le bateau attendra le signal convenu jusqu’à l’aube. Vous avez toute une nuit pour rendre au phare sa lumière, puis rendre à cette histoire ses mots exacts.`,
+    "Your first watch begins with a broken signal and a boat without lights. From the charts to the tidal cave, follow the letters of three generations, repair the lantern, and decide to whom to entrust the record of an old disappearance.",
+  story: "The last shuttle took Abel away with his two suitcases, his work coat, and a crate of cuttings. After thirty-two years at the lighthouse, he leaves you the keys. He wanted no ceremony: only a handshake and this recommendation, spoken as the boat’s engine was already drowning out his voice: “Read the dates before believing the stories.”\n\nYou signed on to maintain a light, welcome rare visitors, and keep a logbook. The first night was supposed to be devoted to inventory. Yet beyond the glass, a small boat lies motionless in the cove. No light aboard. With each rotation of the mechanism, the great lantern should sweep the water; tonight, it stays dark.\n\nOn the desk, a letter from Abel awaits you under a compass. A second envelope bears an unknown first name: Nora. Between them lies an old photograph whose caption has been carefully peeled off. On the back, someone wrote: “Jeanne Arven, before the departure.” You have heard that name in the village. People speak of the lighthouse’s young apprentice as someone lost at sea, on a night of spring tides, thirty years ago.\n\nA pipe knocks behind the wall. Water is rising in the lower passage; the mechanism will not restart without intervention. You have the keeper’s tools and his instructions, but you will also have to resume a handover left unfinished long ago. The boat will wait for the agreed signal until dawn. You have a whole night to restore the lighthouse’s light, then restore this story’s exact words.",
   theme: "aventure",
   difficulty: "intermediaire",
   duration: 30,
@@ -20,86 +14,54 @@ Une conduite cogne derrière le mur. L’eau monte dans le passage inférieur ; 
   chapters: [
     {
       id: "cartes",
-      title: "I. Les consignes d’Abel",
-      subtitle: "La salle des cartes · première veille",
+      title: "I. Abel’s Instructions",
+      subtitle: "The chart room · first watch",
       objective:
-        "Ouvrez la malle d’entretien et préparez votre descente dans la salle mécanique.",
-      story: `Le bureau porte encore les marques laissées par les coudes d’Abel. La carte est protégée par une plaque de verre, la boussole retenue par une ficelle : ici, chaque objet a appris à résister aux vibrations du vent. Une malle repose au milieu du plancher. Au-dessus, la roue rouge de l’ancienne conduite a été immobilisée par un collier à quatre chiffres.
-
-Vous posez votre sac. Sur l’enveloppe principale, Abel a inscrit « À lire avant toute manipulation ». Son écriture penche vers la droite, sauf sur les derniers mots, resserrés comme s’il avait manqué de place : « Ne forcez jamais une pièce dont vous ne connaissez pas encore l’usage. »
-
-La petite lanterne, sur le meuble près de la porte, garde une odeur de métal chaud. Elle doit permettre de gagner les étages sans électricité. Derrière le hublot, le balancier de la salle mécanique est arrêté à mi-course. Vous entendez l’eau y frapper le soubassement.
-
-Un coin de la seconde enveloppe dépasse sous la carte. Nora remercie Abel de lui avoir ouvert les archives lors de sa visite, deux jours auparavant. Elle annonce son retour par la mer pour récupérer un document qu’il n’a pas encore retrouvé. Le papier est récent ; le nom de Jeanne, lui, appartient à des pages que personne ne semble avoir relues ensemble.
-
-Vous commencez par l’inventaire. Les anciennes habitudes du phare sont précises : les serrures portent des chiffres, mais leurs combinaisons figurent dans les consignes de travail. Abel vous a donné une méthode avec ses clés. Il reste à l’appliquer.`,
+        "Open the maintenance chest and prepare your descent into the engine room.",
+      story: "The desk still bears the marks left by Abel’s elbows. The chart is protected by a glass plate, the compass held by a string: here, every object has learned to resist the trembling of the wind. A chest rests in the middle of the floor. Above it, the red wheel of the old pipe has been immobilized with a four-digit collar.\n\nYou set down your bag. On the main envelope, Abel wrote “To be read before any handling.” His handwriting slants to the right, except for the last words, cramped as if he had run out of room: “Never force a part whose use you do not yet know.”\n\nThe small lantern, on the cabinet near the door, retains a smell of hot metal. It must let you reach the floors without electricity. Behind the porthole, the pendulum of the engine room has stopped mid-swing. You can hear water striking the base.\n\nA corner of the second envelope sticks out from under the chart. Nora thanks Abel for opening the archives for her during her visit, two days earlier. She announces her return by sea to collect a document he has not yet found. The paper is recent; the name Jeanne, on the other hand, belongs to pages no one seems to have reread together.\n\nYou begin with the inventory. The lighthouse’s old habits are precise: the locks bear numbers, but their combinations are in the work instructions. Abel gave you a method with his keys. It remains to apply it.",
       ...artwork("phare-base"),
       requires: [],
       unlockMessage:
-        "La salle des cartes est ouverte. La relève commence au bureau.",
+        "The chart room is open. The watch begins at the desk.",
       ambience: "rain",
     },
     {
       id: "mecanisme",
-      title: "II. Le mouvement arrêté",
-      subtitle: "La salle mécanique · au-dessous du balancier",
+      title: "II. The Stopped Movement",
+      subtitle: "The engine room · below the pendulum",
       objective:
-        "Isolez les circuits, actionnez la pompe et dégagez le passage vers la grotte.",
-      story: `La lumière de votre petite lanterne se découpe dans les dents d’un engrenage plus haut que vous. Un filet d’eau a tracé une ligne brillante le long du mur. Rien n’est brisé dans la grande roue : elle s’est arrêtée lorsque le dispositif de protection a séparé la pompe de l’entraînement principal.
-
-Sur le tableau central, trois cadrans attendent leur réglage. À droite, l’établi rassemble les outils en silhouettes propres, avec des étiquettes ajoutées à plusieurs époques. Une fiche récente d’Abel recouvre à moitié une feuille beaucoup plus ancienne. Les deux utilisent le même dessin pour représenter la conduite inférieure.
-
-Vous remarquez alors une inscription au crayon sur la porte du fond : « Cale sèche après vidange seulement. » À côté du mot « cale », quelqu’un a dessiné une petite enveloppe. La marque paraît absurde dans une salle de machines, jusqu’à ce que vous relisiez la phrase d’Abel sur les dates.
-
-Le vieux registre situe la disparition de Jeanne au soir d’une panne semblable. Ce rapprochement ne prouve rien. Une panne peut arrêter une lumière sans raconter ce qu’ont fait les personnes qui attendaient dans l’obscurité. Vous prenez soin de distinguer ce qui se voit, ce qui est écrit et ce qui a seulement été répété.
-
-La conduite donne encore un coup sourd. Il faut commencer par lui rendre son écoulement. Le passage vers la grotte ne sera accessible qu’une fois la pompe en service ; la remise en route de la grande lanterne viendra ensuite.`,
+        "Isolate the circuits, operate the pump, and clear the passage to the cave.",
+      story: "The light of your small lantern cuts across the teeth of a gear taller than you. A trickle of water has traced a shining line along the wall. Nothing is broken in the great wheel: it stopped when the safety device separated the pump from the main drive.\n\nOn the central panel, three dials await adjustment. To the right, the workbench gathers the tools in clean silhouettes, with labels added in several eras. A recent sheet from Abel half covers a much older leaf. Both use the same drawing to represent the lower pipe.\n\nYou then notice a penciled inscription on the far door: “Dry dock only after draining.” Next to the word “dock,” someone has drawn a small envelope. The mark seems absurd in an engine room, until you reread Abel’s line about dates.\n\nThe old log places Jeanne’s disappearance on the evening of a similar breakdown. That parallel proves nothing. A breakdown can stop a light without telling what the people waiting in the dark did. You take care to distinguish what can be seen, what is written, and what has only been repeated.\n\nThe pipe gives another dull thud. You must first restore its flow. The passage to the cave will be accessible only once the pump is running; restarting the great lantern will come afterward.",
       ...artwork("phare-mecanisme"),
       requires: ["phare-hublot"],
       unlockMessage:
-        "Le hublot s’ouvre sur la salle mécanique. Examinez l’engrenage avant de régler les circuits.",
+        "The porthole opens onto the engine room. Examine the gear before adjusting the circuits.",
       ambience: "steam",
     },
     {
       id: "grotte",
-      title: "III. Ce que la marée a gardé",
-      subtitle: "La grotte de marée · l’ancien débarcadère",
+      title: "III. What the Tide Kept",
+      subtitle: "The tidal cave · the old landing",
       objective:
-        "Retrouvez les documents de Jeanne et les consignes du collier de la roue rouge.",
-      story: `Les marches descendent vers un ancien débarcadère creusé sous le phare. La pompe a libéré le seuil ; plus loin, l’eau reste basse entre les pierres. Une ligne de dépôts clairs indique la limite que les gardiens utilisaient autrefois pour ranger leur matériel à l’abri.
-
-À gauche, un coffre est fixé au sol par deux pattes de fer. Une bouée rouge pend au centre, assez haute pour avoir échappé à l’humidité. Dans une niche à droite, la tranche d’un carnet dépasse d’une boîte fermée. Le jour commence à poindre au sommet d’un second escalier.
-
-Abel a laissé une enveloppe récente dans un tube transparent attaché à la bouée. Il précise que les objets sont restés ici depuis le dégagement de la conduite, la semaine précédente. Il a comparé les premières dates, reconnu l’écriture de Jeanne, puis attendu la visite de Nora avant d’ouvrir les pièces personnelles. La réparation de ce soir vous mène au même endroit par un chemin qu’il connaissait déjà.
-
-Dans l’anse, la barque est toujours là. Vous apercevez un mouvement, puis un carré de tissu clair, levé une seule fois. Quelqu’un vous a vu. Le geste ne vous demande pas de courir : la personne attend que vous rétablissiez le signal.
-
-Le mot « disparue » vous revient. Il occupait toute l’histoire au village, comme une porte définitivement fermée. Ici, les choses portent des noms moins vastes : une heure d’arrivée, un départ, un coffre oublié, une lettre qui n’a pas rejoint son destinataire. Vous pouvez enfin commencer à les remettre dans leur ordre.`,
+        "Find Jeanne’s documents and the instructions for the red wheel’s collar.",
+      story: "The steps go down to an old landing dug beneath the lighthouse. The pump has freed the threshold; farther on, the water stays low between the stones. A line of pale deposits marks the limit the keepers once used to store their equipment out of reach.\n\nTo the left, a chest is fixed to the ground by two iron brackets. A red buoy hangs in the center, high enough to have escaped the damp. In a niche to the right, the spine of a notebook sticks out of a closed box. Daylight begins to show at the top of a second staircase.\n\nAbel left a recent envelope in a transparent tube attached to the buoy. He notes that the objects have remained here since the pipe was cleared, the previous week. He compared the first dates, recognized Jeanne’s handwriting, then awaited Nora’s visit before opening the personal items. Tonight’s repair brings you to the same place by a path he already knew.\n\nIn the cove, the boat is still there. You glimpse a movement, then a square of light-colored cloth, raised a single time. Someone has seen you. The gesture does not ask you to run: the person is waiting for you to restore the signal.\n\nThe word “missing” comes back to you. It filled the whole story in the village, like a door definitively closed. Here, things bear less vast names: an arrival time, a departure, a forgotten chest, a letter that never reached its recipient. You can finally begin to put them back in order.",
       ...artwork("phare-grotte"),
       requires: ["phare-porte-cale"],
       unlockMessage:
-        "La cale est vidangée. La grotte s’ouvre avec sa bouée rouge et ses archives de passage.",
+        "The dock is drained. The cave opens with its red buoy and its transit archives.",
       ambience: "rain",
     },
     {
       id: "lanterne",
-      title: "IV. La lumière rendue",
-      subtitle: "La chambre de la lanterne · premières lueurs",
+      title: "IV. The Restored Light",
+      subtitle: "The lantern room · first light",
       objective:
-        "Récupérez le pont conducteur dans la roue rouge, rétablissez le signal et décidez du sort du registre.",
-      story: `L’escalier rejoint la chambre de la lanterne par une trappe intérieure. La grande lentille occupe presque toute la pièce. À travers ses anneaux, l’horizon se décompose en bandes pâles : le jour approche, mais la mer demeure grise.
-
-Sur le pupitre de gauche, Abel a préparé les dernières opérations de relève. À droite, le coffre bas porte une enveloppe à votre nom et un registre neuf. La porte de la terrasse s’ouvre sur le même bateau que vous observiez depuis le bureau. De cette hauteur, vous distinguez enfin son nom : La Traverse.
-
-Les documents de la grotte ont déplacé la question. Vous n’avez plus à chercher ce qui aurait englouti Jeanne ; vous devez établir comment son départ est devenu une disparition dans les souvenirs du phare. Il reste des blancs, et il faudra les conserver comme tels. Une page réparée n’autorise pas à raconter toute une vie à la place de celle qui l’a vécue.
-
-Un petit logement reste vide à la base de la lentille. La fiche du pupitre le désigne sans ambiguïté : pont conducteur de secours. Les notes de Jeanne vous ont appris où il est rangé et comment ouvrir son collier. Si vous ne l’avez pas encore récupéré, la salle des cartes reste accessible : la vieille roue rouge y attend votre retour.
-
-Le signal sera votre premier acte de gardien. Le second sera un choix de transmission. Un registre peut rester au phare pour que chacun sache où le consulter ; il peut aussi voyager avec celle dont la famille attend encore une réponse. Dans les deux cas, il faudra écrire ce que les pièces établissent et laisser visibles les questions qui demeurent.`,
+        "Recover the conducting bridge in the red wheel, restore the signal, and decide the fate of the logbook.",
+      story: "The staircase joins the lantern room through an interior hatch. The great lens occupies almost the entire room. Through its rings, the horizon breaks into pale bands: day is approaching, but the sea remains gray.\n\nOn the left-hand desk, Abel has prepared the final handover operations. To the right, the low chest bears an envelope with your name and a new logbook. The terrace door opens onto the same boat you were watching from the office. From this height, you can finally make out its name: La Traverse.\n\nThe documents from the cave have shifted the question. You no longer have to search for what might have swallowed Jeanne; you must establish how her departure became a disappearance in the lighthouse’s memories. Gaps remain, and they must be kept as such. A repaired page does not authorize you to tell a whole life in place of the one who lived it.\n\nA small housing remains empty at the base of the lens. The desk sheet designates it unambiguously: emergency conducting bridge. Jeanne’s notes taught you where it is stored and how to open its collar. If you have not recovered it yet, the chart room remains accessible: the old red wheel awaits your return.\n\nThe signal will be your first act as keeper. The second will be a choice of transmission. A logbook can stay at the lighthouse so everyone knows where to consult it; it can also travel with the one whose family is still awaiting an answer. In either case, you will have to write what the evidence establishes and leave visible the questions that remain.",
       ...artwork("phare-lanterne"),
       requires: ["phare-escalier"],
       unlockMessage:
-        "Vous atteignez la lanterne. Le pupitre indique comment achever la réparation et appeler La Traverse.",
+        "You reach the lantern. The desk indicates how to complete the repair and call La Traverse.",
       ambience: "stars",
     },
   ],
@@ -107,452 +69,332 @@ Le signal sera votre premier acte de gardien. Le second sera un choix de transmi
     {
       id: "phare-carte",
       chapterId: "cartes",
-      name: "La carte et les lettres de relève",
-      prompt: "Lire les lettres sur le bureau",
+      name: "The Handover Chart and Letters",
+      prompt: "Read the letters on the desk",
       action: "inspect",
       region: { x: 0.05, y: 0.49, w: 0.35, h: 0.27 },
       requires: [],
       code: null,
       itemName: null,
-      speaker: "Abel, ancien gardien",
-      message: `« La conduite basse s’est remise à vibrer. Commencez par la malle, puis prenez la lanterne de service. La clé du hublot est dans son socle. Vous trouverez les réglages de pompe à l’établi.
-
-Pour la malle, utilisez les quantités du stock de ce matin, dans l’ordre gravé sur la serrure : VERRE, CUIVRE, MÈCHE. J’ai compté huit mèches sèches, six bagues de cuivre et deux verres de rechange. Trois cadrans, un chiffre par catégorie. Ne cherchez pas de date.
-
-Ne forcez pas le collier de la roue rouge : son aide-mémoire se trouve dans le carnet de Jeanne, en bas. Il conserve une pièce de secours dont vous aurez besoin à la lanterne. »
-
-Sous cette lettre, une carte de Nora : « Merci pour la consultation d’avant-hier. Je reviendrai au matin avec La Traverse. Ma mère s’appelle Jeanne Arven. Chez vous, ce nom termine une histoire. Dans ma famille, il en commence une autre. J’aimerais comparer les deux sans effacer ce qui reste incertain. »`,
-      lockedMessage: "Les lettres sont accessibles sous la boussole.",
-      hint: "La malle demande les quantités dans l’ordre VERRE, CUIVRE, MÈCHE. Les trois quantités figurent dans la lettre.",
+      speaker: "Abel, former keeper",
+      message: "“The low pipe has started vibrating again. Start with the chest, then take the service lantern. The porthole key is in its base. You will find the pump settings at the workbench.\n\nFor the chest, use this morning’s stock quantities, in the order engraved on the lock: GLASS, COPPER, WICK. I counted eight dry wicks, six copper rings, and two spare glasses. Three dials, one digit per category. Do not look for a date.\n\nDo not force the red wheel’s collar: its aide-memoire is in Jeanne’s notebook, at the bottom. It holds a spare part you will need at the lantern.”\n\nUnder this letter, a card from Nora: “Thank you for letting me consult the archives the day before yesterday. I will return in the morning with La Traverse. My mother’s name is Jeanne Arven. At your place, that name ends a story. In my family, it begins another. I would like to compare the two without erasing what remains uncertain.”",
+      lockedMessage: "The letters are accessible under the compass.",
+      hint: "The chest asks for the quantities in the order GLASS, COPPER, WICK. All three quantities are in the letter.",
     },
     {
       id: "phare-roue",
       chapterId: "cartes",
-      name: "La roue rouge et son collier",
-      prompt: "Ouvrir le collier de la roue rouge",
+      name: "The red wheel and its collar",
+      prompt: "Open the red wheel’s collar",
       action: "code",
       region: { x: 0.27, y: 0.16, w: 0.18, h: 0.25 },
       requires: ["phare-carnet"],
       code: "3142",
-      itemName: "Pont conducteur de secours",
-      speaker: "Abel, annotation dans le logement",
-      message: `Le collier s’ouvre sans entraîner la roue. Dans le logement sec, vous trouvez le pont conducteur enveloppé de toile et une feuille détachée du registre ancien.
-
-« J’ai retrouvé cette page derrière le collier pendant l’entretien de septembre. Elle portait seulement : “22 h 05, départ du Passage, une passagère, J. A.” Le folio suivant manque. Je n’avais pas de quoi identifier la passagère ni expliquer l’absence de lettre. C’est cette ligne qui m’a fait écrire à Nora.
-
-J’étais de veille trente ans plus tôt. J’ai vu un bateau quitter l’anse ; j’ai accepté la phrase de mon prédécesseur : “Aucune arrivée confirmée.” À force de la recopier, nous avons laissé croire qu’aucun départ n’était possible. J’aurais dû noter ce que j’avais réellement vu.
-
-Si les pièces de la cale confirment ce nom, ajoutez-les à cette page. Je vous laisse la garde du registre, pas le devoir de défendre mon silence. »
-
-Le pont est intact. Vous pouvez désormais l’installer dans le logement de la lentille, au sommet du phare.`,
+      itemName: "Emergency conducting bridge",
+      speaker: "Abel, note in the housing",
+      message: "The collar opens without driving the wheel. In the dry housing, you find the conducting bridge wrapped in canvas and a loose leaf from the old logbook.\n\n“I found this page behind the collar during the September service. It bore only: ‘10:05 PM, departure of the Passage, one passenger, J. A.’ The following folio is missing. I had nothing to identify the passenger with nor to explain the missing letter. It was this line that made me write to Nora.\n\nI was on watch thirty years ago. I saw a boat leave the cove; I accepted my predecessor’s phrase: ‘No arrival confirmed.’ By copying it over and over, we let people believe that no departure was possible. I should have noted what I had actually seen.\n\nIf the items in the dock confirm this name, add them to this page. I leave you custody of the logbook, not the duty to defend my silence.”\n\nThe bridge is intact. You can now install it in the lens housing, at the top of the lighthouse.",
       lockedMessage:
-        "Le collier demande quatre chiffres. Abel renvoie au carnet de Jeanne, dans la grotte de marée. Vous reviendrez ici après l’avoir retrouvé.",
-      hint: "Dans le carnet, relevez les chiffres dans l’ordre ÉCUME, VEILLE, AUBE, RETOUR. Le retour à cette roue est indispensable pour réparer la lentille.",
+        "The collar requires four digits. Abel refers you to Jeanne’s notebook, in the tidal cave. You will return here after finding it.",
+      hint: "In the notebook, note the digits in the order FOAM, WATCH, DAWN, RETURN. Returning to this wheel is essential to repair the lens.",
     },
     {
       id: "phare-malle",
       animation: "lid",
       chapterId: "cartes",
-      name: "La malle d’entretien",
-      prompt: "Déverrouiller la malle",
+      name: "The Maintenance Chest",
+      prompt: "Unlock the chest",
       action: "code",
       region: { x: 0.36, y: 0.7, w: 0.22, h: 0.25 },
       requires: ["phare-carte"],
       code: "268",
-      itemName: "Trousse d’entretien",
-      speaker: "Abel, fiche de matériel",
-      message: `Les trois cadrans s’alignent. Sous le couvercle, les outils ont chacun leur passant de cuir : une clé à six pans, un petit tournevis, un chiffon et une pince aux mâchoires protégées.
-
-Une fiche est cousue dans la doublure : « La clé à six pans ouvre le socle de la lanterne de service. Le logement contient la clé du hublot. Le tournevis servira plus tard au pont conducteur de la grande lentille. N’utilisez aucune pièce qui montre une fente ou du vert-de-gris ; le pont de secours est conservé au sec derrière la roue rouge. »
-
-Au fond se trouve une étiquette plus ancienne : « J. Arven, apprentie — matériel rendu complet ». La date est celle du lendemain de sa disparition supposée. C’est une trace de rangement, pas encore une preuve de présence : une autre personne a pu compléter l’inventaire. Vous gardez pourtant la date en mémoire. Quelqu’un a travaillé ici après la nuit dont on vous a parlé.`,
+      itemName: "Maintenance kit",
+      speaker: "Abel, equipment sheet",
+      message: "The three dials line up. Under the lid, the tools each have their leather loop: a hex key, a small screwdriver, a cloth, and pliers with protected jaws.\n\nA sheet is sewn into the lining: “The hex key opens the base of the service lantern. The housing contains the porthole key. The screwdriver will serve later for the conducting bridge of the great lens. Do not use any part that shows a slot or verdigris; the emergency bridge is kept dry behind the red wheel.”\n\nAt the bottom lies an older label: “J. Arven, apprentice — equipment returned complete.” The date is the day after her supposed disappearance. It is a trace of tidying, not yet proof of presence: someone else may have completed the inventory. You keep the date in mind, however. Someone worked here after the night you were told about.",
       lockedMessage:
-        "La serrure possède trois cadrans. La lettre sous la boussole indique l’ordre et les quantités à employer.",
-      hint: "Deux verres, six bagues de cuivre, huit mèches : entrez les quantités dans l’ordre demandé sur la carte de relève.",
+        "The lock has three dials. The letter under the compass gives the order and quantities to use.",
+      hint: "Two glasses, six copper rings, eight wicks: enter the quantities in the order requested on the handover card.",
     },
     {
       id: "phare-lampe",
       animation: "light",
       chapterId: "cartes",
-      name: "La lanterne de service",
-      prompt: "Préparer la lanterne et prendre la clé",
+      name: "The Service Lantern",
+      prompt: "Prepare the lantern and take the key",
       action: "collect",
       region: { x: 0.63, y: 0.41, w: 0.08, h: 0.19 },
       requires: ["phare-malle"],
       code: null,
-      itemName: "Lanterne de service et clé du hublot",
-      speaker: "Abel, consigne de veille",
-      message: `Vous dévissez le socle avec l’outil de la malle. La clé du hublot est retenue à l’intérieur par un cordon. La lanterne s’allume dès que vous actionnez son interrupteur ; son faisceau suffit à éclairer un escalier entier.
-
-Un papier roulé accompagne la clé : « La Traverse attendra dans l’anse jusqu’à l’aube. Nora sait que la grande lanterne est en entretien. Elle ne s’approchera qu’après le signal d’accueil : trois longues lueurs, séparées chacune par une pause. La commande du pupitre exécute cette séquence toute seule après réparation. Vous n’avez pas à en calculer le rythme.
-
-Si vous voyez un tissu clair se lever depuis la barque, la personne à bord a repéré votre lampe. Ce geste confirme qu’elle peut attendre. Réparez d’abord, appelez ensuite. »
-
-Le bateau a donc un nom et une consigne. Son obscurité reste une question, mais vous savez désormais qu’il ne vous demande pas de quitter le phare à la hâte.`,
+      itemName: "Service lantern and porthole key",
+      speaker: "Abel, watch instruction",
+      message: "You unscrew the base with the tool from the chest. The porthole key is held inside by a cord. The lantern lights as soon as you flick its switch; its beam is enough to light a whole staircase.\n\nA rolled paper accompanies the key: “La Traverse will wait in the cove until dawn. Nora knows the great lantern is under maintenance. She will approach only after the welcome signal: three long flashes, each separated by a pause. The desk control runs this sequence by itself after repair. You do not have to calculate the rhythm.\n\nIf you see a light-colored cloth raised from the boat, the person aboard has spotted your lamp. That gesture confirms she can wait. Repair first, call afterward.”\n\nThe boat therefore has a name and an instruction. Its darkness remains a question, but you now know it is not asking you to leave the lighthouse in haste.",
       lockedMessage:
-        "Le socle est fermé par une vis à six pans. La trousse de la malle contient l’outil nécessaire.",
-      hint: "Ouvrez la malle, puis utilisez sa clé à six pans sur le socle de cette lanterne.",
+        "The base is closed with a hex screw. The kit in the chest contains the necessary tool.",
+      hint: "Open the chest, then use its hex key on the base of this lantern.",
     },
     {
       id: "phare-hublot",
       chapterId: "cartes",
-      name: "La porte au hublot",
-      prompt: "Déverrouiller la salle mécanique",
+      name: "The Porthole Door",
+      prompt: "Unlock the engine room",
       action: "unlock",
       region: { x: 0.81, y: 0.19, w: 0.17, h: 0.64 },
       requires: ["phare-lampe"],
       code: null,
       itemName: null,
-      message: `La clé glisse dans la serrure. Vous soutenez la porte avant de la tirer, comme le montre une petite flèche dessinée près de la poignée. Le joint se décolle avec un soupir ; l’air de la salle mécanique sent la pierre mouillée.
-
-Une dernière note d’Abel est fixée sur la face intérieure : « La protection a arrêté le mécanisme avant que l’eau gagne les paliers. Observez d’abord le grand engrenage. Réglez ensuite les circuits à partir de la fiche de l’établi. La manivelle de pompe ne doit être engagée qu’une fois les cadrans correctement placés. »
-
-Vous calez le battant. Le passage restera ouvert pour vos allers et retours. Sur le seuil, votre lampe révèle trois dates superposées à la craie : celle de la dernière inspection, celle de l’inventaire ancien et celle d’aujourd’hui, laissée vide. Vous inscrivez votre première veille. Le phare commence à porter votre écriture.`,
+      message: "The key slides into the lock. You brace the door before pulling it, as shown by a small arrow drawn near the handle. The seal peels away with a sigh; the air in the engine room smells of wet stone.\n\nA final note from Abel is pinned to the inside face: \"The safety device stopped the mechanism before the water reached the bearings. First observe the large gear. Then set the circuits from the sheet on the workbench. The pump crank must only be engaged once the dials are correctly placed.\"\n\nYou wedge the door leaf open. The passage will stay open for your comings and goings. On the threshold, your lamp reveals three chalked dates layered over one another: that of the last inspection, that of the old inventory, and today's, left blank. You inscribe your first watch. The lighthouse is beginning to carry your handwriting.",
       lockedMessage:
-        "La clé du hublot est rangée dans le socle de la lanterne de service.",
-      hint: "Préparez la lanterne de service avec les outils de la malle pour récupérer cette clé.",
+        "The porthole key is stored in the base of the service lantern.",
+      hint: "Prepare the service lantern with the tools from the chest to recover this key.",
     },
     {
       id: "phare-engrenage",
       chapterId: "mecanisme",
-      name: "Le grand engrenage",
-      prompt: "Examiner la roue et le diagnostic",
+      name: "The large gear",
+      prompt: "Examine the wheel and the diagnostic",
       action: "inspect",
       region: { x: 0.06, y: 0.2, w: 0.22, h: 0.15 },
       requires: [],
       code: null,
       itemName: null,
-      speaker: "Abel, diagnostic de maintenance",
-      message: `Vous approchez la lampe des dents. Aucune ne manque. Le frein de protection retient l’ensemble et une marque blanche montre la position d’arrêt attendue. La fiche de diagnostic confirme : « Arrêt de sécurité correct. Ne pas dégager le frein à la main. »
-
-Deux opérations sont nécessaires. La pompe doit d’abord évacuer l’eau de la cale pour rouvrir le passage inférieur. La lanterne principale, elle, attend le remplacement de son pont conducteur. Les deux problèmes ont été isolés : la vidange n’allumera pas le phare, et l’installation du pont ne videra pas la cale.
-
-Une phrase est ajoutée en marge : « La réserve sèche derrière la roue rouge a tenu lors de la grande marée d’il y a trente ans. Le carnet de Jeanne décrit le collier. »
-
-Vous repérez la manivelle de pompe sur l’établi, à droite. Son profil correspond au carré d’entraînement placé sous l’engrenage. Avant de l’engager, il faudra régler les trois circuits du tableau central.`,
-      lockedMessage: "La fiche de diagnostic est fixée au bâti de l’engrenage.",
-      hint: "Examinez ce diagnostic, puis cherchez la manivelle et la fiche des trois circuits sur l’établi.",
+      speaker: "Abel, maintenance diagnostic",
+      message: "You bring the lamp close to the teeth. None are missing. The safety brake holds the whole assembly and a white mark shows the expected stopped position. The diagnostic sheet confirms: \"Correct safety stop. Do not release the brake by hand.\"\n\nTwo operations are required. The pump must first drain the water from the hold to reopen the lower passage. The main lantern, meanwhile, is waiting for its conductor bridge to be replaced. The two problems have been isolated: draining will not light the lighthouse, and fitting the bridge will not drain the hold.\n\nA sentence is added in the margin: \"The dry reserve behind the red wheel held during the great tide thirty years ago. Jeanne's notebook describes the collar.\"\n\nYou spot the pump crank on the workbench, to the right. Its profile matches the square drive set beneath the gear. Before engaging it, you will need to set the three circuits on the central panel.",
+      lockedMessage: "The diagnostic sheet is fastened to the gear housing.",
+      hint: "Examine this diagnostic, then look for the crank and the sheet for the three circuits on the workbench.",
     },
     {
       id: "phare-etabli",
       chapterId: "mecanisme",
-      name: "L’établi et la manivelle",
-      prompt: "Prendre la manivelle et lire les réglages",
+      name: "The workbench and the crank",
+      prompt: "Take the crank and read the settings",
       action: "collect",
       region: { x: 0.65, y: 0.57, w: 0.31, h: 0.21 },
       requires: ["phare-engrenage"],
       code: null,
-      itemName: "Manivelle de vidange",
-      speaker: "Jeanne Arven, fiche d’atelier",
-      message: `La manivelle tient dans votre main avec le poids rassurant d’un outil souvent utilisé. Sous son crochet, une fiche explique les trois cadrans : « Saisir les positions dans l’ordre POMPE, FREIN, SIGNAL. Le frein doit être au cran 4. La pompe prend la moitié de la valeur du frein. Le signal reste au cran 1. » Chaque cadran reçoit un seul chiffre.
-
-Au dos, Jeanne a écrit : « Émile dit que mon départ attendra la fin de saison. Mon stage à la verrerie commence lundi. J’ai réservé ma place sur Le Passage ; je ferai la relève avant de partir, et je laisserai mes lettres dans le coffre de la cale. Personne ne pourra dire que j’ai abandonné les outils au milieu du travail. »
-
-Plus bas, dans une autre encre : « Inventaire reçu complet. A. » Abel avait donc vu l’étiquette trouvée dans la malle, et peut-être cette fiche aussi. Vous connaissez désormais un projet de départ ; vous ne savez pas encore s’il a pu avoir lieu. Pour descendre jusqu’au coffre, commencez par la pompe.`,
+      itemName: "Drain crank",
+      speaker: "Jeanne Arven, workshop sheet",
+      message: "The crank sits in your hand with the reassuring weight of a tool often used. Beneath its hook, a sheet explains the three dials: \"Enter the positions in the order PUMP, BRAKE, SIGNAL. The brake must be on notch 4. The pump takes half the brake's value. The signal stays on notch 1.\" Each dial takes a single digit.\n\nOn the back, Jeanne has written: \"Émile says my departure will have to wait until the end of the season. My placement at the glassworks starts Monday. I have reserved my seat on Le Passage; I will do the handover before leaving, and I will leave my letters in the chest in the hold. No one will be able to say I abandoned the tools in the middle of the work.\"\n\nLower down, in another ink: \"Inventory received complete. A.\" So Abel had seen the label found in the chest, and perhaps this sheet too. You now know of a planned departure; you do not yet know whether it could have taken place. To go down to the chest, start with the pump.",
       lockedMessage:
-        "Examinez d’abord le diagnostic du grand engrenage pour identifier l’usage de cet outil.",
-      hint: "La fiche donne FREIN = 4, POMPE = la moitié du frein et SIGNAL = 1. Respectez l’ordre POMPE, FREIN, SIGNAL.",
+        "First examine the large gear's diagnostic to identify the use of this tool.",
+      hint: "The sheet gives BRAKE = 4, PUMP = half the brake and SIGNAL = 1. Respect the order PUMP, BRAKE, SIGNAL.",
     },
     {
       id: "phare-leviers",
       chapterId: "mecanisme",
-      name: "Le tableau des trois circuits",
-      prompt: "Régler pompe, frein et signal",
+      name: "The three-circuit panel",
+      prompt: "Set pump, brake and signal",
       action: "code",
       region: { x: 0.35, y: 0.27, w: 0.14, h: 0.41 },
       requires: ["phare-etabli"],
       code: "241",
       itemName: null,
-      message: `Vous placez la pompe au cran 2, le frein au cran 4 et le signal au cran 1. La poignée de protection descend d’elle-même dans son encoche. Un indicateur mécanique passe du rouge au blanc : la pompe peut être actionnée sans entraîner la grande lentille.
-
-Le tableau libère un petit volet. À l’intérieur, Abel a inscrit : « Si cette combinaison est validée, engagez la manivelle dans l’axe carré sous l’engrenage. Tournez jusqu’à ce que la jauge reste sous le trait blanc. Le frein protège le reste du mécanisme ; ne changez plus les cadrans pendant la vidange. »
-
-Un second message est plus ancien : « J’ai laissé le signal isolé à mon départ. Le prochain gardien trouvera tout en position sûre. J. A. » Ce n’est pas un récit de voyage, mais une passation de travail écrite avec soin. Les objets du phare parlent de Jeanne comme d’une collègue qui a préparé sa relève. Le registre du village n’a retenu que son absence.`,
+      message: "You set the pump to notch 2, the brake to notch 4 and the signal to notch 1. The safety handle drops by itself into its notch. A mechanical indicator shifts from red to white: the pump can be operated without driving the great lens.\n\nThe panel releases a small flap. Inside, Abel has written: \"If this combination is validated, engage the crank in the square shaft beneath the gear. Turn until the gauge stays below the white line. The brake protects the rest of the mechanism; do not change the dials again during draining.\"\n\nA second, older message reads: \"I left the signal isolated when I departed. The next keeper will find everything in a safe position. J. A.\" This is not a travel account, but a handover of work written with care. The lighthouse's objects speak of Jeanne as a colleague who prepared her relief. The village register has retained only her absence.",
       lockedMessage:
-        "La fiche de l’établi donne les positions et l’ordre des trois cadrans.",
-      hint: "Le frein vaut 4 ; sa moitié vaut 2 ; le signal vaut 1. Le tableau attend POMPE, FREIN, SIGNAL.",
+        "The sheet on the workbench gives the positions and the order of the three dials.",
+      hint: "The brake is 4; its half is 2; the signal is 1. The panel expects PUMP, BRAKE, SIGNAL.",
     },
     {
       id: "phare-vidange",
       chapterId: "mecanisme",
-      name: "L’axe carré de la pompe",
-      prompt: "Engager la manivelle et vidanger la cale",
+      name: "The pump square shaft",
+      prompt: "Engage the crank and drain the hold",
       action: "unlock",
       region: { x: 0.15, y: 0.38, w: 0.07, h: 0.15 },
       requires: ["phare-leviers", "phare-etabli"],
       code: null,
       itemName: null,
-      message: `La manivelle s’emboîte dans l’axe carré. Les premiers tours résistent ; ensuite, la pompe prend son mouvement. Vous gardez les yeux sur la jauge, conformément à la fiche. L’aiguille descend et s’immobilise sous le trait blanc.
-
-L’eau cesse de frapper la porte du fond. À travers sa grille inférieure, vous voyez réapparaître la première marche de pierre, puis la suivante. Une chaînette tire le verrou de sécurité vers le haut. Le passage peut maintenant être ouvert.
-
-Sous la jauge, un ancien tampon mentionne « Débarcadère auxiliaire — courrier et approvisionnements ». Le trait de la carte n’indiquait donc pas seulement un conduit : des bateaux venaient autrefois jusque sous le phare. Le Passage aurait pu accoster ici sans être visible depuis la fenêtre du bureau.
-
-Vous laissez la manivelle dans son support et notez la vidange sur la fiche du jour. La réparation est simple à décrire. L’histoire de cette nuit ancienne demandera des pièces plus précises encore.`,
+      message: "The crank fits into the square shaft. The first turns resist; then the pump finds its rhythm. You keep your eyes on the gauge, as the sheet instructs. The needle falls and holds steady below the white line.\n\nThe water stops beating against the far door. Through its lower grille, you see the first stone step reappear, then the next. A small chain pulls the safety bolt upward. The passage can now be opened.\n\nBeneath the gauge, an old stamp mentions \"Auxiliary landing stage — mail and supplies.\" The line on the map therefore indicated more than a conduit: boats once came right up beneath the lighthouse. Le Passage could have berthed here without being visible from the office window.\n\nYou leave the crank in its holder and record the draining on the day's sheet. The repair is simple to describe. The story of that ancient night will demand still more precise pieces.",
       lockedMessage:
-        "Il faut la manivelle de l’établi et le réglage validé des trois circuits avant d’actionner cet axe.",
-      hint: "Prenez la manivelle, réglez le tableau selon la fiche de Jeanne, puis revenez à l’axe sous l’engrenage.",
+        "You need the crank from the workbench and the validated setting of the three circuits before operating this shaft.",
+      hint: "Take the crank, set the panel according to Jeanne's sheet, then come back to the shaft beneath the gear.",
     },
     {
       id: "phare-porte-cale",
       chapterId: "mecanisme",
-      name: "La porte étroite de la cale",
-      prompt: "Ouvrir le passage inférieur",
+      name: "The narrow hold door",
+      prompt: "Open the lower passage",
       action: "unlock",
       region: { x: 0.5, y: 0.23, w: 0.17, h: 0.55 },
       requires: ["phare-vidange"],
       code: null,
       itemName: null,
-      speaker: "Abel, note sur le seuil",
-      message: `Le verrou est libéré. Vous tirez la porte, puis éclairez les marches une à une. Une ligne de carreaux clairs mène jusqu’au sol sec de la grotte.
-
-Abel a attaché une note à la main courante : « Le coffre et le carnet sont restés à leur place depuis le dégagement de la semaine dernière. Nora m’a demandé de conserver leur ordre jusqu’à sa venue. Elle a fourni une enveloppe pour la relève, rangée dans le coffre du sommet. Ce que vous trouverez en bas doit pouvoir être comparé aux dates du registre.
-
-À la bouée rouge, j’ai placé la fiche de passage retrouvée dans le tube de courrier. Elle contient la consigne d’ouverture du coffre. La boîte du carnet s’ouvre avec la petite clé rangée dans ce coffre. Les papiers ont séché à plat ; prenez-les par leurs protections. »
-
-Le chemin est désormais clair : la bouée, puis le coffre, puis le carnet. Au-delà, un escalier rejoint directement la chambre de la lanterne.`,
+      speaker: "Abel, note on the threshold",
+      message: "The bolt is released. You pull the door, then light the steps one by one. A line of pale tiles leads down to the dry floor of the cave.\n\nAbel has tied a note to the handrail: \"The chest and the notebook have stayed in place since last week's clearing. Nora asked me to preserve their order until she comes. She provided an envelope for the relief, filed in the chest at the top. What you find below must be able to be compared with the dates in the register.\n\nAt the red buoy, I placed the passage slip found in the mail tube. It contains the instruction for opening the chest. The notebook's box opens with the small key kept in that chest. The papers have dried flat; handle them by their sleeves.\"\n\nThe path is now clear: the buoy, then the chest, then the notebook. Beyond, a staircase leads directly to the lantern room.",
       lockedMessage:
-        "Le verrou reste retenu par la sécurité de niveau. Actionnez la pompe jusqu’à la fin de la vidange.",
-      hint: "La pompe libère cette porte après le réglage du tableau et l’usage de la manivelle.",
+        "The bolt is still held by the water-level safety. Run the pump until draining is complete.",
+      hint: "The pump releases this door after the panel is set and the crank is used.",
     },
     {
       id: "phare-bouee",
       chapterId: "grotte",
-      name: "La bouée rouge et le tube de courrier",
-      prompt: "Lire la fiche de passage",
+      name: "The red buoy and the mail tube",
+      prompt: "Read the passage slip",
       action: "inspect",
       region: { x: 0.37, y: 0.59, w: 0.19, h: 0.14 },
       requires: [],
       code: null,
       itemName: null,
-      speaker: "Marin du Passage, fiche de tournée",
-      message: `Le tube abrite une feuille de tournée datée de la nuit de grandes marées. Le bateau indiqué est Le Passage. Trois horaires figurent sous des rubriques distinctes : ARRIVÉE, 21 h 32 ; ATTENTE, 21 h 41 ; DÉPART, 22 h 05.
-
-Au-dessous, une consigne destinée aux gardiens : « Le coffre de courrier possède trois cadrans. Prenez uniquement le dernier chiffre de chaque horaire, dans l’ordre ARRIVÉE, ATTENTE, DÉPART. Les chiffres des heures et les autres chiffres des minutes ne servent pas. »
-
-La dernière ligne retient votre attention : « Une place demandée pour la verrerie du continent. Mer agitée à l’entrée ; passagère embarquée depuis la cale abritée. Voir le bordereau nominatif dans le coffre. »
-
-Le nom manque sur cette fiche. Elle confirme pourtant qu’une personne a quitté l’île cette nuit-là depuis ce débarcadère. La date correspond à celle de l’inventaire retrouvé dans la malle. Ouvrez le coffre pour vérifier s’il s’agit bien de Jeanne, sans transformer encore la concordance en certitude.`,
-      lockedMessage: "La fiche est protégée dans le tube fixé à la bouée.",
-      hint: "Prenez le dernier chiffre de 21 h 32, puis de 21 h 41, puis de 22 h 05. La fiche donne cet ordre explicitement.",
+      speaker: "Sailor of Le Passage, rounds sheet",
+      message: "The tube holds a rounds sheet dated from the night of the great tides. The boat named is Le Passage. Three times appear under separate headings: ARRIVAL, 9:32 PM; WAITING, 9:41 PM; DEPARTURE, 10:05 PM.\n\nBelow, an instruction for the keepers: \"The mail chest has three dials. Take only the last digit of each time, in the order ARRIVAL, WAITING, DEPARTURE. The hour digits and the other minute digits are not used.\"\n\nThe last line catches your attention: \"One seat requested for the mainland glassworks. Rough sea at the entrance; passenger taken aboard from the sheltered hold. See the nominative manifest in the chest.\"\n\nThe name is missing from this sheet. Yet it confirms that a person left the island that night from this landing stage. The date matches that of the inventory found in the chest. Open the chest to check whether it is indeed Jeanne, without yet turning that match into certainty.",
+      lockedMessage: "The sheet is protected in the tube fastened to the buoy.",
+      hint: "Take the last digit of 9:32 PM, then of 9:41 PM, then of 10:05 PM. The sheet gives this order explicitly.",
     },
     {
       id: "phare-coffre",
       animation: "lid",
       chapterId: "grotte",
-      name: "Le coffre du débarcadère",
-      prompt: "Ouvrir le coffre de courrier",
+      name: "The landing-stage chest",
+      prompt: "Open the mail chest",
       action: "code",
       region: { x: 0.04, y: 0.63, w: 0.26, h: 0.25 },
       requires: ["phare-bouee"],
       code: "215",
-      itemName: "Bordereau nominatif et clé du carnet",
-      speaker: "Capitaine du Passage, bordereau signé",
-      message: `Le coffre contient les doubles du courrier, une petite clé et un bordereau protégé par une toile cirée.
-
-« Passagère : Jeanne Arven. Destination : atelier de verre, quai des Verriers. Embarquement à la cale du phare, 21 h 54. Départ à 22 h 05. Bagages : un coffre à croquis et un sac. Passage soldé. » La signature de Jeanne est suivie de celle du capitaine. Une mention ajoutée le lendemain confirme le débarquement au quai indiqué.
-
-Vous relisez la ligne. Jeanne a quitté l’île, puis atteint sa destination. Cette preuve établit son trajet ; elle ne dit pas pourquoi les nouvelles n’ont pas circulé ensuite. Le mot « disparue » ne peut plus rester seul dans le registre.
-
-La petite clé porte une étiquette : « Boîte du carnet, niche droite ». Sous le plateau du coffre, une languette de tissu dépasse d’un compartiment de courrier. Abel l’a signalée par une bande de papier : « Lettre personnelle, à rapprocher du carnet. » Vous pouvez examiner cette lettre et ouvrir la boîte dans la niche.`,
+      itemName: "Nominative manifest and notebook key",
+      speaker: "Captain of Le Passage, signed manifest",
+      message: "The chest contains copies of the mail, a small key and a manifest protected by oilcloth.\n\n\"Passenger: Jeanne Arven. Destination: glass workshop, Quai des Verriers. Boarding at the lighthouse hold, 9:54 PM. Departure at 10:05 PM. Luggage: one sketch chest and one bag. Passage paid in full.\" Jeanne's signature is followed by the captain's. A note added the next day confirms landing at the stated quay.\n\nYou reread the line. Jeanne left the island, then reached her destination. This proof establishes her journey; it does not say why no news circulated afterward. The word \"missing\" can no longer stand alone in the register.\n\nThe small key bears a tag: \"Notebook box, right niche.\" Beneath the chest's tray, a cloth tab sticks out of a mail compartment. Abel has marked it with a paper strip: \"Personal letter, to be set alongside the notebook.\" You can examine this letter and open the box in the niche.",
       lockedMessage:
-        "La fiche dans le tube de la bouée donne les trois horaires et la règle de la serrure.",
-      hint: "Les derniers chiffres des horaires ARRIVÉE, ATTENTE, DÉPART sont 2, 1 et 5.",
+        "The sheet in the buoy's tube gives the three times and the lock rule.",
+      hint: "The last digits of the ARRIVAL, WAITING, DEPARTURE times are 2, 1 and 5.",
     },
     {
       id: "phare-carnet",
       chapterId: "grotte",
-      name: "Le carnet dans la niche",
-      prompt: "Ouvrir la boîte et recueillir le carnet",
+      name: "The notebook in the niche",
+      prompt: "Open the box and collect the notebook",
       action: "collect",
       region: { x: 0.75, y: 0.51, w: 0.13, h: 0.1 },
       requires: ["phare-coffre"],
       code: null,
-      itemName: "Carnet de Jeanne Arven",
-      speaker: "Jeanne Arven, carnet de relève",
-      message: `La clé du coffre ouvre la boîte de la niche. Jeanne a rempli son carnet de plans, de gestes d’entretien et de listes de fournitures. La dernière page technique décrit le collier de la roue rouge, dans la salle des cartes.
-
-« Pour ouvrir le logement sec, lisez la table dans l’ordre des quatre mots du collier : ÉCUME, VEILLE, AUBE, RETOUR. Table des chiffres : AUBE = 4 ; RETOUR = 2 ; ÉCUME = 3 ; VEILLE = 1. Le collier protège le pont conducteur de secours. Ne faites pas tourner la roue : ouvrez seulement son logement. »
-
-Une page personnelle suit : « Je rends mes outils ce soir et je pars apprendre à tailler des lentilles. J’ai demandé au capitaine de porter ma lettre par sa prochaine tournée. Si elle arrive avant moi, dites à Émile que je ne lui prends rien : il aura un autre apprenti, et j’aurai enfin un autre horizon. Je laisse ce carnet ici pour celui ou celle qui prendra ma place. »
-
-Vous emportez le carnet. Ses consignes rendent possible un retour utile à la salle des cartes : le pont conducteur attend toujours derrière la roue rouge.`,
+      itemName: "Jeanne Arven's notebook",
+      speaker: "Jeanne Arven, handover notebook",
+      message: "The chest's key opens the niche box. Jeanne has filled her notebook with plans, maintenance procedures and supply lists. The last technical page describes the collar of the red wheel, in the map room.\n\n\"To open the dry housing, read the table in the order of the four words on the collar: FOAM, WATCH, DAWN, RETURN. Table of digits: DAWN = 4; RETURN = 2; FOAM = 3; WATCH = 1. The collar protects the spare conductor bridge. Do not turn the wheel: only open its housing.\"\n\nA personal page follows: \"I hand in my tools tonight and I am leaving to learn how to cut lenses. I asked the captain to carry my letter on his next round. If it arrives before me, tell Émile I am taking nothing from him: he will have another apprentice, and I will finally have another horizon. I am leaving this notebook here for whoever takes my place.\"\n\nYou take the notebook with you. Its instructions make a useful return to the map room possible: the conductor bridge is still waiting behind the red wheel.",
       lockedMessage:
-        "La boîte de la niche est fermée. La petite clé se trouve dans le coffre du débarcadère.",
-      hint: "Ouvrez le coffre, prenez sa clé, puis revenez à la niche. Le carnet contient la combinaison de la roue rouge et l’emplacement de la pièce de secours.",
+        "The niche box is locked. The small key is in the landing-stage chest.",
+      hint: "Open the chest, take its key, then come back to the niche. The notebook contains the red wheel combination and the location of the spare part.",
     },
     {
       id: "phare-lettre",
       chapterId: "grotte",
-      name: "La lettre sous le plateau du coffre",
-      prompt: "Lire la lettre de départ",
+      name: "The letter beneath the chest's tray",
+      prompt: "Read the farewell letter",
       action: "inspect",
       region: { x: 0.09, y: 0.89, w: 0.18, h: 0.05 },
       requires: ["phare-coffre"],
       code: null,
       itemName: null,
-      speaker: "Jeanne Arven, lettre à Émile",
-      message: `« Émile,
-
-Je pars ce soir avec Le Passage. J’ai fait la relève et rendu les outils. J’ai peur de vous décevoir, mais je ne veux plus que cette peur décide à ma place. Vous m’avez appris à tenir une lumière. À la verrerie, j’apprendrai à la construire.
-
-Le capitaine portera cette lettre au prochain passage, quand les tournées auront repris. Mon adresse est au dos. Vous pourrez m’écrire ; je répondrai. Je souhaite revenir un jour avec quelque chose que j’aurai fait de mes mains.
-
-Jeanne. »
-
-L’enveloppe porte la marque d’un courrier reporté, puis un tampon : « Tournée suspendue — voie basse condamnée ». Elle est restée dans le compartiment quand la cale a été fermée après la grande marée. La lettre annonçait un départ volontaire ; son absence a laissé se former un autre récit.
-
-Un dernier billet d’Abel précise : « Je ne peux pas dire quelles lettres Jeanne a envoyées ensuite ni lesquelles ont été reçues ailleurs. Cette enveloppe prouve seulement que celle-ci n’est jamais partie. Gardez cette limite avec la preuve. »`,
+      speaker: "Jeanne Arven, letter to Émile",
+      message: "\"Émile,\n\nI am leaving tonight with Le Passage. I have done the handover and returned the tools. I am afraid of disappointing you, but I no longer want that fear to decide for me. You taught me how to keep a light. At the glassworks, I will learn how to build one.\n\nThe captain will carry this letter on the next round, when the runs have resumed. My address is on the back. You may write to me; I will answer. I hope to return one day with something I have made with my own hands.\n\nJeanne.\"\n\nThe envelope bears the mark of postponed mail, then a stamp: \"Round suspended — lower way condemned.\" It stayed in the compartment when the hold was closed after the great tide. The letter announced a voluntary departure; its absence allowed another story to take shape.\n\nA final note from Abel clarifies: \"I cannot say which letters Jeanne sent afterward nor which were received elsewhere. This envelope only proves that this one never left. Keep to that limit with the proof.\"",
       lockedMessage:
-        "Le compartiment sous le plateau devient accessible une fois le coffre ouvert.",
-      hint: "Déverrouillez le coffre avec la fiche de la bouée, puis examinez la languette sous son plateau.",
+        "The compartment beneath the tray becomes accessible once the chest is opened.",
+      hint: "Unlock the chest with the buoy's sheet, then examine the tab beneath its tray.",
     },
     {
       id: "phare-escalier",
       chapterId: "grotte",
-      name: "L’escalier vers le jour",
-      prompt: "Remonter vers la grande lanterne",
+      name: "The staircase toward daylight",
+      prompt: "Climb back up to the great lantern",
       action: "unlock",
       region: { x: 0.22, y: 0.09, w: 0.25, h: 0.35 },
       requires: ["phare-carnet", "phare-lettre"],
       code: null,
       itemName: null,
-      speaker: "Nora, carte confiée à Abel",
-      message: `Vous rangez le carnet et les protections de la lettre avant d’ouvrir la grille de l’escalier. Sur le montant, Abel a fixé une carte de Nora pour la relève.
-
-« Mon bateau s’appelle La Traverse. Je vous attendrai dans l’anse jusqu’à l’aube. Abel m’a expliqué le signal d’accueil. Si le phare reste éteint, je reviendrai au port ; personne n’a besoin de se mettre en difficulté pour un registre.
-
-Ma mère m’a demandé de récupérer son carnet si vous le retrouviez. Elle se souvient de l’avoir laissé dans la niche pour son successeur. Elle garde moins de certitudes sur les lettres, les dates, les silences qui ont suivi. J’apporte ce qu’elle a écrit aujourd’hui ; Abel l’a déposé dans le coffre de la chambre haute lors de ma visite.
-
-Je ne cherche pas un coupable à ramener sur le continent. Je voudrais qu’en prononçant son nom ici, on cesse de l’arrêter à cette seule nuit. »
-
-Jeanne est donc vivante. Le bordereau établissait une arrivée ancienne ; cette carte annonce une voix présente. Vous gagnez la lanterne avec les deux.`,
+      speaker: "Nora, card entrusted to Abel",
+      message: "You file away the notebook and the letter's sleeves before opening the staircase grille. On the upright, Abel has fixed a card from Nora for the relief.\n\n\"My boat is called La Traverse. I will wait for you in the cove until dawn. Abel explained the welcome signal to me. If the lighthouse stays dark, I will return to the harbor; no one needs to put themselves in difficulty for a register.\n\nMy mother asked me to recover her notebook if you found it. She remembers leaving it in the niche for her successor. She holds fewer certainties about the letters, the dates, the silences that followed. I am bringing what she wrote today; Abel placed it in the chest in the upper room during my visit.\n\nI am not looking for a culprit to bring back to the mainland. I would like that, in speaking her name here, we stop arresting it at that single night.\"\n\nSo Jeanne is alive. The manifest established an old arrival; this card announces a present voice. You make for the lantern with both.",
       lockedMessage:
-        "Rassemblez le carnet de la niche et lisez la lettre sous le plateau du coffre avant de quitter les archives.",
-      hint: "Le coffre donne accès à deux documents utiles : le carnet dans la niche et la lettre sous son plateau. Lisez les deux, puis ouvrez la grille.",
+        "Gather the notebook from the niche and read the letter beneath the chest's tray before leaving the archives.",
+      hint: "The chest gives access to two useful documents: the notebook in the niche and the letter beneath its tray. Read both, then open the grille.",
     },
     {
       id: "phare-pupitre",
       chapterId: "lanterne",
-      name: "Le pupitre de mise en lumière",
-      prompt: "Lire la procédure du signal d’accueil",
+      name: "The lighting desk",
+      prompt: "Read the welcome-signal procedure",
       action: "inspect",
       region: { x: 0.02, y: 0.18, w: 0.21, h: 0.43 },
       requires: [],
       code: null,
       itemName: null,
-      speaker: "Abel, procédure de relève",
-      message: `« Réparation : ouvrez le petit logement à la base de la lentille avec le tournevis de la trousse. Retirez le pont fendu, puis installez le pont conducteur de secours rangé derrière le collier de la roue rouge, dans la salle des cartes. Le carnet de Jeanne explique l’ouverture du collier. Refermez avant de lancer l’essai.
-
-Levier d’accueil : lorsque le mécanisme est rétabli, abaissez-le une seule fois. Il produit automatiquement trois longues lueurs, chacune séparée par une pause. C’est le signal convenu avec Nora. »
-
-Abel a ajouté une note moins technique : « J’avais prévu de faire cette réparation avant mon départ. La conduite s’est remplie pendant la dernière vérification et j’ai isolé l’ensemble. Les pièces sont contrôlées ; vous avez maintenant la marche à suivre. Inscrivez l’intervention à votre nom.
-
-Pour le registre ancien, Nora et moi avons préparé deux possibilités : conservation ici avec copie pour elle, ou transmission de l’original avec copie conservée au phare. Les pièces et leurs limites doivent accompagner l’une comme l’autre. Ce choix revient à la personne qui assure désormais la garde des archives. »`,
+      speaker: "Abel, relief procedure",
+      message: "\"Repair: open the small housing at the base of the lens with the screwdriver from the kit. Remove the cracked bridge, then install the spare conductor bridge stored behind the collar of the red wheel, in the map room. Jeanne's notebook explains how to open the collar. Close before running the test.\n\nWelcome lever: when the mechanism is restored, lower it a single time. It automatically produces three long flashes, each separated by a pause. This is the signal agreed with Nora.\"\n\nAbel has added a less technical note: \"I had planned to make this repair before my departure. The conduit filled during the last check and I isolated the whole assembly. The parts have been checked; you now have the procedure. Record the work under your name.\n\nFor the old register, Nora and I have prepared two possibilities: keep it here with a copy for her, or hand over the original with a copy kept at the lighthouse. The pieces of evidence and their limits must accompany either one. This choice falls to the person who now keeps the archives.\"",
       lockedMessage:
-        "La procédure est posée sur le pupitre, à gauche de la lentille.",
-      hint: "Il faut le pont conducteur de la roue rouge. Si vous ne l’avez pas, retournez à la salle des cartes avec la combinaison donnée par le carnet.",
+        "The procedure is lying on the desk, to the left of the lens.",
+      hint: "You need the conductor bridge from the red wheel. If you do not have it, return to the map room with the combination given by the notebook.",
     },
     {
       id: "phare-lentille",
       animation: "light",
       chapterId: "lanterne",
-      name: "La lentille et son logement conducteur",
-      prompt: "Réparer la lumière et lancer le signal",
+      name: "The lens and its conductor housing",
+      prompt: "Repair the light and send the signal",
       action: "unlock",
       region: { x: 0.27, y: 0.1, w: 0.32, h: 0.67 },
       requires: ["phare-pupitre", "phare-roue"],
       code: null,
       itemName: null,
-      message: `Vous ouvrez le logement avec le tournevis de la trousse. Une fente traverse le vieux pont. Vous posez à sa place la pièce récupérée derrière la roue rouge, contrôlez sa tenue puis refermez le capot, dans l’ordre indiqué par Abel.
-
-La lentille prend une lumière dorée. Le mécanisme libéré accompagne sa rotation sans secousse. Au pupitre, vous abaissez le levier d’accueil : une longue lueur, une pause ; une deuxième, une pause ; une troisième. Vous laissez la commande revenir seule au repos.
-
-Dans l’anse, le carré de tissu clair se lève. La Traverse se détache de son point d’attente et gagne le petit quai maintenant visible au pied du phare. Ce mouvement répond exactement à la consigne de Nora. Le bateau ne vous poursuivait pas dans la nuit : il attendait une invitation lisible.
-
-Vous inscrivez la réparation sur la fiche, avec les pièces remplacées. Le phare fonctionne. Il reste à ouvrir le coffre de relève et à décider comment la mémoire de Jeanne quittera, ou habitera, cette pièce.`,
+      message: "You open the housing with the screwdriver from the kit. A crack runs across the old bridge. You set the part recovered from behind the red wheel in its place, check that it holds, then close the cover, in the order indicated by Abel.\n\nThe lens takes on a golden light. The freed mechanism follows its rotation without jolting. At the desk, you lower the welcome lever: one long flash, a pause; a second, a pause; a third. You let the control return to rest by itself.\n\nIn the cove, the square of pale cloth is raised. La Traverse slips from its waiting point and makes for the small quay now visible at the foot of the lighthouse. This movement answers Nora's instruction exactly. The boat was not pursuing you through the night: it was waiting for a readable invitation.\n\nYou record the repair on the sheet, with the parts replaced. The lighthouse is working. It remains to open the relief chest and to decide how Jeanne's memory will leave, or inhabit, this room.",
       lockedMessage:
-        "Lisez la procédure du pupitre et récupérez le pont conducteur derrière la roue rouge, dans la salle des cartes.",
-      hint: "Le carnet de la grotte donne le code de la roue rouge. Revenez à cette roue au premier chapitre, prenez le pont, puis appliquez la fiche du pupitre.",
+        "Read the procedure on the desk and recover the conductor bridge from behind the red wheel, in the map room.",
+      hint: "The notebook from the cave gives the red wheel code. Return to that wheel in the first chapter, take the bridge, then follow the desk sheet.",
     },
     {
       id: "phare-coffret",
       animation: "lid",
       chapterId: "lanterne",
-      name: "Le coffre bas de la relève",
-      prompt: "Recueillir la lettre de Jeanne et le dossier",
+      name: "The low relief chest",
+      prompt: "Collect Jeanne's letter and the file",
       action: "collect",
       region: { x: 0.64, y: 0.74, w: 0.32, h: 0.23 },
       requires: ["phare-lentille"],
       code: null,
-      itemName: "Dossier de transmission de Jeanne",
-      speaker: "Jeanne Arven, lettre présente",
-      message: `Le coffre abrite un dossier, des feuilles de copie et la lettre confiée par Nora à Abel deux jours plus tôt.
-
-« À la personne qui gardera la lumière,
-
-Je suis Jeanne Arven. J’ai bien quitté le phare avec Le Passage, puis travaillé à la verrerie. Nora est ma fille. Je ne savais pas que mon nom était resté ici au milieu d’une disparition. Je croyais ma première lettre portée ; je ne sais toujours pas reconstituer tous les silences qui ont suivi.
-
-Si mon carnet existe encore, qu’il serve. J’y avais mis ce qu’on m’avait appris et ce que j’avais compris seule. Vous pouvez garder le registre au phare et nous en envoyer une copie, ou remettre l’original à Nora en conservant une copie sur place. J’accepte les deux voies. Je demande seulement que les blancs restent visibles et que mon départ soit nommé comme tel.
-
-La lanterne de La Traverse a perdu son verre lors de notre dernière traversée. Nora attendra à l’abri, sans repartir de nuit ; votre signal lui indiquera quand approcher. Son bateau sans feu n’apporte aucun présage. Il apporte cette lettre. »
-
-Vous posez le dossier près du registre. La réponse ancienne et la voix présente peuvent enfin être lues ensemble.`,
+      itemName: "Jeanne's handover file",
+      speaker: "Jeanne Arven, present letter",
+      message: "The chest holds a file, copy sheets and the letter entrusted by Nora to Abel two days earlier.\n\n\"To the person who will keep the light,\n\nI am Jeanne Arven. I did leave the lighthouse with Le Passage, then worked at the glassworks. Nora is my daughter. I did not know that my name had remained here in the midst of a disappearance. I believed my first letter had been delivered; I still cannot reconstruct all the silences that followed.\n\nIf my notebook still exists, let it serve. I had put into it what I was taught and what I understood alone. You may keep the register at the lighthouse and send us a copy, or give the original to Nora while keeping a copy on site. I accept both paths. I ask only that the blanks remain visible and that my departure be named as such.\n\nLa Traverse's lantern lost its glass on our last crossing. Nora will wait under shelter, without setting out again by night; your signal will tell her when to approach. Her boat without a light brings no omen. It brings this letter.\"\n\nYou lay the file beside the register. The old answer and the present voice can finally be read together.",
       lockedMessage:
-        "Le signal d’accueil doit d’abord être envoyé : la réparation et la sécurité du passage passent avant l’ouverture du dossier de relève.",
-      hint: "Réparez la lentille avec le pont conducteur de la roue rouge et lancez le signal ; vous pourrez ensuite recueillir ce dossier.",
+        "The welcome signal must first be sent: repairing and securing the passage come before opening the relief file.",
+      hint: "Repair the lens with the conductor bridge from the red wheel and send the signal; you can then collect this file.",
     },
     {
       id: "phare-registre",
       chapterId: "lanterne",
-      name: "Le registre ouvert sur le pupitre",
-      prompt: "Choisir comment transmettre le registre",
+      name: "The register open on the desk",
+      prompt: "Choose how to transmit the register",
       action: "choose",
       region: { x: 0.08, y: 0.74, w: 0.2, h: 0.11 },
       requires: ["phare-coffret", "phare-lettre", "phare-roue"],
       code: null,
       itemName: null,
-      message: `Vous réunissez le bordereau signé, la lettre restée dans le coffre, la page sauvée derrière la roue et le témoignage actuel de Jeanne. Vous écrivez : « Départ volontaire confirmé, arrivée au continent attestée. Première lettre non acheminée. Circulation des correspondances ultérieures non établie. »
-
-Vous ajoutez la date de votre relève et décrivez l’emplacement de chaque pièce. La formule ancienne reste lisible sous la nouvelle annotation ; elle fait partie de l’histoire de l’erreur. Le dossier contient assez de papier pour conserver une copie complète de ce qui sera transmis.
-
-Deux accords ont été proposés et acceptés par Jeanne. Vous pouvez laisser l’original au phare, avec un accès clairement indiqué et une copie pour Nora. Vous pouvez aussi lui remettre l’original, accompagné des pièces, et conserver ici les copies datées. Les recherches futures resteront possibles dans les deux cas. Choisissez le lieu où l’original poursuivra son histoire.`,
+      message: "You gather the signed slip, the letter left in the chest, the page saved behind the wheel, and Jeanne's present testimony. You write: \"Voluntary departure confirmed, arrival on the mainland attested. First letter not delivered. Circulation of later correspondence not established.\"\n\nYou add the date of your relief and describe the location of each item. The old wording remains legible beneath the new annotation; it is part of the history of the error. The file holds enough paper to keep a complete copy of what will be passed on.\n\nTwo agreements have been proposed and accepted by Jeanne. You may leave the original at the lighthouse, with clearly marked access and a copy for Nora. You may also hand her the original, with the supporting items, and keep the dated copies here. Future research will remain possible in either case. Choose where the original will continue its story.",
       lockedMessage:
-        "Rassemblez le dossier du coffre, la lettre de départ et la page conservée derrière la roue rouge avant de décider.",
-      hint: "Le dossier précise que Jeanne accepte les deux possibilités. Votre décision change le destin du registre et la conclusion, sans autre énigme à résoudre.",
+        "Gather the file from the chest, the departure letter, and the page kept behind the red wheel before deciding.",
+      hint: "The file states that Jeanne accepts both options. Your decision changes the fate of the logbook and the ending, with no further puzzle to solve.",
       choices: [
         {
           id: "laisser",
-          label: "Laisser le registre au phare, donner une copie à Nora",
+          label: "Leave the logbook at the lighthouse, give a copy to Nora",
           reply:
-            "Vous inscrivez le lieu de conservation sur le dossier de Nora et préparez sa copie complète. L’original rejoint une étagère accessible, avec un avis de consultation. Le nom de Jeanne fait désormais partie d’une mémoire que le prochain gardien pourra vérifier.",
+            "You record the storage location in Nora's file and prepare her complete copy. The original joins an accessible shelf, with a consultation notice. Jeanne's name is now part of a memory the next keeper will be able to verify.",
         },
         {
           id: "transmettre",
-          label: "Transmettre le registre à Nora, garder une copie au phare",
+          label: "Give the logbook to Nora, keep a copy at the lighthouse",
           reply:
-            "Vous datez la copie qui restera au phare et enveloppez l’original avec ses pièces. Une feuille précise qu’il est confié à Jeanne par l’intermédiaire de Nora. Vous laissez leurs coordonnées de consultation avec leur accord : la trace demeure, et l’objet peut rentrer chez elle.",
+            "You date the copy that will remain at the lighthouse and wrap the original with its supporting items. A sheet notes that it is entrusted to Jeanne through Nora. You leave their consultation contact details with their agreement: the trace remains, and the object can return to her.",
         },
       ],
     },
     {
       id: "phare-terrasse",
       chapterId: "lanterne",
-      name: "La porte de la terrasse",
-      prompt: "Sortir accueillir Nora à l’aube",
+      name: "The terrace door",
+      prompt: "Go out to greet Nora at dawn",
       action: "exit",
       region: { x: 0.67, y: 0.12, w: 0.27, h: 0.56 },
       requires: ["phare-registre"],
       code: null,
       itemName: null,
-      message: `Vous poussez la porte de la terrasse. L’air du matin soulève le bord de la fiche que vous tenez encore. En bas, La Traverse touche le quai et Nora lève la tête vers le phare. Vous lui répondez de la main.
-
-Le grand faisceau poursuit sa rotation derrière vous. Sur le pupitre, votre écriture rejoint celle d’Abel et les croquis de Jeanne, avec une intervention datée, des pièces nommées et un emplacement pour les questions à venir.
-
-Vous prenez le dossier préparé selon votre décision et descendez accueillir Nora. Pour la première fois depuis votre arrivée, vous n’écoutez plus le bâtiment pour y chercher une panne. Vous en reconnaissez le fonctionnement : les pas dans l’escalier, le mouvement de la lentille, une porte qu’on ouvre à la personne attendue. Votre première relève est accomplie.`,
+      message: "You push open the terrace door. The morning air lifts the edge of the slip you are still holding. Below, La Traverse touches the quay and Nora looks up toward the lighthouse. You wave back to her.\n\nThe great beam continues its rotation behind you. On the desk, your handwriting joins Abel's and Jeanne's sketches, with a dated intervention, named items, and a place for questions to come.\n\nYou take the file prepared according to your decision and go down to greet Nora. For the first time since your arrival, you are no longer listening to the building to find a fault. You recognize how it works: footsteps on the stairs, the movement of the lens, a door opened for the person expected. Your first relief is accomplished.",
       lockedMessage:
-        "La lumière fonctionne. Décidez maintenant où conserver le registre avant de rejoindre Nora.",
-      hint: "Ouvrez le dossier du coffre bas, puis choisissez la transmission sur le registre du pupitre. La terrasse sera alors accessible.",
+        "The light is working. Now decide where to keep the logbook before joining Nora.",
+      hint: "Open the file in the low chest, then choose the handover on the desk logbook. The terrace will then be accessible.",
     },
   ],
   ending: {
@@ -560,29 +402,13 @@ Vous prenez le dossier préparé selon votre décision et descendez accueillir N
     variants: [
       {
         choiceId: "laisser",
-        title: "Une place dans la lumière",
-        text: `Nora vous rejoint à l’entrée, les cheveux encore mouillés d’embruns. Vous lui remettez le carnet de sa mère et la copie du dossier, puis vous lui montrez l’emplacement du registre original. Elle passe un doigt au-dessus de la nouvelle annotation, sans toucher le papier.
-
-« Elle pourra venir le lire elle-même », écrit-elle au bas de l’accusé de réception. Vous ajoutez les horaires de consultation et votre adresse de gardien. Vous n’avez pas demandé à Jeanne de revenir pour rendre votre conclusion valable ; vous lui avez ouvert un lieu où elle pourra, si elle le souhaite, reprendre la parole.
-
-L’original reste au phare. Sur l’étagère, il n’est plus isolé sous une date de disparition : un renvoi conduit au bordereau du Passage, à la lettre non acheminée, aux consignes du carnet et à la lettre présente. Une page indique aussi ce que vous ignorez encore. Les prochains lecteurs pourront distinguer un départ établi d’une histoire de correspondances qui demeure incomplète.
-
-Avant de repartir, Nora vous tend une petite pièce de verre poli que Jeanne avait glissée dans son sac. La lumière la traverse et dessine une tache ronde sur votre manche. Vous la posez près du registre, avec son nom et sa date, sans en faire une preuve supplémentaire. C’est un cadeau.
-
-La Traverse quitte le quai dans le jour. Vous revenez au bureau pour préparer la relève suivante. Sous la rubrique « Observations », vous écrivez que le mécanisme fonctionne, que le signal a été reçu et que les archives sont consultables. Puis vous laissez de la place sur la page. La mémoire du phare n’est plus fermée par un seul mot.`,
+        title: "A place in the light",
+        text: "Nora joins you at the entrance, her hair still wet with spray. You hand her her mother's notebook and the copy of the file, then show her the location of the original logbook. She runs a finger above the new annotation, without touching the paper.\n\n\"She will be able to come and read it herself,\" she writes at the bottom of the acknowledgment of receipt. You add the consultation hours and your keeper's address. You did not ask Jeanne to return to make your conclusion valid; you opened a place for her where, if she wishes, she can speak again.\n\nThe original remains at the lighthouse. On the shelf, it is no longer isolated under a date of disappearance: a cross-reference leads to the Passage slip, to the undelivered letter, to the notebook instructions, and to the present letter. One page also notes what you still do not know. Future readers will be able to distinguish an established departure from a story of correspondence that remains incomplete.\n\nBefore leaving, Nora hands you a small piece of polished glass that Jeanne had slipped into her bag. Light passes through it and draws a round spot on your sleeve. You place it beside the logbook, with her name and its date, without making it additional evidence. It is a gift.\n\nLa Traverse leaves the quay in the daylight. You return to the office to prepare the next relief. Under the heading \"Observations,\" you write that the mechanism is working, that the signal was received, and that the archives may be consulted. Then you leave space on the page. The lighthouse's memory is no longer closed by a single word.",
       },
       {
         choiceId: "transmettre",
-        title: "Le registre prend la mer",
-        text: `Nora attend au bas de l’escalier. Vous lui remettez le carnet, la lettre qui n’avait jamais quitté le coffre et le registre enveloppé dans une toile sèche. Elle vérifie les dates avec vous, puis signe le reçu préparé pour Jeanne. Sur la ligne suivante, elle inscrit l’adresse où l’original pourra être consulté avec leur accord.
-
-Une copie complète reste au phare, accompagnée des références des pièces et de la date de transmission. À l’endroit du registre, vous placez une fiche : « Original confié à Jeanne Arven par Nora. Départ volontaire et arrivée au continent établis. Acheminement des lettres ultérieures non établi. » Une personne venue chercher une réponse saura donc où poursuivre, et quelles questions restent ouvertes.
-
-Nora serre le paquet contre elle. « Je crois qu’elle voudra d’abord regarder son écriture », note-t-elle sur le reçu avant de vous le rendre. Vous comprenez alors que l’objet gardait autre chose qu’une preuve : les lignes d’une jeune femme qui avait rangé ses outils avant de choisir une autre vie. Ces lignes vont enfin rejoindre celle qui les a tracées.
-
-Avant de partir, Nora vous confie une petite pièce de verre poli faite par Jeanne. Vous la suspendez près du pupitre avec son nom et sa date. La copie du registre conserve les faits ; ce cadeau marque la rencontre de ce matin. Vous veillez à leur donner chacun leur place.
-
-La Traverse s’éloigne, chargée d’un peu plus de papier qu’à son arrivée. Derrière vous, la lentille tourne régulièrement. Vous inscrivez votre première relève dans le registre neuf : réparation accomplie, signal reçu, documents transmis. Puis vous ouvrez la page suivante. Vous garderez la lumière ; d’autres personnes emporteront ce qu’elle aura permis de retrouver.`,
+        title: "The logbook puts to sea",
+        text: "Nora waits at the foot of the stairs. You hand her the notebook, the letter that had never left the chest, and the logbook wrapped in dry canvas. She checks the dates with you, then signs the receipt prepared for Jeanne. On the next line, she writes the address where the original may be consulted with their agreement.\n\nA complete copy remains at the lighthouse, with the references of the items and the date of transfer. In place of the logbook, you put a card: \"Original entrusted to Jeanne Arven through Nora. Voluntary departure and arrival on the mainland established. Delivery of later letters not established.\" Someone coming to look for an answer will therefore know where to continue, and which questions remain open.\n\nNora holds the parcel close. \"I think she will first want to look at her handwriting,\" she notes on the receipt before handing it back to you. You then understand that the object kept something more than proof: the lines of a young woman who had tidied her tools before choosing another life. Those lines will finally rejoin the one who drew them.\n\nBefore leaving, Nora entrusts you with a small piece of polished glass made by Jeanne. You hang it near the desk with her name and its date. The copy of the logbook preserves the facts; this gift marks this morning's meeting. You take care to give each its own place.\n\nLa Traverse moves away, carrying a little more paper than when it arrived. Behind you, the lens turns steadily. You record your first relief in the new logbook: repair accomplished, signal received, documents transferred. Then you open the next page. You will keep the light; other people will carry away what it made possible to recover.",
       },
     ],
   },

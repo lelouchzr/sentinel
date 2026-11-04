@@ -40,7 +40,7 @@ export function useSoundscape(ambience?: string) {
       const Audio = window.AudioContext;
       if (!Audio)
         throw new Error(
-          "Ce navigateur ne prend pas en charge l’ambiance sonore.",
+          "This browser does not support the soundscape.",
         );
       const ctx = new Audio();
       context.current = ctx;
@@ -74,7 +74,7 @@ export function useSoundscape(ambience?: string) {
       context.current = null;
       setEnabled(false);
       setError(
-        e instanceof Error ? e.message : "L’ambiance sonore est indisponible.",
+        e instanceof Error ? e.message : "Audio ambience is unavailable.",
       );
     }
   }

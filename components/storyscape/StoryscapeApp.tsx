@@ -28,48 +28,48 @@ export default function StoryscapeApp({ view, slug, draftId }: Props) {
   return (
     <div className={`app view-${view}`}>
       <a className="skip-link" href="#main-content">
-        Aller au contenu
+        Skip to content
       </a>
       <header className="site-header">
-        <a className="wordmark" href="/" aria-label="Storyscape, accueil">
+        <a className="wordmark" href="/" aria-label="Storyscape, home">
           <BookOpen size={25} strokeWidth={1.7} />
           <span>Storyscape</span>
         </a>
-        <nav aria-label="Navigation principale">
+        <nav aria-label="Main navigation">
           <a className={view === "gallery" ? "active" : ""} href="/">
-            Créer
+            Create
           </a>
-          <a className={view === "player" ? "active" : ""} href="/#galerie">
-            Jouer
+          <a className={view === "player" ? "active" : ""} href="/#gallery">
+            Play
           </a>
-          <a className={view === "editor" ? "active" : ""} href="/atelier">
-            L’atelier
+          <a className={view === "editor" ? "active" : ""} href="/studio">
+            The Studio
           </a>
-          <a className={view === "mine" ? "active" : ""} href="/mes-creations">
-            Mes créations
+          <a className={view === "mine" ? "active" : ""} href="/my-creations">
+            My creations
           </a>
         </nav>
         <div className="header-end">
           {viewer ? (
             <a
               className="avatar"
-              href="/mes-creations"
-              aria-label={`Créations de ${viewer.displayName}`}
+              href="/my-creations"
+              aria-label={`Creations by ${viewer.displayName}`}
             >
               {viewer.displayName.slice(0, 1).toUpperCase()}
             </a>
           ) : (
             <a
               className="login-link"
-              href="/signin-with-chatgpt?return_to=/atelier"
+              href="/signin-with-chatgpt?return_to=/studio"
               target="_top"
             >
-              Connexion <ArrowUpRight size={15} />
+              Sign in <ArrowUpRight size={15} />
             </a>
           )}
-          <a className="button small primary create-nav" href="/atelier">
+          <a className="button small primary create-nav" href="/studio">
             <Plus size={16} />
-            Créer un jeu
+            Create a game
           </a>
         </div>
       </header>
@@ -91,13 +91,13 @@ export default function StoryscapeApp({ view, slug, draftId }: Props) {
       {view !== "player" && (
         <footer className="site-footer">
           <span>
-            Storyscape <span className="muted">/</span> Des images à explorer.
+            Storyscape <span className="muted">/</span> Images to explore.
           </span>
           <span>
-            Création avec les modèles Meta <Sparkles size={13} />
+            Creation with Meta models <Sparkles size={13} />
           </span>
           <a href="/scenes/sources.json" target="_blank" rel="noreferrer">
-            Crédits des illustrations <ArrowUpRight size={12} />
+            Illustration credits <ArrowUpRight size={12} />
           </a>
         </footer>
       )}

@@ -124,7 +124,7 @@ test("unexecutable interaction combinations and invalid manipulation definitions
   const bad = structuredClone(kitchenStory);
   const o = bad.objects.find((o) => o.id === "k-fruits")!;
   o.puzzle!.pieces[1].id = o.puzzle!.pieces[0].id;
-  assert.throws(() => validateRoom(bad), /uniques/);
+  assert.throws(() => validateRoom(bad), /unique/);
   const other = structuredClone(kitchenStory);
   other.objects.find((o) => o.id === "k-pate")!.puzzle!.solution = ["peser"];
   assert.throws(() => validateRoom(other), /solution/);
@@ -141,7 +141,7 @@ test("unexecutable interaction combinations and invalid manipulation definitions
       { id: "c", label: "c" },
     ],
   };
-  assert.throws(() => validateRoom(impossible), /Séparez/);
+  assert.throws(() => validateRoom(impossible), /Separate/);
 });
 test("long generation validates rich output through the same rules and ignores model asset URLs", () => {
   const fixture = structuredClone(kitchenStory) as any;

@@ -1,3 +1,4 @@
+import { englishRoom, englishState, englishText } from "./language";
 import { env } from "cloudflare:workers";
 import { ZodError } from "zod";
 import {
@@ -31,7 +32,7 @@ import {
 } from "./meta";
 
 function db() {
-  if (!env.DB) throw new ApiError(503, "Le stockage n’est pas disponible.");
+  if (!env.DB) throw new ApiError(503, "Storage is not available.");
   return env.DB;
 }
 const now = () => new Date().toISOString();
@@ -43,7 +44,7 @@ async function persistImage(bytes: Uint8Array, ownerId: string) {
       .subarray(0, 8)
       .every((b, i) => b === [137, 80, 78, 71, 13, 10, 26, 10][i])
   )
-    throw new ApiError(422, "PNG invalide ou supérieur à 5 Mo.");
+    throw new ApiError(422, "Invalid PNG or larger than 5 MB.");
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const width = view.getUint32(16),
     height = view.getUint32(20);
@@ -54,11 +55,11 @@ async function persistImage(bytes: Uint8Array, ownerId: string) {
     height > 6000 ||
     width * height > 20_000_000
   )
-    throw new ApiError(422, "Dimensions de l’image non prises en charge.");
+    throw new ApiError(422, "Unsupported image dimensions.");
   if (!env.BUCKET)
     throw new ApiError(
       503,
-      "Le stockage des illustrations n’est pas configuré.",
+      "Illustration storage is not configured.",
     );
   const id = crypto.randomUUID();
   await env.BUCKET.put(id, bytes, {
@@ -77,7 +78,7 @@ async function ownedDraft(id: string, ownerId: string) {
     .prepare("SELECT * FROM drafts WHERE id=? AND owner_id=?")
     .bind(id, ownerId)
     .first<any>();
-  if (!row) throw new ApiError(404, "Ce brouillon est introuvable.");
+  if (!row) throw new ApiError(404, "This draft cannot be found.");
   return row;
 }
 async function checkImage(
@@ -93,7 +94,7 @@ async function checkImage(
     if (!asset)
       throw new ApiError(
         403,
-        "Une illustration de cette histoire n’appartient pas à votre atelier.",
+        "An illustration in this story does not belong to your studio.",
       );
   }
 }
@@ -101,7 +102,7 @@ async function publicRoom(slug: string) {
   const story = catalogueStory(slug);
   if (story)
     return { definition: story.definition, id: `story:${slug}:narrative-v1` };
-  if (slug === "le-dernier-service-classique")
+  if (slug === "the-last-service-classic" || slug === "le-dernier-service-classique")
     return { definition: kitchen, id: "builtin-kitchen-classic" };
   const row = await db()
     .prepare(
@@ -112,12 +113,12 @@ async function publicRoom(slug: string) {
   if (!row)
     throw new ApiError(
       404,
-      "Ce jeu n’est plus publié ou son lien est incorrect.",
+      "This game is no longer published or its link is incorrect.",
     );
-  return { definition: JSON.parse(row.definition) as Room, id: row.id };
+  return { definition: englishRoom(JSON.parse(row.definition)) as Room, id: row.id };
 }
 function card(row: any) {
-  const room = JSON.parse(row.definition) as Room;
+  const room = englishRoom(JSON.parse(row.definition)) as Room;
   return {
     id: row.id,
     slug: row.slug,
@@ -127,7 +128,7 @@ function card(row: any) {
     theme: room.theme,
     difficulty: room.difficulty,
     duration: room.duration,
-    author: row.author,
+    author: englishText(row.author),
     createdAt: row.created_at,
     builtin: false,
     chapterCount: room.chapters?.length ?? 1,
@@ -143,7 +144,7 @@ async function imageInput(
   let data: ArrayBuffer;
   if (room.image.startsWith("/api/assets/")) {
     const object = await env.BUCKET?.get(room.image.slice(12));
-    if (!object) throw new ApiError(404, "Illustration introuvable.");
+    if (!object) throw new ApiError(404, "Illustration not found.");
     data = await object.arrayBuffer();
   } else {
     const url = new URL(room.image, request.url);
@@ -153,12 +154,12 @@ async function imageInput(
           headers: { cookie: request.headers.get("cookie") ?? "" },
         });
     if (!response.ok)
-      throw new ApiError(502, "L’illustration n’a pas pu être chargée.");
+      throw new ApiError(502, "The illustration could not be loaded.");
     data = await response.arrayBuffer();
   }
   const bytes = new Uint8Array(data);
   if (bytes.length > 5_000_000 || bytes.length < 24)
-    throw new ApiError(422, "L’image est trop volumineuse ou invalide.");
+    throw new ApiError(422, "The image is too large or invalid.");
   const view = new DataView(data);
   const width = view.getUint32(16);
   const height = view.getUint32(20);
@@ -248,7 +249,7 @@ export async function handle(request: Request): Promise<Response> {
             id: r.id,
             revision: r.revision,
             updatedAt: r.updated_at,
-            room: JSON.parse(r.definition),
+            room: englishRoom(JSON.parse(r.definition)),
           })),
           publications: pubs.results.map((p: any) => ({
             ...p,
@@ -282,7 +283,7 @@ export async function handle(request: Request): Promise<Response> {
           return json({
             id: row.id,
             revision: row.revision,
-            room: JSON.parse(row.definition),
+            room: englishRoom(JSON.parse(row.definition)),
             tested: !!tested,
           });
         }
@@ -291,7 +292,7 @@ export async function handle(request: Request): Promise<Response> {
           if (data.revision !== row.revision)
             throw new ApiError(
               409,
-              "Ce brouillon a changé dans un autre onglet. Rechargez-le avant de modifier.",
+              "This draft changed in another tab. Reload it before editing.",
             );
           const room = validateRoom(data.room);
           await checkImage(room, u.id);
@@ -304,7 +305,7 @@ export async function handle(request: Request): Promise<Response> {
           if (!result.meta.changes)
             throw new ApiError(
               409,
-              "Ce brouillon vient de changer. Rechargez la page.",
+              "This draft has just changed. Reload the page.",
             );
           return json({ id: row.id, revision: row.revision + 1, room });
         }
@@ -313,12 +314,12 @@ export async function handle(request: Request): Promise<Response> {
           if (data.rightsConfirmed !== true)
             throw new ApiError(
               422,
-              "Confirmez les droits de publication de l’illustration.",
+              "Confirm the illustration publishing rights.",
             );
           const visibility = data.visibility;
           if (visibility !== "public" && visibility !== "unlisted")
-            throw new ApiError(400, "Visibilité invalide.");
-          const room = validateRoom(JSON.parse(row.definition));
+            throw new ApiError(400, "Invalid visibility.");
+          const room = validateRoom(englishRoom(JSON.parse(row.definition)));
           const tested = await db()
             .prepare(
               "SELECT id FROM play_sessions WHERE room_id=? AND completed_at IS NOT NULL LIMIT 1",
@@ -328,7 +329,7 @@ export async function handle(request: Request): Promise<Response> {
           if (!tested)
             throw new ApiError(
               422,
-              "Terminez une partie de test de cette version avant de la publier.",
+              "Finish a test playthrough of this version before publishing it.",
             );
           const id = crypto.randomUUID();
           const slug =
@@ -358,7 +359,7 @@ export async function handle(request: Request): Promise<Response> {
               now(),
             )
             .run();
-          return json({ id, slug, visibility, url: `/jouer/${slug}` }, 201);
+          return json({ id, slug, visibility, url: `/play/${slug}` }, 201);
         }
       }
     }
@@ -369,7 +370,7 @@ export async function handle(request: Request): Promise<Response> {
         .bind(path[1], u.id)
         .run();
       if (!result.meta.changes)
-        throw new ApiError(404, "Publication introuvable.");
+        throw new ApiError(404, "Publication not found.");
       return json({ ok: true });
     }
     if (path[0] === "play") {
@@ -380,11 +381,11 @@ export async function handle(request: Request): Promise<Response> {
         if (typeof data.draftId === "string") {
           const u = user(request)!;
           const row = await ownedDraft(data.draftId, u.id);
-          definition = JSON.parse(row.definition);
+          definition = englishRoom(JSON.parse(row.definition));
           roomId = `draft:${row.id}:${row.revision}`;
         } else {
           if (typeof data.slug !== "string")
-            throw new ApiError(400, "Choisissez un jeu.");
+            throw new ApiError(400, "Choose a game.");
           const room = await publicRoom(data.slug);
           definition = room.definition;
           roomId = room.id;
@@ -429,23 +430,23 @@ export async function handle(request: Request): Promise<Response> {
         )
           throw new ApiError(
             404,
-            "Partie introuvable. Lancez une nouvelle partie.",
+            "Playthrough not found. Start a new game.",
           );
-        const definition = JSON.parse(row.definition) as Room;
+        const definition = englishRoom(JSON.parse(row.definition)) as Room;
         if (method === "GET")
           return json({
             id: row.id,
-            state: JSON.parse(row.state),
-            journal: discoveredMessages(definition, JSON.parse(row.state)),
+            state: englishState(JSON.parse(row.state), definition),
+            journal: discoveredMessages(definition, englishState(JSON.parse(row.state), definition)),
             revision: row.revision,
-            room: playerRoom(definition, JSON.parse(row.state)),
+            room: playerRoom(definition, englishState(JSON.parse(row.state), definition)),
           });
         if (method === "POST") {
           const data = await body(request);
           if (data.revision !== row.revision)
             throw new ApiError(
               409,
-              "La partie a changé. Rechargez-la pour continuer.",
+              "The game has changed. Reload it to continue.",
             );
           if (
             (data.chapterId !== undefined &&
@@ -453,7 +454,7 @@ export async function handle(request: Request): Promise<Response> {
             (data.code !== undefined && typeof data.code !== "string") ||
             (data.choiceId !== undefined && typeof data.choiceId !== "string")
           )
-            throw new ApiError(400, "Action invalide.");
+            throw new ApiError(400, "Invalid action.");
           if (
             data.chapterId !== undefined &&
             (data.objectId !== undefined ||
@@ -464,11 +465,11 @@ export async function handle(request: Request): Promise<Response> {
           )
             throw new ApiError(
               400,
-              "Choisissez un déplacement ou une interaction.",
+              "Choose a move or an interaction.",
             );
           if (data.chapterId === undefined && typeof data.objectId !== "string")
-            throw new ApiError(400, "Choisissez un objet ou un lieu.");
-          const previous = JSON.parse(row.state) as GameState;
+            throw new ApiError(400, "Choose an object or a place.");
+          const previous = englishState(JSON.parse(row.state), definition) as GameState;
           const result =
             typeof data.chapterId === "string"
               ? moveChapter(definition, previous, data.chapterId)
@@ -497,7 +498,7 @@ export async function handle(request: Request): Promise<Response> {
           if (!updated.meta.changes)
             throw new ApiError(
               409,
-              "Une autre action a été reçue. Rechargez la partie.",
+              "Another action was received. Reload the game.",
             );
           return json({
             ...result,
@@ -516,14 +517,14 @@ export async function handle(request: Request): Promise<Response> {
           typeof data.dataUrl !== "string" ||
           !data.dataUrl.startsWith("data:image/png;base64,")
         )
-          throw new ApiError(400, "Importez une image PNG.");
+          throw new ApiError(400, "Import a PNG image.");
         let bytes: Uint8Array;
         try {
           bytes = Uint8Array.from(atob(data.dataUrl.split(",")[1]), (c) =>
             c.charCodeAt(0),
           );
         } catch {
-          throw new ApiError(400, "L’image est invalide.");
+          throw new ApiError(400, "The image is invalid.");
         }
         return json(await persistImage(bytes, u.id), 201);
       }
@@ -532,7 +533,7 @@ export async function handle(request: Request): Promise<Response> {
           .prepare("SELECT owner_id FROM assets WHERE id=?")
           .bind(path[1])
           .first<any>();
-        if (!asset) throw new ApiError(404, "Image introuvable.");
+        if (!asset) throw new ApiError(404, "Image not found.");
         if (user(request, false)?.id !== asset.owner_id) {
           const pub = await db()
             .prepare(
@@ -540,10 +541,10 @@ export async function handle(request: Request): Promise<Response> {
             )
             .bind(`/api/assets/${path[1]}`, `/api/assets/${path[1]}`)
             .first();
-          if (!pub) throw new ApiError(404, "Image introuvable.");
+          if (!pub) throw new ApiError(404, "Image not found.");
         }
         const object = await env.BUCKET?.get(path[1]);
-        if (!object) throw new ApiError(404, "Image introuvable.");
+        if (!object) throw new ApiError(404, "Image not found.");
         return new Response(object.body, {
           headers: {
             "Content-Type": "image/png",
@@ -558,7 +559,7 @@ export async function handle(request: Request): Promise<Response> {
       if (!metaAvailable())
         throw new ApiError(
           503,
-          "La clé Meta n’est pas configurée sur ce serveur.",
+          "The Meta key is not configured on this server.",
         );
       const recent = await db()
         .prepare(
@@ -569,7 +570,7 @@ export async function handle(request: Request): Promise<Response> {
       if (recent.count >= 30)
         throw new ApiError(
           429,
-          "Vous avez atteint les 30 appels Meta par heure pour cet atelier.",
+          "You have reached the 30 Meta calls per hour for this studio.",
         );
       const data = await body(request);
       const room = path[1] === "segment" ? validateRoom(data.room) : null;
@@ -611,14 +612,14 @@ export async function handle(request: Request): Promise<Response> {
           )
             throw new ApiError(
               400,
-              "Décrivez votre aventure en 10 à 2 000 caractères.",
+              "Describe your adventure in 10 to 2,000 characters.",
             );
           if (
             data.format !== undefined &&
             (typeof data.format !== "string" ||
               !["long", "short"].includes(data.format))
           )
-            throw new ApiError(400, "Format d’histoire invalide.");
+            throw new ApiError(400, "Invalid story format.");
           const generated = await generateRoom(
             scene!,
             source!.image,
@@ -634,7 +635,7 @@ export async function handle(request: Request): Promise<Response> {
         } else if (path[1] === "segment") {
           const object = room!.objects.find((o) => o.id === data.objectId);
           if (!object)
-            throw new ApiError(400, "Choisissez un objet à détourer.");
+            throw new ApiError(400, "Choose an object to cut out.");
           const segmented = await segmentObject(
             source!.image,
             source!.width,
@@ -656,7 +657,7 @@ export async function handle(request: Request): Promise<Response> {
           )
             throw new ApiError(
               400,
-              "Décrivez le décor en 10 à 2 000 caractères.",
+              "Describe the scenery in 10 to 2,000 characters.",
             );
           const bytes = await generateIllustration(data.brief);
           const asset = await persistImage(bytes, u.id);
@@ -670,14 +671,14 @@ export async function handle(request: Request): Promise<Response> {
             },
             credits: [
               {
-                title: "Illustration créée avec Muse Image",
+                title: "Illustration created with Muse Image",
                 author: "Muse Image · Meta",
-                license: "Image générée pour ce jeu",
+                license: "Image generated for this game",
                 url: "https://dev.meta.ai/models/muse-image",
               },
             ],
           };
-        } else throw new ApiError(404, "Outil Meta inconnu.");
+        } else throw new ApiError(404, "Unknown Meta tool.");
         await db()
           .prepare(
             "UPDATE model_runs SET status='succeeded',duration_ms=? WHERE id=?",
@@ -702,10 +703,10 @@ export async function handle(request: Request): Promise<Response> {
       return json({
         valid: true,
         steps: solution(room),
-        note: "La solution est atteignable dans les règles. La cohérence visuelle et les indices sont à tester en jouant.",
+        note: "The solution is reachable within the rules. Visual consistency and clues should be tested by playing.",
       });
     }
-    throw new ApiError(404, "Cette ressource est introuvable.");
+    throw new ApiError(404, "This resource cannot be found.");
   } catch (error) {
     if (error instanceof ApiError)
       return json({ error: error.message }, error.status);
@@ -714,18 +715,13 @@ export async function handle(request: Request): Promise<Response> {
     if (error instanceof ZodError)
       return json(
         {
-          error: "Le scénario contient des données invalides.",
+          error: "The scenario contains invalid data.",
           details: error.issues
             .slice(0, 5)
             .map((i) => `${i.path.join(".")} : ${i.message}`),
         },
         422,
       );
-    if (
-      error instanceof Error &&
-      /objet|Dépendance|sortie|circulaires|Code|zone|unique/.test(error.message)
-    )
-      return json({ error: error.message }, 422);
     console.error(
       "Storyscape request failed",
       error instanceof Error ? error.name : "unknown",
@@ -733,7 +729,7 @@ export async function handle(request: Request): Promise<Response> {
     return json(
       {
         error:
-          "Une erreur est survenue. Vos données déjà enregistrées sont conservées.",
+          "An error occurred. Your already saved data is preserved.",
       },
       500,
     );

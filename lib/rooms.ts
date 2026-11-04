@@ -1,11 +1,11 @@
 import type { Room } from "./game";
 
 export const kitchen: Room = {
-  title: "Le dernier service",
+  title: "The Last Service",
   description:
-    "Un restaurant endormi. Cinq assiettes, un tiroir fermé et une dernière sortie à trouver.",
+    "A sleeping restaurant. Five plates, a locked drawer and one last way out to find.",
   story:
-    "Le dernier client est parti et le restaurant a fermé ses portes. La clé de la sortie a été rangée quelque part dans la cuisine. Sur le plan de travail, un mot vous attend : « Tout est à sa place. Prenez le temps de regarder. »",
+    "The last customer has left and the restaurant has closed its doors. The exit key has been put away somewhere in the kitchen. On the counter, a note awaits you: “Everything is in its place. Take the time to look.”",
   theme: "cosy",
   difficulty: "facile",
   duration: 5,
@@ -22,7 +22,7 @@ export const kitchen: Room = {
   objects: [
     {
       id: "assiettes",
-      name: "Les assiettes",
+      name: "The plates",
       prompt: "plate",
       action: "inspect",
       region: { x: 0.65, y: 0.065, w: 0.2, h: 0.17 },
@@ -30,43 +30,43 @@ export const kitchen: Room = {
       code: null,
       itemName: null,
       message:
-        "Un billet glissé sur l’étagère indique : « Le code du tiroir se lit de haut en bas. Comptez les assiettes de chaque rangée. »",
-      lockedMessage: "Observez l’étagère.",
-      hint: "Il y a deux rangées. Le premier chiffre vient de celle du haut.",
+        "A note slipped onto the shelf says: “The drawer code reads from top to bottom. Count the plates on each row.”",
+      lockedMessage: "Look at the shelf.",
+      hint: "There are two rows. The first digit comes from the top one.",
     },
     {
       id: "tiroir",
-      name: "Le tiroir fermé",
+      name: "The locked drawer",
       prompt: "drawer",
       action: "code",
       region: { x: 0.649, y: 0.405, w: 0.1, h: 0.043 },
       requires: ["assiettes"],
       code: "23",
-      itemName: "Clé en laiton",
+      itemName: "Brass key",
       message:
-        "Le tiroir s’ouvre avec un petit déclic. Vous récupérez une clé en laiton et un billet : « La poignée de sortie est coincée. L’outil est sous les fruits. »",
+        "The drawer opens with a small click. You recover a brass key and a note: “The exit handle is stuck. The tool is under the fruits.”",
       lockedMessage:
-        "Un cadenas à deux chiffres ferme ce tiroir. L’étagère pourrait vous donner une piste.",
-      hint: "Deux assiettes en haut, trois en bas. Le cadenas attend deux chiffres.",
+        "A two-digit combination lock closes this drawer. The shelf might give you a lead.",
+      hint: "Two plates on top, three below. The lock expects two digits.",
     },
     {
       id: "fruits",
-      name: "Les fruits",
+      name: "The fruits",
       prompt: "fruit",
       action: "collect",
       region: { x: 0.474, y: 0.465, w: 0.157, h: 0.13 },
       requires: ["tiroir"],
       code: null,
-      itemName: "Petit tournevis",
+      itemName: "Small screwdriver",
       message:
-        "Vous déplacez les fruits et trouvez un petit tournevis. Il devrait permettre de libérer la poignée de la porte.",
+        "You move the fruits and find a small screwdriver. It should free the door handle.",
       lockedMessage:
-        "Des fruits reposent sur le plan de travail. Rien n’indique encore ce que vous cherchez ici.",
-      hint: "Le billet du tiroir mentionne quelque chose sous les fruits.",
+        "Some fruits rest on the counter. Nothing yet shows what you are looking for here.",
+      hint: "The note from the drawer mentions something under the fruits.",
     },
     {
       id: "porte",
-      name: "La porte de sortie",
+      name: "The exit door",
       prompt: "door",
       action: "exit",
       region: { x: 0.026, y: 0.25, w: 0.077, h: 0.45 },
@@ -74,19 +74,19 @@ export const kitchen: Room = {
       code: null,
       itemName: null,
       message:
-        "Vous libérez la poignée avec le tournevis, tournez la clé et poussez la porte. L’air frais du soir vous accueille. Le dernier service est terminé.",
+        "You free the handle with the screwdriver, turn the key and push the door. The cool evening air greets you. The last service is over.",
       lockedMessage:
-        "La porte est fermée à clé et sa poignée est coincée. Il vous manque de quoi l’ouvrir.",
-      hint: "Il faut une clé et un petit outil. Le tiroir et les fruits vous aideront.",
+        "The door is locked and its handle is stuck. You still lack what you need to open it.",
+      hint: "You need a key and a small tool. The drawer and the fruits will help you.",
     },
   ],
 };
 
 export const japanese: Room = {
-  title: "La pièce silencieuse",
-  description: "Un écran éteint, un meuble fermé et un message à retrouver.",
+  title: "The Quiet Room",
+  description: "A dark screen, a closed cabinet and a message to recover.",
   story:
-    "La porte s’est refermée derrière vous. Un papier posé sur la télévision indique : « Commencez par l’écran. La sortie attendra. »",
+    "The door has closed behind you. A paper placed on the television says: “Start with the screen. The exit will wait.”",
   theme: "mystere",
   difficulty: "facile",
   duration: 4,
@@ -103,7 +103,7 @@ export const japanese: Room = {
   objects: [
     {
       id: "television",
-      name: "La télévision",
+      name: "The television",
       prompt: "television",
       action: "inspect",
       region: { x: 0.605, y: 0.22, w: 0.285, h: 0.26 },
@@ -111,27 +111,27 @@ export const japanese: Room = {
       code: null,
       itemName: null,
       message:
-        "Vous allumez l’écran. Deux chiffres apparaissent : 4 puis 2. Une flèche désigne le meuble en dessous.",
-      lockedMessage: "Un écran attend d’être allumé.",
-      hint: "Cliquez sur la télévision pour allumer l’écran.",
+        "You switch on the screen. Two digits appear: 4 then 2. An arrow points to the cabinet below.",
+      lockedMessage: "A screen waits to be switched on.",
+      hint: "Click on the television to switch on the screen.",
     },
     {
       id: "meuble",
-      name: "Le meuble",
+      name: "The cabinet",
       prompt: "cabinet",
       action: "code",
       region: { x: 0.605, y: 0.505, w: 0.283, h: 0.126 },
       requires: ["television"],
       code: "42",
-      itemName: "Clé de la pièce",
-      message: "Le meuble s’ouvre. À l’intérieur : la clé de la porte.",
+      itemName: "Room key",
+      message: "The cabinet opens. Inside: the door key.",
       lockedMessage:
-        "Le meuble est fermé par un code. L’écran pourrait vous renseigner.",
-      hint: "L’écran affiche 4, puis 2.",
+        "The cabinet is closed with a code. The screen could inform you.",
+      hint: "The screen shows 4, then 2.",
     },
     {
       id: "porte",
-      name: "La porte",
+      name: "The door",
       prompt: "door",
       action: "exit",
       region: { x: 0, y: 0.11, w: 0.074, h: 0.59 },
@@ -139,22 +139,22 @@ export const japanese: Room = {
       code: null,
       itemName: null,
       message:
-        "La clé tourne. Vous ouvrez la porte et retrouvez votre liberté.",
-      lockedMessage: "La porte est fermée. La clé est encore dans la pièce.",
-      hint: "Cherchez dans le meuble sous la télévision.",
+        "The key turns. You open the door and find your freedom.",
+      lockedMessage: "The door is locked. The key is still in the room.",
+      hint: "Look inside the cabinet under the television.",
     },
   ],
 };
 
 export const seedCard = {
-  slug: "le-dernier-service",
+  slug: "the-last-service",
   title: kitchen.title,
   description: kitchen.description,
   image: kitchen.image,
   theme: kitchen.theme,
   difficulty: kitchen.difficulty,
   duration: kitchen.duration,
-  author: "L’atelier Storyscape",
+  author: "Storyscape Studio",
   createdAt: "2026-11-04T12:00:00Z",
   builtin: true,
 };

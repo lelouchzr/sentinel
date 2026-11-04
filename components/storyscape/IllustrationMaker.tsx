@@ -27,7 +27,7 @@ export default function IllustrationMaker({
 }) {
   const [open, setOpen] = useState(false),
     [brief, setBrief] = useState(
-      "Une petite bibliothèque mystérieuse au crépuscule, avec une horloge, un coffre, un bureau, une lampe et une porte. Illustration chaleureuse et détails bien lisibles.",
+      "A small mysterious library at dusk, with a clock, a chest, a desk, a lamp and a door. Warm illustration with clearly readable details.",
     ),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
@@ -60,16 +60,15 @@ export default function IllustrationMaker({
       </button>
       {open && (
         <Modal
-          title="Imaginez le décor."
+          title="Imagine the setting."
           onClose={() => !busy && setOpen(false)}
         >
           <p className="modal-intro">
-            Muse Image crée une illustration originale. Votre scène actuelle
-            reste intacte jusqu’à votre choix.
+            Muse Image creates an original illustration. Your current scene stays intact until you choose.
           </p>
           {error && <Notice message={error} />}
           <label>
-            Décrivez la pièce
+            Describe the room
             <textarea
               rows={4}
               value={brief}
@@ -88,18 +87,17 @@ export default function IllustrationMaker({
             ) : (
               <Sparkles size={16} />
             )}{" "}
-            {busy ? "Muse Image dessine…" : "Créer l’illustration"}
+            {busy ? "Muse Image is drawing…" : "Create the illustration"}
           </button>
           {proposal && (
             <>
               <img
                 className="image-proposal"
                 src={proposal.image}
-                alt="Illustration proposée par Muse Image"
+                alt="Illustration suggested by Muse Image"
               />
               <p className="modal-intro">
-                Après avoir choisi ce décor, adaptez les objets ou demandez un
-                nouveau scénario à Muse Spark.
+                After choosing this setting, adapt the objects or ask Muse Spark for a new scenario.
               </p>
               <button
                 className="button primary full"
@@ -110,14 +108,14 @@ export default function IllustrationMaker({
                 }}
               >
                 <Check size={16} />
-                Utiliser cette illustration
+                Use this illustration
               </button>
             </>
           )}
           {!proposal && !busy && (
             <div className="image-placeholder">
               <ImageIcon size={27} />
-              <span>Votre prochain univers commence ici.</span>
+              <span>Your next world starts here.</span>
             </div>
           )}
         </Modal>

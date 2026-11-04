@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
+import { englishRoom } from "../lib/language.ts";
 import { storyCatalog } from "../lib/stories/index.ts";
 import { solution, discoveredMessages, validateRoom } from "../lib/game.ts";
 const origin = process.env.FRAME_TEST_URL ?? "http://127.0.0.1:5180";
@@ -23,17 +24,32 @@ async function request(
   });
   return { status: response.status, data: (await response.json()) as any };
 }
-const generated = validateRoom(
-  JSON.parse(await readFile("evidence/meta-long-interactive.json", "utf8"))
-    .room,
-);
+const recorded = JSON.parse(
+  await readFile("evidence/meta-long-interactive.json", "utf8"),
+).room;
+const generated = validateRoom(englishRoom(recorded));
+// Persist the historical French definition, then exercise its English presentation.
 const generatedDraft = await request(
   "drafts",
-  { room: generated },
+  { room: recorded },
   undefined,
   true,
 );
 assert.equal(generatedDraft.status, 201);
+const restoredDraft = await request(`drafts/${generatedDraft.data.id}`, undefined, undefined, true);
+assert.equal(restoredDraft.data.room.title, generated.title);
+assert.deepEqual(restoredDraft.data.room.provenance, recorded.provenance);
+for (const [legacy, english] of [
+  ["le-dernier-service", "the-last-service"],
+  ["le-secret-de-la-serre", "the-greenhouse-secret"],
+  ["le-phare-des-marees", "the-tidal-lighthouse"],
+  ["la-vigie-de-la-lune", "moonwatch"],
+]) {
+  const oldLink = await request(`rooms/${legacy}`);
+  const current = await request(`rooms/${english}`);
+  assert.equal(oldLink.status, 200);
+  assert.deepEqual(oldLink.data.room, current.data.room);
+}
 const candidates = [
   ...storyCatalog.map((s) => ({
     ...s,

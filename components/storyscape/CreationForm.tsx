@@ -58,9 +58,9 @@ export default function CreationForm({
     setError("");
     try {
       if (mode === "import" && !file)
-        throw new Error("Choisissez votre illustration.");
+        throw new Error("Choose your illustration.");
       if (mode === "generate" && prompt.trim().length < 10)
-        throw new Error("Décrivez votre décor en au moins 10 caractères.");
+        throw new Error("Describe your setting in at least 10 characters.");
       const intent: CreationIntent = {
         id: crypto.randomUUID(),
         createdAt: Date.now(),
@@ -71,7 +71,7 @@ export default function CreationForm({
           : { prompt: prompt.trim() }),
       };
       await putCreation(intent);
-      const destination = `/atelier?creation=${intent.id}`;
+      const destination = `/studio?creation=${intent.id}`;
       window.location.assign(
         viewer
           ? destination
@@ -87,7 +87,7 @@ export default function CreationForm({
       <div
         className="creation-tabs"
         role="tablist"
-        aria-label="Choisir le point de départ"
+        aria-label="Choose the starting point"
         onKeyDown={(e) => {
           if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key))
             return;
@@ -118,7 +118,7 @@ export default function CreationForm({
           }}
         >
           <Upload size={16} />
-          Importer une image
+          Import an image
         </button>
         <button
           ref={generateTab}
@@ -134,7 +134,7 @@ export default function CreationForm({
           }}
         >
           <Sparkles size={16} />
-          Partir d’un prompt
+          Start from a prompt
         </button>
       </div>
       <div
@@ -157,7 +157,7 @@ export default function CreationForm({
                 e.preventDefault();
                 setDrag(false);
                 if (e.dataTransfer.files.length !== 1) {
-                  setError("Déposez une seule illustration pour commencer.");
+                  setError("Drop a single illustration to get started.");
                   return;
                 }
                 selectFile(e.dataTransfer.files[0]);
@@ -168,7 +168,7 @@ export default function CreationForm({
                 className="sr-only"
                 type="file"
                 accept="image/png,image/jpeg,image/webp"
-                aria-label="Choisir mon illustration"
+                aria-label="Choose my illustration"
                 onChange={(e) => {
                   selectFile(e.target.files?.[0]);
                   e.target.value = "";
@@ -176,17 +176,17 @@ export default function CreationForm({
               />
               {file ? (
                 <div className="selected-illustration">
-                  <img src={preview} alt="Votre illustration sélectionnée" />
+                  <img src={preview} alt="Your selected illustration" />
                   <div>
                     <span className="selected-file-name">
                       <Check size={15} />
                       {file.name}
                     </span>
-                    <small>Votre point de départ est prêt.</small>
+                    <small>Your starting point is ready.</small>
                   </div>
                   <button
                     className="icon-button"
-                    aria-label="Retirer l’illustration sélectionnée"
+                    aria-label="Remove the selected illustration"
                     onClick={() => setFile(null)}
                   >
                     <X size={17} />
@@ -200,28 +200,28 @@ export default function CreationForm({
                   <span className="upload-frame">
                     <ImagePlus size={31} strokeWidth={1.25} />
                   </span>
-                  <strong>Tout commence par votre image.</strong>
+                  <strong>It all starts with your image.</strong>
                   <span>
-                    Glissez votre illustration ici
+                    Drag your illustration here
                     <br />
-                    ou choisissez un fichier.
+                    or choose a file.
                   </span>
                   <span className="choose-file-label">
-                    Choisir mon illustration <ArrowRight size={14} />
+                    Choose my illustration <ArrowRight size={14} />
                   </span>
                 </button>
               )}
             </div>
             <div className="creation-format">
-              <span>PNG, JPG ou WebP</span>
-              <span>Jusqu’à 10 Mo</span>
+              <span>PNG, JPG or WebP</span>
+              <span>Up to 10 MB</span>
             </div>
             {file && (
               <button
                 className="text-link replace-file"
                 onClick={() => picker.current?.click()}
               >
-                Choisir une autre image
+                Choose another image
               </button>
             )}
           </>
@@ -231,14 +231,13 @@ export default function CreationForm({
               <span className="prompt-symbol">
                 <Sparkles size={24} />
               </span>
-              <h2>Quel univers imaginez-vous ?</h2>
+              <h2>What world do you imagine?</h2>
               <p>
-                Décrivez la pièce et les objets. Muse Image crée le décor de
-                votre jeu.
+                Describe the room and the objects. Muse Image creates your game setting.
               </p>
             </div>
             <label htmlFor="creation-prompt" className="sr-only">
-              Décrivez votre illustration
+              Describe your illustration
             </label>
             <textarea
               id="creation-prompt"
@@ -246,22 +245,22 @@ export default function CreationForm({
               maxLength={2000}
               rows={5}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Une bibliothèque au crépuscule, un bureau couvert de livres, une horloge et une porte dérobée…"
+              placeholder="A library at dusk, a desk covered with books, a clock and a hidden door…"
             />
             <div className="prompt-suggestions">
-              <span>Une idée pour commencer :</span>
+              <span>An idea to get started:</span>
               {[
                 [
-                  "Bibliothèque",
-                  "Une bibliothèque chaleureuse au crépuscule avec un bureau, une horloge, un coffre et une porte en bois.",
+                  "Library",
+                  "A cozy library at dusk with a desk, a clock, a chest and a wooden door.",
                 ],
                 [
-                  "Cabane",
-                  "Une cabane au bord d’un lac avec une vieille carte, une lanterne, un coffre et une porte donnant sur la forêt.",
+                  "Cabin",
+                  "A cabin by a lake with an old map, a lantern, a chest and a door opening onto the forest.",
                 ],
                 [
-                  "Observatoire",
-                  "Un observatoire abandonné avec un télescope, une armoire, une horloge et une porte métallique.",
+                  "Observatory",
+                  "An abandoned observatory with a telescope, a wardrobe, a clock and a metal door.",
                 ],
               ].map(([name, text]) => (
                 <button key={name} onClick={() => setPrompt(text)}>
@@ -288,14 +287,14 @@ export default function CreationForm({
             <Sparkles size={16} />
           )}{" "}
           {busy
-            ? "Préparation…"
+            ? "Preparing…"
             : mode === "import"
-              ? "Créer avec mon illustration"
-              : "Générer mon illustration"}
+              ? "Create with my illustration"
+              : "Generate my illustration"}
           <ArrowRight size={16} />
         </button>
         <p className="creation-next">
-          Ensuite, composez les énigmes, testez votre jeu et partagez-le.
+          Next, design the puzzles, test your game and share it.
         </p>
       </div>
     </div>

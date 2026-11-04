@@ -1,0 +1,213 @@
+{
+  "purpose": "English localization of Storyscape UI, curated stories and known saved story text.",
+  "model": "muse-spark-1.3",
+  "sourceLanguage": "fr",
+  "targetLanguage": "en",
+  "snapshotPolicy": "Historical snapshots and generation inputs remain unchanged; saved prose is translated at read time.",
+  "batches": [
+    {
+      "file": "batch-0.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:01:06.157Z",
+      "usage": {
+        "completion_tokens": 14045,
+        "prompt_tokens": 7820,
+        "total_tokens": 21865,
+        "completion_tokens_details": {
+          "reasoning_tokens": 5872
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 441
+    },
+    {
+      "file": "batch-1.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:01:59.806Z",
+      "usage": {
+        "completion_tokens": 6215,
+        "prompt_tokens": 5752,
+        "total_tokens": 11967,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1289
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 121
+    },
+    {
+      "file": "batch-10.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:09:08.151Z",
+      "usage": {
+        "completion_tokens": 6891,
+        "prompt_tokens": 6010,
+        "total_tokens": 12901,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1471
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 151
+    },
+    {
+      "file": "batch-2.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:02:44.896Z",
+      "usage": {
+        "completion_tokens": 5506,
+        "prompt_tokens": 5535,
+        "total_tokens": 11041,
+        "completion_tokens_details": {
+          "reasoning_tokens": 865
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 84
+    },
+    {
+      "file": "batch-3.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:03:33.653Z",
+      "usage": {
+        "completion_tokens": 5561,
+        "prompt_tokens": 5536,
+        "total_tokens": 11097,
+        "completion_tokens_details": {
+          "reasoning_tokens": 761
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 90
+    },
+    {
+      "file": "batch-4.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:04:18.042Z",
+      "usage": {
+        "completion_tokens": 5546,
+        "prompt_tokens": 5733,
+        "total_tokens": 11279,
+        "completion_tokens_details": {
+          "reasoning_tokens": 536
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 106
+    },
+    {
+      "file": "batch-5.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:05:04.881Z",
+      "usage": {
+        "completion_tokens": 5176,
+        "prompt_tokens": 5177,
+        "total_tokens": 10353,
+        "completion_tokens_details": {
+          "reasoning_tokens": 948
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 65
+    },
+    {
+      "file": "batch-6.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:05:54.420Z",
+      "usage": {
+        "completion_tokens": 5913,
+        "prompt_tokens": 5604,
+        "total_tokens": 11517,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1205
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 83
+    },
+    {
+      "file": "batch-7.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:06:37.803Z",
+      "usage": {
+        "completion_tokens": 5030,
+        "prompt_tokens": 5534,
+        "total_tokens": 10564,
+        "completion_tokens_details": {
+          "reasoning_tokens": 366
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 83
+    },
+    {
+      "file": "batch-8.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:07:26.060Z",
+      "usage": {
+        "completion_tokens": 5990,
+        "prompt_tokens": 5907,
+        "total_tokens": 11897,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1007
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 105
+    },
+    {
+      "file": "batch-9.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:08:12.203Z",
+      "usage": {
+        "completion_tokens": 6168,
+        "prompt_tokens": 6561,
+        "total_tokens": 12729,
+        "completion_tokens_details": {
+          "reasoning_tokens": 458
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 161
+    },
+    {
+      "file": "extra-batch-0.json",
+      "model": "muse-spark-1.3",
+      "createdAt": "2026-11-04T17:03:34.283Z",
+      "usage": {
+        "completion_tokens": 4860,
+        "prompt_tokens": 2134,
+        "total_tokens": 6994,
+        "completion_tokens_details": {
+          "reasoning_tokens": 2716
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "count": 152
+    }
+  ]
+}

@@ -21,7 +21,7 @@ export async function metaRequest(path: string, payload: unknown) {
   if (!env.MODEL_API_KEY)
     throw new ApiError(
       503,
-      "La clé Meta n’est pas encore configurée sur ce serveur.",
+      "The Meta key is not yet configured on this server.",
     );
   let response: Response;
   try {
@@ -39,17 +39,17 @@ export async function metaRequest(path: string, payload: unknown) {
   } catch {
     throw new ApiError(
       504,
-      "Meta n’a pas répondu à temps. Votre brouillon est conservé ; vous pouvez réessayer.",
+      "Meta did not respond in time. Your draft is kept; you can try again.",
     );
   }
   if (!response.ok)
     throw new ApiError(
       response.status === 429 ? 429 : 502,
       response.status === 429
-        ? "La limite Meta est atteinte. Réessayez dans quelques instants."
+        ? "The Meta limit has been reached. Try again in a few moments."
         : response.status === 401
-          ? "La clé Meta a été refusée. Vérifiez la configuration du serveur."
-          : "Meta n’a pas pu traiter cette demande. Votre brouillon n’a pas été modifié.",
+          ? "The Meta key was rejected. Check the server configuration."
+          : "Meta could not process this request. Your draft was not modified.",
     );
   return response.json() as Promise<Record<string, any>>;
 }
@@ -74,12 +74,12 @@ export async function generateIllustration(brief: string) {
   if (typeof encoded !== "string")
     throw new ApiError(
       502,
-      "Muse Image n’a pas renvoyé d’illustration exploitable.",
+      "Muse Image did not return a usable illustration.",
     );
   try {
     return Uint8Array.from(atob(encoded), (c) => c.charCodeAt(0));
   } catch {
-    throw new ApiError(502, "L’illustration reçue de Meta est invalide.");
+    throw new ApiError(502, "The illustration received from Meta is invalid.");
   }
 }
 export async function generateRoom(
@@ -106,15 +106,15 @@ export async function generateRoom(
         content:
           narrativeInstructions +
           (format === "long"
-            ? " Écris exactement 3 actes chronologiques dans CETTE illustration (même pièce dont l'état et l'histoire évoluent; ne prétends pas générer d'autres décors). 18 à 20 objets, durée estimée 35 à 50 minutes. Au moins 3 puzzles dont 1 move et 2 sequence, 5 animations, 1 utilisation d'inventaire, 1 décision finale et exactement 2 conclusions. Chaque chapitre comprend 4 à 8 objets; son récit contient 600..1000 caractères. Le récit initial pose les enjeux et les personnages en 600..1200 caractères. Les scènes sont des actes dans le même décor: titres narratifs, jamais de fausses pièces absentes de l'image. Finir un acte débloque le suivant et donne un nouvel objectif. Réutiliser un même endroit est possible avec de nouveaux indices, mais ne superpose pas les zones de plusieurs objets dans un même chapitre."
-            : " Une aventure courte en une pièce, 4 à 8 objets, sans chapitres ni ending; au moins 1 manipulation et 2 animations. Pas de choix final pour ce format court."),
+            ? " Write exactly 3 chronological acts in THIS illustration (same room whose state and story evolve; do not claim to generate other settings). 18 to 20 objects, estimated duration 35 to 50 minutes. At least 3 puzzles including 1 move and 2 sequence, 5 animations, 1 inventory use, 1 final decision and exactly 2 endings. Each chapter includes 4 to 8 objects; its narrative contains 600..1000 characters. The initial narrative sets up the stakes and characters in 600..1200 characters. The scenes are acts in the same setting: narrative titles, never false rooms absent from the image. Finishing an act unlocks the next one and gives a new objective. Reusing the same spot is possible with new clues, but do not overlap the zones of several objects within the same chapter."
+            : " A short adventure in one room, 4 to 8 objects, with no chapters or ending; at least 1 manipulation and 2 animations. No final choice for this short format."),
       },
       {
         role: "user",
         content: [
           {
             type: "text",
-            text: `Brief : ${brief}\nTitre précédent : ${base.title}. Crée une nouvelle aventure cohérente avec les objets de cette image. Les codes et indices doivent être cohérents entre eux.`,
+            text: `Brief: ${brief}\nPrevious title: ${base.title}. Create a new English-language adventure consistent with the objects in this image. The codes and clues must be consistent with each other.`,
           },
           { type: "image_url", image_url: { url: image } },
         ],
@@ -125,10 +125,10 @@ export async function generateRoom(
   if (response.choices?.[0]?.finish_reason === "length")
     throw new ApiError(
       422,
-      "Meta a atteint la limite d’écriture avant de terminer. Le scénario précédent est conservé ; raccourcissez le brief ou choisissez le format court.",
+      "Meta reached the writing limit before finishing. The previous scenario is kept; shorten the brief or choose the short format.",
     );
   if (typeof text !== "string")
-    throw new ApiError(502, "Meta n’a pas renvoyé de scénario exploitable.");
+    throw new ApiError(502, "Meta did not return a usable scenario.");
   try {
     return buildGeneratedRoom(JSON.parse(text), base, format);
   } catch (error) {
@@ -138,7 +138,7 @@ export async function generateRoom(
     );
     throw new ApiError(
       422,
-      "Le scénario proposé par Meta ne respecte pas les règles du jeu. Le brouillon précédent est conservé. Vous pouvez ajuster le brief et réessayer ; aucun brouillon n’a été remplacé.",
+      "The scenario suggested by Meta does not follow the game rules. The previous draft is kept. You can adjust the brief and try again; no draft was replaced.",
     );
   }
 }
@@ -185,7 +185,7 @@ export async function segmentObject(
   if (response.status && response.status !== "completed")
     throw new ApiError(
       502,
-      "SAM a renvoyé un résultat incomplet. Ajustez la zone et réessayez.",
+      "SAM returned an incomplete result. Adjust the zone and try again.",
     );
   const text = (response.output ?? [])
     .flatMap((o: any) => o.content ?? [])
@@ -195,7 +195,7 @@ export async function segmentObject(
   if (!text.trim())
     throw new ApiError(
       422,
-      "SAM n’a pas trouvé cet objet. Ajustez sa zone et réessayez.",
+      "SAM did not find this object. Adjust its zone and try again.",
     );
   const parser = formats.segmentation.image().createParser();
   parser.push(text);
@@ -204,7 +204,7 @@ export async function segmentObject(
   if (!masks.length)
     throw new ApiError(
       502,
-      "SAM n’a pas renvoyé de masque complet exploitable.",
+      "SAM did not return a complete usable mask.",
     );
   const mask = masks[0];
   const b = mask.bounds;

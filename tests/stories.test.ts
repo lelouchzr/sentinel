@@ -75,7 +75,7 @@ for (const { slug, definition: room } of storyCatalog) {
       assert.equal(playerRoom(room, state).ending?.title, variant.title);
       assert.throws(
         () => moveChapter(room, state, room.chapters![0].id),
-        /terminée/,
+        /finished|complete|over/i,
       );
     });
   }
@@ -102,7 +102,7 @@ for (const { slug, definition: room } of storyCatalog) {
     const hidden = room.objects.find((o) => o.chapterId !== state.chapterId)!;
     assert.throws(
       () => act(room, state, hidden.id, undefined, true),
-      /autre lieu/,
+      /another (place|location)/,
     );
     assert.equal(state.hints, 0);
   });
@@ -113,10 +113,10 @@ test("narrative validator rejects chapter deadlocks and mismatched endings", () 
   room.chapters![1].requires = [
     room.objects.find((o) => o.chapterId === room.chapters![1].id)!.id,
   ];
-  assert.throws(() => validateRoom(room), /inaccessibles/);
+  assert.throws(() => validateRoom(room), /inaccessible/);
   const other = structuredClone(storyCatalog[0].definition);
   other.ending!.variants[0].choiceId = "unknown";
-  assert.throws(() => validateRoom(other), /conclusion unique/);
+  assert.throws(() => validateRoom(other), /unique (ending|conclusion)/);
 });
 
 test("chapter artwork replacement preserves other scenes and their contours", () => {

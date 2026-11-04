@@ -1,7 +1,7 @@
 .PHONY: check integration dev
 check:
 	npx tsc --noEmit
-	node --experimental-strip-types --test tests/game.test.ts tests/stories.test.ts tests/manipulations.test.ts
+	node --experimental-strip-types --test tests/game.test.ts tests/stories.test.ts tests/manipulations.test.ts tests/language.test.ts
 	npm run build
 integration:
 	mkdir -p outputs

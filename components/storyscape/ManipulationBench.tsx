@@ -73,7 +73,7 @@ export default function ManipulationBench({
               }
             />
             <span className="bench-tag">
-              <Hand size={13} />À vous de jouer
+              <Hand size={13} />Your turn to play
             </span>
           </div>
         )}
@@ -82,10 +82,10 @@ export default function ManipulationBench({
             <div className="bench-success" role="status">
               <Check size={19} />
               {object.animation === "drawer"
-                ? "Le tiroir est ouvert."
+                ? "The drawer is open."
                 : object.animation === "fruits"
-                  ? "Les fruits ont été écartés."
-                  : "Vous avez trouvé."}
+                  ? "The fruits have been moved aside."
+                  : "You found it."}
             </div>
             <div className="bench-reward">
               {message.split(/\n\s*\n/).map((p, i) => (
@@ -93,7 +93,7 @@ export default function ManipulationBench({
               ))}
             </div>
             <button className="button primary full" onClick={onClose}>
-              Revenir au décor
+              Back to the setting
               <ArrowRight size={17} />
             </button>
           </>
@@ -109,7 +109,7 @@ export default function ManipulationBench({
             ) : null}
             {object.needsItem && outcome === "needs_item" ? (
               <div className="bench-inventory">
-                <p>Quel objet de votre inventaire voulez-vous utiliser ?</p>
+                <p>Which object from your inventory do you want to use?</p>
                 {state.inventory.map((item) => (
                   <button
                     key={item.id}
@@ -149,30 +149,30 @@ export default function ManipulationBench({
                           <Hand size={15} />
                         )}
                       </span>
-                      Écarter : {p.label}
+                      Move aside: {p.label}
                     </button>
                   ))}
                 </div>
                 <p className="bench-progress">
-                  {moved.length} / {puzzle.pieces.length} éléments déplacés
+                  {moved.length} / {puzzle.pieces.length} elements moved
                 </p>
                 <button
                   className="button primary full"
                   disabled={busy || moved.length !== puzzle.pieces.length}
                   onClick={() => void onSubmit(undefined, { moved })}
                 >
-                  Regarder ce qui était caché
+                  Look at what was hidden
                   <ArrowRight size={17} />
                 </button>
               </>
             ) : puzzle?.kind === "sequence" ? (
               <>
-                <ol className="sequence-slots" aria-label="Votre disposition">
+                <ol className="sequence-slots" aria-label="Your arrangement">
                   {puzzle.pieces.map((_, i) => (
                     <li key={i}>
                       <span>{i + 1}</span>
                       {puzzle.pieces.find((p) => p.id === order[i])?.label ??
-                        "Choisir un élément"}
+                        "Choose an element"}
                     </li>
                   ))}
                 </ol>
@@ -196,14 +196,14 @@ export default function ManipulationBench({
                     onClick={() => setOrder([])}
                   >
                     <RotateCcw size={15} />
-                    Recommencer la disposition
+                    Restart the arrangement
                   </button>
                   <button
                     className="button primary"
                     disabled={busy || order.length !== puzzle.pieces.length}
                     onClick={() => void onSubmit(undefined, { order })}
                   >
-                    Vérifier
+                    Check
                     <ArrowRight size={17} />
                   </button>
                 </div>
@@ -217,14 +217,14 @@ export default function ManipulationBench({
               >
                 <div
                   className="lock-wheels"
-                  aria-label="Cadenas à trois molettes"
+                  aria-label="Three-dial padlock"
                 >
                   {digits.map((d, i) => (
                     <div className="lock-wheel" key={i}>
                       <button
                         type="button"
                         disabled={busy}
-                        aria-label={`Augmenter le chiffre ${i + 1}`}
+                        aria-label={`Increase digit ${i + 1}`}
                         onClick={() =>
                           setDigits((v) =>
                             v.map((n, j) =>
@@ -235,11 +235,11 @@ export default function ManipulationBench({
                       >
                         <ChevronUp size={22} />
                       </button>
-                      <output aria-label={`Chiffre ${i + 1}`}>{d}</output>
+                      <output aria-label={`Digit ${i + 1}`}>{d}</output>
                       <button
                         type="button"
                         disabled={busy}
-                        aria-label={`Diminuer le chiffre ${i + 1}`}
+                        aria-label={`Decrease digit ${i + 1}`}
                         onClick={() =>
                           setDigits((v) =>
                             v.map((n, j) =>
@@ -254,13 +254,13 @@ export default function ManipulationBench({
                   ))}
                 </div>
                 <label className="bench-code-label">
-                  Ou saisir le code
+                  Or enter the code
                   <input
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
                     maxLength={16}
                     autoComplete="off"
-                    placeholder="Chiffres ou lettres"
+                    placeholder="Numbers or letters"
                   />
                 </label>
                 <button
@@ -268,7 +268,7 @@ export default function ManipulationBench({
                   className="button primary full"
                   disabled={busy}
                 >
-                  Tourner la serrure
+                  Turn the lock
                   <KeyRound size={17} />
                 </button>
               </form>
@@ -306,14 +306,13 @@ function FruitSearch({
   return (
     <div className="fruit-table">
       <p>
-        Faites glisser les éléments pour dégager le centre. Les boutons
-        ci-dessous permettent aussi de jouer au clavier.
+        Drag the elements to clear the center. The buttons below also let you play with the keyboard.
       </p>
       <svg
         viewBox={fruitArt ? "570 460 400 350" : "0 0 400 260"}
         className="fruit-playfield"
         role="group"
-        aria-label="Table de manipulation"
+        aria-label="Manipulation table"
       >
         {fruitArt ? (
           <>
@@ -353,7 +352,7 @@ function FruitSearch({
               className={`draggable-piece ${done ? "moved" : ""}`}
               role="button"
               tabIndex={0}
-              aria-label={`Déplacer ${p.label}`}
+              aria-label={`Move ${p.label}`}
               style={{
                 transform: fruitArt
                   ? `translate(${done ? (i === 0 ? -60 : i === 1 ? 105 : 48) : position.x}px,${done ? (i === 0 ? 145 : i === 1 ? 125 : 150) : position.y}px)`

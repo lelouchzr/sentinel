@@ -43,7 +43,7 @@ test("a new scene needs no template puzzles, while preserving image ownership an
     image: japanese.image,
     credits: japanese.credits,
   });
-  assert.equal(scene.title, "Nouvelle aventure");
+  assert.equal(scene.title, "New Adventure");
   assert.equal(scene.image, japanese.image);
   assert.deepEqual(scene.credits, japanese.credits);
   assert.equal("objects" in scene, false);
@@ -64,7 +64,7 @@ test("import refuses empty, unsupported and oversized files before upload", () =
     assert.doesNotThrow(() => checkIllustration(new Blob(["test"], { type })));
   assert.throws(
     () => checkIllustration(new Blob([], { type: "image/png" })),
-    /vide/,
+    /empty/,
   );
   assert.throws(
     () => checkIllustration(new Blob(["svg"], { type: "image/svg+xml" })),
@@ -75,7 +75,7 @@ test("import refuses empty, unsupported and oversized files before upload", () =
       checkIllustration(
         new Blob([new Uint8Array(10_000_001)], { type: "image/png" }),
       ),
-    /10 Mo/,
+    /10 MB/,
   );
 });
 
@@ -87,7 +87,7 @@ test("the kitchen can be completed, with wrong actions and codes rejected", () =
   const seen = act(room, initial, "assiettes").state;
   assert.equal(act(room, seen, "tiroir", "00").outcome, "wrong_code");
   const opened = act(room, seen, "tiroir", "23").state;
-  assert.equal(opened.inventory[0].name, "Clé en laiton");
+  assert.equal(opened.inventory[0].name, "Brass key");
   assert.equal(act(room, opened, "porte").outcome, "locked");
   const found = act(room, opened, "fruits").state;
   const won = act(room, found, "porte");
@@ -115,7 +115,7 @@ test("both templates have a reachable solution and don't leak it to players", ()
 test("untrusted definitions reject cycles, bad regions and duplicate IDs", () => {
   const cycle = structuredClone(kitchen);
   cycle.objects[0].requires = ["tiroir"];
-  assert.throws(() => validateRoom(cycle), /circulaires/);
+  assert.throws(() => validateRoom(cycle), /circular/i);
   const duplicate = structuredClone(kitchen);
   duplicate.objects[1].id = "assiettes";
   assert.throws(() => validateRoom(duplicate), /unique/);
@@ -124,7 +124,7 @@ test("untrusted definitions reject cycles, bad regions and duplicate IDs", () =>
   assert.throws(() => validateRoom(region));
   const missing = structuredClone(kitchen);
   missing.objects[0].requires = ["absent"];
-  assert.throws(() => validateRoom(missing), /Dépendance/);
+  assert.throws(() => validateRoom(missing), /dependency/i);
   const injection = structuredClone(kitchen);
   injection.objects[0].mask = {
     path: "<script>alert(1)</script>",

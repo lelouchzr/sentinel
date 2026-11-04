@@ -1,5 +1,6 @@
 # Storyscape
 
+- Keep all current UI copy, authored stories, documentation and default model output in English. Preserve historical evidence verbatim and compatibility IDs.
 - React/TypeScript application using Vinext, Cloudflare D1 and R2.
 - App routes are in `app/`, UI in `components/storyscape/`, game rules in `lib/game.ts`, server API in `lib/server.ts`, and Meta adapters in `lib/meta.ts`.
 - Validate model proposals with the same deterministic contracts as manual stories. Keep puzzle answers and hidden dependencies on the server.

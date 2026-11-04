@@ -4,52 +4,40 @@ export default function HowToPlay() {
   return (
     <div className="how-to-play">
       <p>
-        Explorez les illustrations et faites avancer le récit grâce à vos
-        découvertes. Les histoires longues se déroulent dans plusieurs lieux,
-        jusqu’à une conclusion qui dépend de votre choix.
+        Explore the illustrations and move the story forward through your discoveries. Long stories take place in several places, leading to an ending that depends on your choice.
       </p>
       <ol>
         <li>
           <MousePointer2 size={21} />
           <div>
-            <h3>Explorez l’image</h3>
+            <h3>Explore the image</h3>
             <p>
-              Cliquez ou touchez les objets repérés. Leurs découvertes
-              apparaissent dans le carnet. Vous pouvez masquer les repères pour
-              chercher par vous-même.
+              Click or tap the objects you spot. Their discoveries appear in the notebook. You can hide the markers to search on your own.
             </p>
           </div>
         </li>
         <li>
           <BookOpen size={21} />
           <div>
-            <h3>Reliez les indices</h3>
+            <h3>Connect the clues</h3>
             <p>
-              Relisez vos découvertes et saisissez les codes demandés. Certains
-              objets se manipulent en gros plan : déplacez leurs éléments ou
-              remettez-les dans l’ordre. Pour une serrure, choisissez la clé
-              dans votre inventaire lorsque le jeu vous le demande.
+              Re-read your discoveries and enter the requested codes. Some objects are manipulated in close-up: move their elements or put them back in order. For a lock, choose the key from your inventory when the game asks you to.
             </p>
           </div>
         </li>
         <li>
           <DoorOpen size={21} />
           <div>
-            <h3>Avancez dans l’histoire</h3>
+            <h3>Move forward in the story</h3>
             <p>
-              Une découverte peut ouvrir un nouveau lieu : choisissez-le dans la
-              carte sous l’image. Vous pouvez revenir dans les pièces déjà
-              visitées ; certains indices servent ailleurs. Votre inventaire
-              vous suit. Le dernier choix détermine la conclusion, puis un
-              dernier objet termine le récit.
+              A discovery can open a new place: choose it in the map below the image. You can return to rooms already visited; some clues are useful elsewhere. Your inventory follows you. The final choice determines the ending, then a final object ends the story.
             </p>
           </div>
         </li>
       </ol>
       <p className="play-help-note">
         <Lightbulb size={17} />
-        Bloqué ? Choisissez un objet puis « Un petit indice ». Aucun chronomètre
-        ne vous presse.
+        Stuck? Select an object then “A little hint”. No timer is rushing you.
       </p>
     </div>
   );

@@ -20,7 +20,7 @@ export async function body(
   max = 1_500_000,
 ): Promise<Record<string, unknown>> {
   const reader = request.body?.getReader();
-  if (!reader) throw new ApiError(400, "Le corps de la requête est vide.");
+  if (!reader) throw new ApiError(400, "The request body is empty.");
   let size = 0;
   const chunks: Uint8Array[] = [];
   while (true) {
@@ -29,7 +29,7 @@ export async function body(
     size += value.byteLength;
     if (size > max) {
       await reader.cancel();
-      throw new ApiError(413, "Le fichier ou le jeu est trop volumineux.");
+      throw new ApiError(413, "The file or game is too large.");
     }
     chunks.push(value);
   }
@@ -45,18 +45,18 @@ export async function body(
       throw new Error();
     return parsed;
   } catch {
-    throw new ApiError(400, "Le contenu JSON est invalide.");
+    throw new ApiError(400, "The JSON content is invalid.");
   }
 }
 export function user(request: Request, required = true) {
   const id = request.headers.get("oai-authenticated-user-id");
   if (!id) {
     if (required)
-      throw new ApiError(401, "Connectez-vous pour créer ou publier un jeu.");
+      throw new ApiError(401, "Sign in to create or publish a game.");
     return null;
   }
   const name = request.headers.get("oai-authenticated-user-full-name");
-  let displayName = "Créateur Storyscape";
+  let displayName = "Storyscape Creator";
   if (name) {
     try {
       displayName = decodeURIComponent(name).slice(0, 60);
@@ -72,7 +72,7 @@ export function assertSameOrigin(request: Request) {
     (origin && origin !== new URL(request.url).origin) ||
     request.headers.get("sec-fetch-site") === "cross-site"
   )
-    throw new ApiError(403, "Cette requête vient d’une autre origine.");
+    throw new ApiError(403, "This request comes from another origin.");
 }
 export async function hash(value: string) {
   const digest = await crypto.subtle.digest(

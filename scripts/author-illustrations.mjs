@@ -96,7 +96,7 @@ async function worker() {
         {
           title: entry.title,
           author: "Muse Image · Meta",
-          license: "Image générée pour cette aventure",
+          license: "Image generated for this adventure",
           url: "https://dev.meta.ai/models/muse-image",
         },
       ],

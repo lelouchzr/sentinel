@@ -45,7 +45,7 @@ export const regionSchema = z
   .strict()
   .refine(
     (r) => r.x + r.w <= 1.001 && r.y + r.h <= 1.001,
-    "La zone dépasse l’image.",
+    "The zone extends beyond the image.",
   );
 export const manipulationSchema = z
   .object({
@@ -168,15 +168,15 @@ export const roomSchema = z
 export type Room = z.infer<typeof roomSchema>;
 export const sceneSchema = roomSchema
   .pick({ title: true, image: true, credits: true, imageProvenance: true })
-  .extend({ title: line(80).default("Nouvelle aventure") });
+  .extend({ title: line(80).default("New Adventure") });
 export type Scene = z.infer<typeof sceneSchema>;
 export type Chapter = z.infer<typeof chapterSchema>;
 /** An editable manual starting point; its two zones must be placed by the author. */
 export function manualRoom(scene: Scene): Room {
   return validateRoom({
     ...sceneSchema.parse(scene),
-    description: "Une aventure à imaginer dans cette illustration.",
-    story: "Explorez cette pièce et découvrez comment en sortir.",
+    description: "An adventure to imagine in this illustration.",
+    story: "Explore this room and discover how to get out.",
     theme: "aventure",
     difficulty: "facile",
     duration: 5,
@@ -184,30 +184,30 @@ export function manualRoom(scene: Scene): Room {
     objects: [
       {
         id: "premier-indice",
-        name: "Premier indice",
-        prompt: "Objet à choisir",
+        name: "First clue",
+        prompt: "Object to choose",
         action: "inspect",
         region: { x: 0.15, y: 0.3, w: 0.15, h: 0.15 },
         requires: [],
         code: null,
         itemName: null,
         message:
-          "Vous découvrez un indice qui vous permet de trouver la sortie.",
-        lockedMessage: "Observez cet objet.",
-        hint: "Explorez la pièce.",
+          "You discover a clue that lets you find the exit.",
+        lockedMessage: "Observe this object.",
+        hint: "Explore the room.",
       },
       {
         id: "sortie",
-        name: "Sortie",
-        prompt: "Sortie à placer",
+        name: "Exit",
+        prompt: "Exit to place",
         action: "exit",
         region: { x: 0.7, y: 0.25, w: 0.15, h: 0.5 },
         requires: ["premier-indice"],
         code: null,
         itemName: null,
-        message: "Vous avez trouvé la sortie !",
-        lockedMessage: "Cherchez d’abord un indice.",
-        hint: "Observez les autres objets de la pièce.",
+        message: "You found the exit!",
+        lockedMessage: "First look for a clue.",
+        hint: "Observe the other objects in the room.",
       },
     ],
   });
@@ -332,34 +332,34 @@ export function validateRoom(input: unknown): Room {
   const room = roomSchema.parse(input),
     ids = new Set(room.objects.map((o) => o.id));
   if (ids.size !== room.objects.length)
-    throw new GameRuleError("Chaque objet doit avoir un identifiant unique.");
+    throw new GameRuleError("Each object must have a unique ID.");
   const exits = room.objects.filter((o) => o.action === "exit");
   if (exits.length !== 1)
-    throw new GameRuleError("Il faut exactement une sortie.");
+    throw new GameRuleError("There must be exactly one exit.");
   const chapterIds = new Set(room.chapters?.map((c) => c.id) ?? []);
   if (room.chapters) {
     if (chapterIds.size !== room.chapters.length)
       throw new GameRuleError(
-        "Chaque chapitre doit avoir un identifiant unique.",
+        "Each chapter must have a unique ID.",
       );
     if (room.chapters[0].requires.length)
       throw new GameRuleError(
-        "Le premier chapitre doit être accessible sans prérequis.",
+        "The first chapter must be accessible without prerequisites.",
       );
     if (room.image !== room.chapters[0].image)
       throw new GameRuleError(
-        "La couverture doit correspondre au premier chapitre.",
+        "The cover must match the first chapter.",
       );
     for (const chapter of room.chapters) {
       if (chapter.requires.some((id) => !ids.has(id) || id === exits[0].id))
         throw new GameRuleError(
-          `Prérequis de chapitre invalide : ${chapter.title}.`,
+          `Invalid chapter prerequisite: ${chapter.title}.`,
         );
       if (new Set(chapter.requires).size !== chapter.requires.length)
-        throw new GameRuleError("Prérequis de chapitre dupliqué.");
+        throw new GameRuleError("Duplicate chapter prerequisite.");
       if (!room.objects.some((o) => o.chapterId === chapter.id))
         throw new GameRuleError(
-          `Le chapitre ${chapter.title} ne contient aucun objet.`,
+          `Chapter ${chapter.title} contains no objects.`,
         );
     }
   }
@@ -369,32 +369,32 @@ export function validateRoom(input: unknown): Room {
         (r) => !ids.has(r) || r === object.id || r === exits[0].id,
       )
     )
-      throw new GameRuleError(`Dépendance invalide pour ${object.name}.`);
+      throw new GameRuleError(`Invalid dependency for ${object.name}.`);
     if (new Set(object.requires).size !== object.requires.length)
-      throw new GameRuleError("Dépendance dupliquée.");
+      throw new GameRuleError("Duplicate dependency.");
     if ((object.action === "code") !== (object.code !== null))
-      throw new GameRuleError(`Code incohérent pour ${object.name}.`);
+      throw new GameRuleError(`Inconsistent code for ${object.name}.`);
     if (
       object.useItem &&
       (!object.requires.includes(object.useItem) ||
         !room.objects.find((o) => o.id === object.useItem)?.itemName)
     )
       throw new GameRuleError(
-        `L’objet à utiliser doit être un objet d’inventaire préalable : ${object.name}.`,
+        `The object to use must be an earlier inventory object: ${object.name}.`,
       );
     if (object.useItem && (object.puzzle || object.action === "code"))
       throw new GameRuleError(
-        "Séparez l’utilisation d’un objet, le cadenas et la manipulation en étapes distinctes.",
+        "Separate using an object, the padlock and the manipulation into distinct steps.",
       );
     if (object.puzzle) {
       const pieces = object.puzzle.pieces.map((p) => p.id);
       if (new Set(pieces).size !== pieces.length)
         throw new GameRuleError(
-          "Les éléments à manipuler doivent être uniques.",
+          "Manipulated elements must be unique.",
         );
       if (["choose", "exit", "code"].includes(object.action))
         throw new GameRuleError(
-          "Une manipulation doit précéder le choix ou la sortie.",
+          "A manipulation must come before the choice or exit.",
         );
       const answer = object.puzzle.solution;
       if (
@@ -406,26 +406,26 @@ export function validateRoom(input: unknown): Room {
           : answer !== undefined
       )
         throw new GameRuleError(
-          "La solution de manipulation doit correspondre exactement à ses éléments.",
+          "The manipulation solution must match its elements exactly.",
         );
     }
     if (object.action === "exit" && object.itemName)
       throw new GameRuleError(
-        "Une sortie ne peut pas être un objet d’inventaire.",
+        "An exit cannot be an inventory object.",
       );
     if (
       room.chapters
         ? !object.chapterId || !chapterIds.has(object.chapterId)
         : !!object.chapterId
     )
-      throw new GameRuleError(`Chapitre invalide pour ${object.name}.`);
+      throw new GameRuleError(`Invalid chapter for ${object.name}.`);
     if ((object.action === "choose") !== !!object.choices)
-      throw new GameRuleError(`Choix incohérents pour ${object.name}.`);
+      throw new GameRuleError(`Inconsistent choices for ${object.name}.`);
     if (
       object.choices &&
       new Set(object.choices.map((c) => c.id)).size !== object.choices.length
     )
-      throw new GameRuleError("Les réponses d’un choix doivent être uniques.");
+      throw new GameRuleError("Choice answers must be unique.");
   }
   const reachable = new Set<string>();
   for (let pass = 0; pass < room.objects.length; pass++)
@@ -433,17 +433,17 @@ export function validateRoom(input: unknown): Room {
       if (readyObject(room, object, reachable)) reachable.add(object.id);
   if (reachable.size !== ids.size)
     throw new GameRuleError(
-      "Des dépendances circulaires ou des chapitres inaccessibles bloquent la partie.",
+      "Circular dependencies or inaccessible chapters are blocking the game.",
     );
   if (!exits[0].requires.length)
-    throw new GameRuleError("La sortie doit dépendre d’au moins une énigme.");
+    throw new GameRuleError("The exit must depend on at least one puzzle.");
   if (room.ending) {
     const source = room.objects.find(
       (o) => o.id === room.ending!.sourceObjectId,
     );
     if (source?.action !== "choose" || !source.choices)
       throw new GameRuleError(
-        "La conclusion doit être liée à un choix existant.",
+        "The ending must be linked to an existing choice.",
       );
     const variants = new Set(room.ending.variants.map((v) => v.choiceId));
     if (
@@ -452,7 +452,7 @@ export function validateRoom(input: unknown): Room {
       variants.size !== source.choices.length
     )
       throw new GameRuleError(
-        "Chaque réponse doit posséder une conclusion unique.",
+        "Each answer must have a unique ending.",
       );
     const ancestors = new Set<string>();
     const pending = [...exits[0].requires];
@@ -464,7 +464,7 @@ export function validateRoom(input: unknown): Room {
     }
     if (!ancestors.has(source.id))
       throw new GameRuleError(
-        "La sortie doit attendre le choix qui détermine la conclusion.",
+        "The exit must wait for the choice that determines the ending.",
       );
   }
   return room;
@@ -475,9 +475,9 @@ export function moveChapter(
   chapterId: string,
 ) {
   const chapter = room.chapters?.find((c) => c.id === chapterId);
-  if (!chapter) throw new GameRuleError("Ce lieu n’existe pas.");
+  if (!chapter) throw new GameRuleError("This place does not exist.");
   if (previous.complete)
-    throw new GameRuleError("Cette histoire est terminée.");
+    throw new GameRuleError("This story is over.");
   if (!chapterUnlocked(chapter, previous))
     throw new GameRuleError(chapter.unlockMessage);
   const state: GameState = structuredClone(previous);
@@ -496,22 +496,22 @@ export function act(
   attempt?: ManipulationAttempt,
 ) {
   const object = room.objects.find((o) => o.id === objectId);
-  if (!object) throw new GameRuleError("Cet objet n’existe pas.");
+  if (!object) throw new GameRuleError("This object does not exist.");
   const state: GameState = structuredClone(previous);
   if (state.complete)
     return {
       state,
       message:
-        "Cette aventure est terminée. Vous pouvez recommencer une partie.",
+        "This adventure is over. You can start a new game.",
       outcome: "complete" as const,
     };
   const chapter = currentChapter(room, state);
   if (room.chapters && object.chapterId !== chapter?.id)
     throw new GameRuleError(
-      "Cet objet se trouve dans un autre lieu. Déplacez-vous avant de l’explorer.",
+      "This object is in another place. Move before exploring it.",
     );
   if (chapter && !chapterUnlocked(chapter, state))
-    throw new GameRuleError("Ce lieu n’est pas encore accessible.");
+    throw new GameRuleError("This place is not yet accessible.");
   if (hint) {
     state.hints++;
     return { state, message: object.hint, outcome: "hint" as const };
@@ -526,7 +526,7 @@ export function act(
   )
     return {
       state,
-      message: "Choisissez dans votre inventaire l’objet à utiliser ici.",
+      message: "Choose from your inventory the object to use here.",
       outcome: "needs_item" as const,
     };
   if (!state.resolved.includes(object.id) && object.puzzle) {
@@ -551,7 +551,7 @@ export function act(
       return {
         state,
         message:
-          "Ce n’est pas encore la bonne disposition. Relisez les indices et essayez une autre combinaison.",
+          "That is not the right arrangement yet. Re-read the clues and try another combination.",
         outcome: "wrong_manipulation" as const,
       };
   }
@@ -565,7 +565,7 @@ export function act(
       message:
         code === undefined
           ? object.lockedMessage
-          : "Ce code ne fonctionne pas. Relisez les découvertes de votre carnet.",
+          : "This code does not work. Re-read your notebook discoveries.",
       outcome:
         code === undefined ? ("needs_code" as const) : ("wrong_code" as const),
     };
@@ -577,7 +577,7 @@ export function act(
         outcome: "needs_choice" as const,
       };
     if (!object.choices?.some((c) => c.id === choiceId))
-      throw new GameRuleError("Choisissez une des réponses proposées.");
+      throw new GameRuleError("Choose one of the suggested answers.");
     state.choices = { ...state.choices, [object.id]: choiceId };
   }
   if (!state.resolved.includes(object.id)) {
