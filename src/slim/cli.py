@@ -9,7 +9,6 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from slim.analysis import Codebase
 from slim.config import Settings
 from slim.demo import demo_request
 from slim.errors import SlimError

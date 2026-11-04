@@ -1,7 +1,6 @@
 """One orchestration layer shared by HTTP and CLI; durable, guarded transitions."""
 
 import hashlib
-import json
 import shutil
 import threading
 from concurrent.futures import ThreadPoolExecutor
