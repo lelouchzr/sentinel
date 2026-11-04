@@ -189,10 +189,11 @@ The evaluation key is outside the model-visible source directory and is never se
 
 ## Tests and recording
 
-The completed [115.2-second Hyperframes film](video/README.md) is the current hackathon
+The completed [144-second Hyperframes film](video/README.md) is the current hackathon
 presentation. It uses real macOS terminal captures, English motion graphics and licensed
-instrumental music, with animated explanatory diagrams and a new live Meta investigation,
-labeled at its actual playback speed.
+instrumental music, with animated explanatory diagrams and the verified live Meta recording,
+labeled at its actual playback speed. The expanded 2:24 cut explains the architecture through
+continuous motion, animated type and a real-event data plane.
 The editable source, source recordings, publication credits and verification are in `video/`.
 
 ```sh

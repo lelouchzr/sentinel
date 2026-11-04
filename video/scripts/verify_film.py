@@ -18,6 +18,7 @@ def run(args):
 
 
 def verify(path):
+    story = json.loads((P / "storyboard.json").read_text())
     info = json.loads(
         run(
             [
@@ -37,8 +38,8 @@ def verify(path):
     audio = next(s for s in info["streams"] if s["codec_type"] == "audio")
     assert (video["width"], video["height"]) == (1920, 1080)
     assert video["codec_name"] == "h264" and video["avg_frame_rate"] == "30/1"
-    assert int(video["nb_read_frames"]) == 3456
-    assert abs(float(info["format"]["duration"]) - 115.2) < 0.1
+    assert int(video["nb_read_frames"]) == story["frames"]
+    assert abs(float(info["format"]["duration"]) - story["duration"]) < 0.1
     assert audio["codec_name"] == "aac" and int(audio["channels"]) == 2
     # Decode the entire file, not only a thumbnail or container header.
     run(["ffmpeg", "-v", "error", "-i", str(path), "-f", "null", "-"])
@@ -91,7 +92,20 @@ def verify(path):
     assert facts["session"]["receipt"]["total_bytes"] == sum(
         event["bytes"] or 0 for event in facts["session"]["events"]
     )
-    assert "Recorded live" in (P / "compositions/agent.html").read_text()
+    assert "Recorded live" in (P / "compositions/live.html").read_text()
+    plotted = json.loads((P / "data/event-map.json").read_text())
+    assert len(plotted["points"]) == facts["dataset"]["event_count"]
+    assert len({p[0] for p in plotted["points"]}) == len(plotted["points"])
+    assert {p[0] for p in plotted["points"] if p[-1]} == set(report["case"]["evidence_ids"])
+    canonical_ids = {
+        "E-"
+        + hashlib.sha256(
+            f"{name}\0{hashlib.sha256((originals / name).read_bytes()).hexdigest()}\0{number}".encode()
+        ).hexdigest()[:24]
+        for name, rows in records.items()
+        for number in range(1, len(rows) + 1)
+    }
+    assert {p[0] for p in plotted["points"]} == canonical_ids
     response = json.loads((P / "data/meta-report-response.json").read_text())
     assert response["finish_reason"] == "stop" and not response["refusal"]
     assert len(json.loads(response["content"])["findings"]) == len(facts["findings"])

@@ -1,29 +1,30 @@
-# Storylines considered — revision 2
+# Storylines considered — revision 3
 
-## Selected: The evidence becomes the explanation
+## Selected: Follow one event through the machine
 
-Actual fields from one account arrive on separate planes. CSV and JSONL routes converge into
-an inspectable event store. A real alert opens a case. A diagram builds the Meta/MCP exchange,
-then becomes proof through a fresh live terminal recording. The session links three events;
-the download opens into original evidence. A backup job provides the alternative explanation.
-The saved case closes the story through review, export and independent reopening.
+A login and a download arrive as big type and real source rows. Their session tag expands into
+the actual terminal. The camera follows a signal into a case, then the case becomes the
+architecture: normalized events, local store, runtime, real MCP child and Meta API. Return to
+an actual question and the validated live run. The session becomes a ribbon, then original
+source, then reviewed findings and an exported/reopened case. This carries one object through
+cause-and-effect transitions instead of cutting between explanatory slides.
 
-The owner requested autonomous completion and specifically asked for explanatory diagrams,
-stronger color, fluid motion, bounce and depth. The film uses a lavender/mint/amber palette,
-physical offsets, restrained rotations, springs on explanatory objects and music-paced cuts.
-Real application views stay square and legible. There is no generated replacement interface.
+The supplied Storyboard First reference drives complete product → detail → return moves and
+the white/cyan/blue world. Everything Was Written drives large masked type, scale contrast,
+dark chapters and objects turning into the next scene. Neither reference's assets are reused.
 
-## Alternative: The report first
+## Alternative: Start inside the final report
 
-Start on the report, dive through an event ID into its source, then reconstruct the case in
-reverse. A continuous zoom would make provenance memorable but delay the product's problem
-and the explanation of Meta/MCP until late in the film.
+Dive into an event ID, travel backward through its receipt and original record, then reconstruct
+how Meta selected the searches. One reverse camera journey would emphasize provenance but
+make the product's entry point and local/API architecture harder for a new viewer to follow.
 
-## Alternative: Two equal transfers, different meaning
+## Alternative: Two equal transfers
 
-Start with matching recorded byte totals from the account and backup job. Split the frame
-into their different session histories, then converge at review. This emphasizes uncertainty
-well but would make ingestion, tool discovery and case persistence less clear to a new viewer.
+Open on identical byte totals for the account and backup job, then split into their different
+sessions and authorization context. The streams reunite at the report. This is an effective
+uncertainty lesson, but it delays ingestion, MCP discovery and the product workflow.
 
-The selected story preserves one concrete investigation while adding visual explanations.
-No paid generated footage or voice service is needed for this direction.
+The owner requested autonomous production and a closer reference match, allowing a longer
+film. The selected 144-second cut provides architecture time without filling the three-minute
+maximum. It reuses the successful actual Meta capture; no new model request is needed.

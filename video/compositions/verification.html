@@ -1,0 +1,48 @@
+<template><style>
+@font-face{font-family:Manrope;src:url('assets/fonts/Manrope.ttf') format('truetype');font-weight:200 800}
+@font-face{font-family:JetBrains;src:url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype')}
+#root{position:absolute;inset:0;overflow:hidden;background:#f6faf9;color:#0e1724;font-family:Manrope,sans-serif}
+*{box-sizing:border-box}h1,h2,p,pre{margin:0}b,strong{font-weight:760}.mono{font-family:JetBrains,monospace}
+.clip{position:absolute}.film{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}.window{position:absolute;overflow:hidden;background:#0a1119;border-radius:22px;box-shadow:0 34px 80px #00152840}
+.title{position:absolute;font-size:104px;line-height:1.05;font-weight:760;letter-spacing:-5px}.copy{position:absolute;font-size:36px;line-height:1.4;letter-spacing:-.7px}
+.label{position:absolute;font:30px/1.45 JetBrains,monospace}.foot{position:absolute;left:120px;bottom:53px;font-size:29px;line-height:1.4;color:#526976}
+.word{display:inline-block}.mask-text{overflow:hidden}.teal{color:#41ead1}.blue{color:#164ae9}.orange{color:#ff8a50}
+.stage{position:absolute;inset:0;background:radial-gradient(ellipse at 12% 100%,#15efd0 0%,transparent 56%),radial-gradient(ellipse at 88% 0%,#1674ff 0%,transparent 65%),#1545d8}
+.plate{position:absolute;border:1px solid #ffffff65;border-radius:24px;background:linear-gradient(145deg,#ffffffeb,#ffffffd6);box-shadow:0 22px 0 #041c7540,0 45px 85px #061b6340}
+.route{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.packet{position:absolute;width:24px;height:24px;border-radius:6px;background:#41ead1;box-shadow:0 0 0 6px #41ead122}
+.tag{display:inline-block;padding:12px 23px;border:1px solid #789ba6;border-radius:12px;font:30px JetBrains;background:#fff}
+
+
+#root{background:#090f19;color:#f4f6f2}#v-title{left:120px;top:90px;font-size:108px}#v-title span{color:#41ead1}#v-json{position:absolute;left:125px;top:340px;width:850px;height:460px;padding:35px;border:1px solid #3a586b;background:#111f2b;border-radius:20px}#v-json>span{font-size:28px;color:#77b5bf}#v-json pre{font-size:30px;line-height:1.5;margin-top:25px;color:#dbf4ec}#v-json small{display:block;font:29px JetBrains;color:#41ead1;margin-top:20px}
+#v-gates{position:absolute;left:1100px;top:360px;width:690px}#v-gates span{display:block;border-bottom:1px solid #3a586b;padding:22px 0;font-size:38px;color:#b6e8de}
+#v-results{position:absolute;left:125px;top:330px;width:1500px}#v-results>div{margin-bottom:54px;border-left:5px solid #41ead1;padding-left:35px}#v-results span{display:block;font:29px JetBrains;color:#41ead1}#v-results strong{display:block;max-width:1220px;font-size:54px;line-height:1.3;letter-spacing:-1.5px;margin-top:17px}#v-hypothesis{border-color:#ffb56d!important}#v-hypothesis span{color:#ffb56d}#v-question{border-color:#a2b9ff!important}#v-question span{color:#a2b9ff}
+#v-seal{position:absolute;left:1440px;top:420px;width:350px;height:270px;border:2px solid #356b65;border-radius:24px;background:#102e2d;text-align:center;padding-top:25px;box-shadow:0 20px 0 #061a19}#v-seal strong{display:block;font-size:106px;line-height:1.2;color:#41ead1}#v-seal span{font-size:29px;line-height:1.5}.foot{color:#9db9c7}
+</style>
+<div id="root" data-composition-id="verification" data-width="1920" data-height="1080" data-motion-blur="on" data-motion-blur-shutter="180">
+<div id="v-paper"></div><h2 id="v-title" class="title">A report has to <span>hold up.</span></h2>
+<div id="v-json"><span class="mono">CAPTURED FIELDS</span><pre class="mono">{
+  "category": "observed_fact",
+  "event_ids": [
+    "E-f418bfcc7b120c25fd1b8e47"
+  ]
+}</pre><small>json_schema · strict: true</small></div>
+<div id="v-gates"><span id="v-gate1">Schema checked</span><span id="v-gate2">Retrieved IDs checked</span><span id="v-gate3">Computed receipts</span></div>
+<div id="v-results" data-hold><div id="v-observed"><span>OBSERVED</span><strong>24 failures → login → download</strong></div><div id="v-hypothesis"><span>HYPOTHESIS · UNPROVEN</span><strong>Was the account compromised?</strong></div><div id="v-question"><span>OPEN QUESTION</span><strong>Who authorized the session?</strong></div></div>
+<div id="v-seal"><strong>4</strong><span>validated findings</span></div>
+<p id="v-foot" class="foot">Reference validity is checked in code. Interpretation remains open to challenge.</p>
+</div>
+<script>const tl=gsap.timeline({paused:true});
+
+tl.fromTo('#v-title',{x:-140,opacity:0},{x:0,opacity:1,duration:.65,ease:'expo.out'},0);
+tl.fromTo('#v-json',{rotationY:-10,x:-200,opacity:0},{rotationY:0,x:0,opacity:1,duration:.75,ease:'power4.out'},.4);
+tl.fromTo('#v-gates span',{x:120,opacity:0},{x:0,opacity:1,stagger:.6,duration:.55,ease:'expo.out'},.8);
+tl.to('#v-json',{scale:.3,x:400,opacity:0,duration:.65,ease:'power3.inOut'},4.0);tl.to('#v-gates',{y:-80,opacity:0,duration:.4},4.0);
+tl.fromTo('#v-observed',{x:-160,opacity:0},{x:0,opacity:1,duration:.6,ease:'expo.out'},4.4);
+tl.fromTo('#v-hypothesis',{x:-160,opacity:0},{x:0,opacity:1,duration:.6,ease:'expo.out'},5.0);
+tl.fromTo('#v-question',{x:-160,opacity:0},{x:0,opacity:1,duration:.6,ease:'expo.out'},5.6);
+tl.fromTo('#v-seal',{scale:1.5,rotationZ:-12,opacity:0},{scale:1,rotationZ:0,opacity:1,duration:.75,ease:'back.out(1.5)'},9.5);
+tl.to('#v-title,#v-results,#v-seal,#v-foot',{opacity:0,duration:.25},12.4);
+
+window.__timelines=window.__timelines||{};window.__timelines['verification']=tl;</script></template>

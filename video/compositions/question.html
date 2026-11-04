@@ -1,41 +1,37 @@
-<template>
-<style>
+<template><style>
 @font-face{font-family:Manrope;src:url('assets/fonts/Manrope.ttf') format('truetype');font-weight:200 800}
-@font-face{font-family:'JetBrains Mono';src:url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype')}
-#root{position:absolute;inset:0;overflow:hidden;background:#0b1320;color:#eff5f5;font-family:Manrope,sans-serif}
-*{box-sizing:border-box}h1,h2,p{margin:0}.teal{color:#56e1ca}.violet{color:#b3a5f6}.amber{color:#ffcd73}
-.title{position:absolute;left:112px;top:90px;font-size:86px;line-height:1.08;font-weight:750;letter-spacing:-4px}
-.body{position:absolute;font-size:34px;line-height:1.4;font-weight:500;letter-spacing:-.5px}
-.mono{font-family:'JetBrains Mono',monospace}.label{position:absolute;font:28px/1.4 'JetBrains Mono',monospace}
-.foot{position:absolute;left:114px;bottom:54px;font-size:28px;line-height:1.4;color:#a8becb}
-.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}.terminal{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
-.mask{position:absolute;overflow:hidden;background:#0a1119;border-radius:18px;box-shadow:0 30px 65px #0004}
-.clip{position:absolute}.wire{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+@font-face{font-family:JetBrains;src:url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype')}
+#root{position:absolute;inset:0;overflow:hidden;background:#f6faf9;color:#0e1724;font-family:Manrope,sans-serif}
+*{box-sizing:border-box}h1,h2,p,pre{margin:0}b,strong{font-weight:760}.mono{font-family:JetBrains,monospace}
+.clip{position:absolute}.film{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}.window{position:absolute;overflow:hidden;background:#0a1119;border-radius:22px;box-shadow:0 34px 80px #00152840}
+.title{position:absolute;font-size:104px;line-height:1.05;font-weight:760;letter-spacing:-5px}.copy{position:absolute;font-size:36px;line-height:1.4;letter-spacing:-.7px}
+.label{position:absolute;font:30px/1.45 JetBrains,monospace}.foot{position:absolute;left:120px;bottom:53px;font-size:29px;line-height:1.4;color:#526976}
+.word{display:inline-block}.mask-text{overflow:hidden}.teal{color:#41ead1}.blue{color:#164ae9}.orange{color:#ff8a50}
+.stage{position:absolute;inset:0;background:radial-gradient(ellipse at 12% 100%,#15efd0 0%,transparent 56%),radial-gradient(ellipse at 88% 0%,#1674ff 0%,transparent 65%),#1545d8}
+.plate{position:absolute;border:1px solid #ffffff65;border-radius:24px;background:linear-gradient(145deg,#ffffffeb,#ffffffd6);box-shadow:0 22px 0 #041c7540,0 45px 85px #061b6340}
+.route{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.packet{position:absolute;width:24px;height:24px;border-radius:6px;background:#41ead1;box-shadow:0 0 0 6px #41ead122}
+.tag{display:inline-block;padding:12px 23px;border:1px solid #789ba6;border-radius:12px;font:30px JetBrains;background:#fff}
 
 
-#root{background:#e8e4fa;color:#20213a}#hook{top:120px;font-size:109px;letter-spacing:-6px;z-index:4}#hook span{color:#6250ae}
-#sheets{position:absolute;left:930px;top:270px;width:800px;height:680px;perspective:1600px;transform-style:preserve-3d}
-.sheet{position:absolute;width:650px;height:210px;padding:24px 30px;border:1px solid #bab1e2;border-radius:16px;background:#faf9ff;box-shadow:0 35px 65px #493d7b30;transform-origin:50% 50%;font-size:29px;line-height:1.5}
-.sheet small{position:absolute;left:30px;top:20px;font:32px 'JetBrains Mono';color:#73679c}.sheet b{position:absolute;left:30px;top:68px;font-size:43px;letter-spacing:-2px}.sheet p{position:absolute;left:265px;top:74px;font-size:32px;line-height:1.1}.sheet i{position:absolute;left:30px;bottom:10px;font:30px 'JetBrains Mono';color:#6250ae}
-#sheet-b{left:65px;top:235px;background:#d3f7ef;border-color:#82bdb0}#sheet-c{left:130px;top:470px;background:#fff0c9;border-color:#d5bd80}
-#hook-question{left:118px;top:570px;font-size:53px;width:770px;font-weight:650} .foot{color:#605c7e}
+#root{color:#fff}#q-title{left:120px;top:90px;font-size:105px}#q-title span{color:#bcfff0}#q-window{left:120px;top:600px;width:1680px;height:260px}#q-camera{left:0;top:0}
+#q-brief{position:absolute;left:125px;top:275px;width:1480px;font-size:52px;letter-spacing:-2px;line-height:1.6;color:#fff}#q-brief span{display:block;background:#09245ef0;padding:5px 24px;width:max-content}.foot{color:#f2ffff;background:#08275ef2;padding:9px 16px;border-radius:8px;font-size:28px}
 </style>
-<div id="root" data-composition-id="question" data-width="1920" data-height="1080">
-<h1 id="hook" class="title">One account.<br>Scattered <span>logs.</span></h1>
-<div id="sheets" data-layout-allow-overflow>
- <div id="sheet-a" class="sheet"><small>IDENTITY.CSV</small><b>09:03:20</b><p>morgan<br>login · success</p><i>203.0.113.74</i></div>
- <div id="sheet-b" class="sheet"><small>SERVICES.JSONL</small><b>09:03:40</b><p>access · success<br>restricted export</p><i>session-702</i></div>
- <div id="sheet-c" class="sheet"><small>SERVICES.JSONL</small><b>840 MB</b><p>download · success<br>storage-01</p><i>session-702</i></div>
-</div><p id="hook-question" class="body">What actually happened?</p>
-<p class="foot">Fictional records. Real software. Real Meta investigation.</p>
+<div id="root" data-composition-id="question" data-width="1920" data-height="1080" data-motion-blur="on" data-motion-blur-shutter="180">
+<div class="stage"></div><h2 id="q-title" class="title">Ask about <span>this session.</span></h2>
+<div id="q-window" class="window" data-layout-allow-overflow><div id="q-camera" class="camera"><video id="q-film" class="clip film" data-start="0" data-duration="6.4" data-media-start="11.1590" data-hf-media-start-basis="local" data-playback-rate="1.0000000" data-track-index="0" src="assets/captures/workflow.mp4" muted playsinline data-motion-blur="off"></video></div></div>
+<div id="q-brief"><span>Trace the login.</span><span>Inspect the evidence.</span><span>What remains uncertain?</span></div>
+<p id="q-foot" class="foot">Focused question → Actual Meta-selected MCP searches</p>
 </div>
 <script>const tl=gsap.timeline({paused:true});
-tl.fromTo('#hook',{x:-75},{x:0,duration:.75,ease:'expo.out'},0);
-tl.fromTo('#sheet-a',{rotationY:-20,rotationZ:-8,x:90,y:60},{rotationY:-12,rotationZ:-2,x:0,y:0,duration:.9,ease:'back.out(1.3)'},0);
-tl.fromTo('#sheet-b',{x:330,y:180,rotationZ:12,opacity:0},{x:0,y:0,rotationZ:2,opacity:1,duration:.75,ease:'back.out(1.5)'},.5);
-tl.fromTo('#sheet-c',{x:450,y:250,rotationZ:-12,opacity:0},{x:0,y:0,rotationZ:-2,opacity:1,duration:.8,ease:'back.out(1.5)'},1.1);
-tl.fromTo('#hook-question',{scale:.88,opacity:0},{scale:1,opacity:1,duration:.7,ease:'back.out(1.1)'},2.6);
-tl.to('#sheets',{x:-190,y:-90,scale:.9,duration:.5,ease:'power3.in'},5.9);
 
-window.__timelines=window.__timelines||{};window.__timelines['question']=tl;</script>
-</template>
+tl.fromTo('#q-title',{y:65},{y:0,duration:.6,ease:'expo.out'},0);
+tl.fromTo('#q-window',{scale:.8,y:130,opacity:0},{scale:1,y:0,opacity:1,duration:.7,ease:'power4.out'},0);
+tl.set('#q-camera',{scale:1.7,x:-20,y:-1490},0);
+tl.fromTo('#q-brief span',{x:-100,opacity:0},{x:0,opacity:1,stagger:.65,duration:.5,ease:'expo.out'},.4);
+tl.to('#q-brief',{x:220,opacity:0,duration:.35,ease:'power2.in'},3.8);
+tl.to('#q-camera',{x:-780,duration:.6,ease:'power3.inOut'},3.9);
+tl.to('#q-title,#q-foot',{opacity:0,duration:.25},5.8);
+
+window.__timelines=window.__timelines||{};window.__timelines['question']=tl;</script></template>

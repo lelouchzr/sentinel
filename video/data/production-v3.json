@@ -1,0 +1,20 @@
+{
+  "duration": 144,
+  "frames": 4320,
+  "case_id": "C-6648e4baf12a",
+  "model_calls_for_edit": 0,
+  "reference_videos": [
+    "https://static.heygen.ai/hyperframes-oss/homepage/showcase/hq/launch-storyboard-first-v1.mp4",
+    "https://static.heygen.ai/hyperframes-oss/homepage/showcase/hq/everything-was-written-v1.mp4"
+  ],
+  "reference_footage_used": false,
+  "plotted_records": 3542,
+  "highlighted_case_events": 27,
+  "source": "Actual terminal capture from the successful November 4 live Meta investigation",
+  "independent_review": "Storyboard, scene, phone and seam stills only; useful P0/P1 corrections applied",
+  "active_mcp_crop": "Lower active log rows at 1.4\u00d7 source scale",
+  "evidence_label_overlay": {
+    "start": 95,
+    "duration": 3.6
+  }
+}

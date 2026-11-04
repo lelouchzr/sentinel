@@ -1,0 +1,21 @@
+<template><style>
+@font-face{font-family:Manrope;src:url('assets/fonts/Manrope.ttf') format('truetype');font-weight:200 800}
+@font-face{font-family:JetBrains;src:url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype')}
+#root{position:absolute;inset:0;overflow:hidden;background:#f6faf9;color:#0e1724;font-family:Manrope,sans-serif}
+*{box-sizing:border-box}h1,h2,p,pre{margin:0}b,strong{font-weight:760}.mono{font-family:JetBrains,monospace}
+.clip{position:absolute}.film{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}.window{position:absolute;overflow:hidden;background:#0a1119;border-radius:22px;box-shadow:0 34px 80px #00152840}
+.title{position:absolute;font-size:104px;line-height:1.05;font-weight:760;letter-spacing:-5px}.copy{position:absolute;font-size:36px;line-height:1.4;letter-spacing:-.7px}
+.label{position:absolute;font:30px/1.45 JetBrains,monospace}.foot{position:absolute;left:120px;bottom:53px;font-size:29px;line-height:1.4;color:#526976}
+.word{display:inline-block}.mask-text{overflow:hidden}.teal{color:#41ead1}.blue{color:#164ae9}.orange{color:#ff8a50}
+.stage{position:absolute;inset:0;background:radial-gradient(ellipse at 12% 100%,#15efd0 0%,transparent 56%),radial-gradient(ellipse at 88% 0%,#1674ff 0%,transparent 65%),#1545d8}
+.plate{position:absolute;border:1px solid #ffffff65;border-radius:24px;background:linear-gradient(145deg,#ffffffeb,#ffffffd6);box-shadow:0 22px 0 #041c7540,0 45px 85px #061b6340}
+.route{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.packet{position:absolute;width:24px;height:24px;border-radius:6px;background:#41ead1;box-shadow:0 0 0 6px #41ead122}
+.tag{display:inline-block;padding:12px 23px;border:1px solid #789ba6;border-radius:12px;font:30px JetBrains;background:#fff}
+
+#root{background:transparent;pointer-events:none}#carry-label{left:120px;top:235px;padding:12px 24px;background:#eafffa;border:1px solid #8bb8b6;border-radius:12px;color:#163c53;font-size:30px}</style>
+<div id="root" data-composition-id="evidence-carrier" data-width="1920" data-height="1080" data-motion-blur="on" data-motion-blur-shutter="180"><div id="carry-label" class="label">Download · 840 MB · session-702</div></div>
+<script>const tl=gsap.timeline({paused:true});
+tl.fromTo('#carry-label',{opacity:0},{opacity:1,duration:.25},0);tl.to('#carry-label',{opacity:0,duration:.25},3.3);
+window.__timelines=window.__timelines||{};window.__timelines['evidence-carrier']=tl;</script></template>

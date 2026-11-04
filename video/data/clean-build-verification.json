@@ -1,5 +1,5 @@
 {
-  "directory": "/private/tmp/sentinel-film-v2-clean-z6esqiew/video",
+  "directory": "/private/tmp/sentinel-film-v3-clean-i0i80uka/video",
   "npm_ci": "passed",
   "isolated_python_install": "passed",
   "official_asset_download_and_hashes": "passed",
@@ -8,11 +8,12 @@
   "generated_html_identical": true,
   "rendered_spans_seconds": [
     [
-      24,
-      27.2
+      65.6,
+      68.8
     ]
   ],
   "rendered_duration_seconds": 3.2,
   "model_calls": 0,
-  "case_id": "C-6648e4baf12a"
+  "case_id": "C-6648e4baf12a",
+  "timing_manifest": "Included committed storyboard.json; regenerated HTML before audio mixing"
 }

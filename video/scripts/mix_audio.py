@@ -9,7 +9,8 @@ from pathlib import Path
 
 P = Path(__file__).resolve().parents[1]
 A = P / "assets/audio"
-DURATION = 115.2
+STORY = json.loads((P / "storyboard.json").read_text())
+DURATION = STORY["duration"]
 
 
 def run(args):
@@ -21,10 +22,12 @@ def run(args):
 def mix():
     # These effects are placed on authored transitions, never used to imply an
     # application interaction that is absent from the recorded terminal.
-    taps = [6.4, 12.8, 22.4, 35.2, 57.6, 70.4, 80.0, 89.6, 102.4, 110.4]
+    taps = [scene["start"] for scene in STORY["scenes"] if scene["start"]] + [139.2]
+    source_start = 6.4
+    source_end = source_start + DURATION
     chains = [
-        "[0:a]atrim=start=6.4:end=121.6,asetpts=PTS-STARTPTS,"
-        "afade=t=in:d=0.25,afade=t=out:st=111.6:d=3.6,volume=0.78[bed]",
+        f"[0:a]atrim=start={source_start}:end={source_end},asetpts=PTS-STARTPTS,"
+        f"afade=t=in:d=0.25,afade=t=out:st={DURATION - 3.6}:d=3.6,volume=0.78[bed]",
         f"[1:a]asplit={len(taps)}" + "".join(f"[tap{i}]" for i in range(len(taps))),
     ]
     for i, time in enumerate(taps):
@@ -93,8 +96,8 @@ def mix():
                 "duration": DURATION,
                 "music": "Cipher by Kevin MacLeod",
                 "license": "CC BY 4.0",
-                "source_start_seconds": 6.4,
-                "source_end_seconds": 121.6,
+                "source_start_seconds": source_start,
+                "source_end_seconds": source_end,
                 "effects": "Kenney Interface Sounds, CC0",
                 "effects_at_seconds": taps,
                 "normalization_target_lufs": -16,

@@ -1,6 +1,6 @@
 # Three-minute demonstration guide
 
-The current delivered presentation is the [115.2-second Hyperframes film](../video/README.md),
+The current delivered presentation is the [144-second Hyperframes film](../video/README.md),
 with no voiceover. Three minutes is the maximum, not a required duration. The manual narrated
 format below and its original 180-second script remain available as an alternative.
 

@@ -1,44 +1,64 @@
-# SENTINEL film specification — revision 2
+# SENTINEL — Follow one event · revision 3
 
-GOAL: Explain how scattered records become a defensible investigation, using one recorded example.
-OUTPUT: Hyperframes 0.9.13; 1920×1080; 30 fps; H.264/AAC stereo; English; no voiceover.
-TIME: 115.2 seconds, 3,456 frames. Cipher: 150 BPM, 12 frames per beat, 48 frames per bar.
+GOAL: Make a first-time viewer understand the product, the local/API boundary and the evidential
+limits through one real investigation, with the pace and continuity of the supplied references.
+OUTPUT: Hyperframes 0.9.13, 1920×1080, 30 fps, H.264/AAC stereo, English, no voiceover.
+TIME: 144 seconds = 4,320 frames. Cipher: 150 BPM, 12 frames/beat, 48 frames/bar, 90 bars.
 
-LOOK: Lavender #e8e4fa for scattered sources and Meta/MCP explanation; mint #d3f7ef for
-normalization and linked evidence; amber #ffe4ad for the benign alternative; dark #0b1320
-for actual terminal proof. Teal #56e1ca identifies evidence. Manrope titles 78–109 px;
-explanations 32–46 px; essential graphic labels at least 28 px; JetBrains Mono for IDs.
-Margins: 112 px. No invented OS chrome, synthetic terminal output or stock hacker footage.
+REFERENCE ANALYSIS: Both owner-supplied official MP4s were inspected from downloaded frames.
+Storyboard First uses a white/cyan/blue stage, complete-product views, sharp camera moves into
+one action, isolated components, a recurring carrier and return to the workspace. Everything
+Was Written uses large type, masked/slammed entrances, dark technical sections, contrast in
+scale and objects becoming the next scene. Reference media is analysis-only, never reused.
 
-DEPTH: Source sheets have a 1,600 px perspective, restrained rotations, real shadows and
-separate motion. The normalized store is an exploded three-plane stack. Diagram nodes have
-20–25 px physical offsets. Real UI lands square for readability; it does not bounce.
-MOTION: Arrivals 0.55–0.9 s, expo.out or back.out(1.1–1.5); springs use elastic.out(1,.65).
-Routes draw over 0.8–1.4 s, power2.inOut. Staggers build relationships in evidence order.
-Exits 0.2–0.5 s, power3.in. End card rises over 0.6 s and holds. Titles stay still after landing.
+LOOK: Actual square terminal on a blue/cyan product stage (#1545d8, #1674ff, #15efd0), as in
+the supplied primary reference. Warm-white source surface #f3faf9; dark investigation surface
+#080d17; amber explanation #ffdb9b. Teal #41ead1 carries the session. Orange #ff803e marks the
+investigation chapter. Manrope 83–196 px for hero type; 36–63 px explanation; essential labels
+at least 28 px. JetBrains Mono for actual identifiers and code. Action margin 120 px.
 
-| Frames | Seconds | Action | Explanation |
-| --- | --- | --- | --- |
-| 0–191 | 0–6.4 | Actual log fields arrive on separate planes | One account. Scattered logs. |
-| 192–383 | 6.4–12.8 | CSV/JSONL routes converge into the event store | UTC, stable IDs and provenance |
-| 384–671 | 12.8–22.4 | Real terminal alert selection opens a case | 15 signals from 3 rules |
-| 672–1055 | 22.4–35.2 | Model, tool request, local store and evidence reply build in stages | Meta chooses; MCP retrieves |
-| 1056–1727 | 35.2–57.6 | New live investigation, honestly time-compressed | Investigator → reviewer → reporter |
-| 1728–2111 | 57.6–70.4 | Three real events connect through their explicit session | Login → access → download |
-| 2112–2399 | 70.4–80 | Original evidence opens beside its source reference | Recorded 840 MB download |
-| 2400–2687 | 80–89.6 | Backup context reveals a plausible benign explanation | Volume does not establish intent |
-| 2688–3071 | 89.6–102.4 | Facts, hypothesis and open question separate | References are checked in code |
-| 3072–3455 | 102.4–115.2 | Real export, independent reopen, built end card | Export. Reopen. Continue. |
+OBJECTS: Real source rows; a session tag; the complete terminal; one actual point per imported
+record; a normalized record with actual fields; an explicit database cylinder; runtime/server
+nodes and a local workspace boundary; HTTPS and stdio routes; request/reply packets; an actual
+question field; the session chain; original JSON; a change reference; selected captured report
+fields; observed/hypothesis/question lanes; exported/reopened case; command end card.
 
-LIVE SOURCE: C-6648e4baf12a, recorded after the strict JSON-schema correction. 51.26 seconds,
-10 Meta requests, 9 actual MCP calls, 27 attached events, 4 verified findings. The source recording
-contains the entire run; the film shows it at 2.32×. Role-caption handoffs derive from persisted
-activity timestamps, not an invented search script. Counts and bytes derive from stored records.
+MOTION: Something substantive changes every 2–4 seconds, except while real terminal operations
+supply motion. Type slams/masks take 0.35–0.7 s, expo.out; exits 0.25–0.5 s, power3.in. Camera
+reframes take 0.6–0.75 s, power3.inOut. Editorial objects use back.out(1.1–1.5) or
+elastic.out(1,.65). No spring on real UI. Packets follow the diagram routes over 0.7–1.0 s.
+Render-time motion blur uses 180° shutter on authored movement; captured media opts out.
+The plotted data plane is deterministic and driven by the paused scene clock, not a timer.
+Titles stop after landing. A recurring event/session carries the transitions.
 
-BANNED: Fake activity; a fixture presented as live Meta; unsupported totals; private reasoning;
-secret input; compromise as fact; hidden playback speed; repeating idle loops; tiny decorative
-screenshots; unreadable labels; every scene fading and sliding upward; UI spring effects.
+SHOTS: See STORYBOARD.md for causes and handoffs.
 
-REFERENCE: The owner's Drawlab reference was inspected through its public X video. The relevant
-principles are explanatory staging, light colored grounds, planes, depth and object transitions.
-No third-party footage, interface, music or branding from that video is reused.
+| Frames | Seconds | Hero move |
+| --- | --- | --- |
+| 0–287 | 0–9.6 | Login and download type/rows converge into a session tag, which expands into the product stage |
+| 288–671 | 9.6–22.4 | Complete terminal → actual signal → case, with strong camera reframing |
+| 672–1055 | 22.4–35.2 | 3,542 real events reorganize into a normalized record and local store |
+| 1056–1535 | 35.2–51.2 | Runtime, MCP child, database/case store and Meta/API routes build and exchange packets |
+| 1536–1727 | 51.2–57.6 | Real question input and focused investigative intent |
+| 1728–2495 | 57.6–83.2 | Actual 51.26-second Meta run at 2.03× with timestamp-derived handoffs |
+| 2496–2879 | 83.2–96 | Actual session view becomes an explanatory chronological ribbon |
+| 2880–3263 | 96–108.8 | Download expands into original source and computed byte/file/position annotations |
+| 3264–3551 | 108.8–118.4 | Equal recorded byte total resolves to different backup context |
+| 3552–3935 | 118.4–131.2 | Selected actual report fields → schema/ID/receipt checks → distinct conclusion lanes |
+| 3936–4127 | 131.2–137.6 | Actual report export and independent process reopening, carried case ID |
+| 4128–4319 | 137.6–144 | Evidence closes into the brand and launch command, with full music attribution |
+
+BANNED: A heading plus tiny screenshot as a whole scene; repeated fade/slide entrances;
+independent static diagram slides; drifting titles; decorative fake HUD; fake product panels;
+unverified counters; invented model output; full-dataset model upload; private reasoning;
+compromise or exfiltration claimed as fact; hidden playback speed; automatic paid calls.
+The requested blue/cyan stage is a deliberate reference choice, not a default applied elsewhere.
+
+QA: Strict check with transition sampling; all scene/phone/cut sheets; intermediate frames of
+carrier expansion, data-plane collapse, architecture packet travel, session-to-source and final
+brand; new rendered file with full decode/audio/credential/provenance checks; original worktree
+preservation; editable-source rebuild. Keep prior completed films and source bundles intact.
+
+The cross-scene evidence label is a separate 3.6-second overlay (95.0–98.6), so its identity
+and reading hold remain continuous through the source transition. The concluding facts,
+hypothesis and open question share a deliberate reading hold.

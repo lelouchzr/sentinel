@@ -21,8 +21,8 @@ def package():
         "assets/fonts",
         "assets/vendor",
         "assets/captures",
-        "renders/review-v2-final",
-        "renders/final-v2",
+        "renders/review-v3-delivery",
+        "renders/hero-v3-final",
     ]
     files = [
         "index.html",
@@ -33,6 +33,7 @@ def package():
         "CREDITS.md",
         "PUBLICATION.txt",
         "STORYLINES.md",
+        "STORYBOARD.md",
         "SPEC.md",
         "REVIEW.md",
         "storyboard.json",
@@ -45,7 +46,9 @@ def package():
         files.extend(
             str(p.relative_to(P))
             for p in (P / root).rglob("*")
-            if p.is_file() and "__pycache__" not in p.parts
+            if p.is_file()
+            and "__pycache__" not in p.parts
+            and not any(part.startswith(".") for part in p.relative_to(P).parts)
         )
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as archive:
         for name in sorted(set(files)):

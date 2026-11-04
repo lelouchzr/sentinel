@@ -1,66 +1,85 @@
-# Final review — revision 2
+# Final review — revision 3
 
-The film follows actual log fields into a stored investigation. The selected form adds a
-normalization diagram, a staged Meta/MCP exchange and a session relationship diagram around
-a newly recorded live terminal run. The report-first and equal-volume alternatives remain in
-STORYLINES.md; they were not built.
+The selected film follows one event through the product and architecture. It uses the owner's
+Storyboard First reference for product → detail → return camera logic, a white/cyan/blue stage
+and carried objects. Everything Was Written informs masked/slammed large type, scale contrast
+and the dark investigation chapter. The reference videos were inspected as actual frames;
+their media, music, mascots and branding are not reused.
 
-## Creative review
+## Creative decisions
 
-- 115.2 seconds, ten scenes, 1920×1080 at 30 fps, no voiceover.
-- The opening contains actual fields from the fictional dataset, with readable source sheets
-  at distinct depths. The smaller headline prevents sheets from obscuring its final word.
-- Lavender, mint and amber scenes explain the architecture, relationships and benign context;
-  the dark terminal remains the proof surface. Springs apply to explanatory objects, not UI.
-- Source routes draw after their destination is visible and disappear before the stack moves.
-  Request/reply arrows meet their actual model/tool nodes. Session edges draw only after both
-  events land. These timing corrections passed checks at intermediate animation states.
-- The model segment shows the new live run at an explicitly labeled 2.32×. Role handoffs derive
-  from persisted activity timestamps. The full output-only recording remains available.
-- Observed fields, hypotheses and the open question are distinguished. The backup context is
-  a logged explanation, not independent proof of authorization. A download is not called
-  malicious exfiltration. The final findings reference real retrieved events.
-- Actual source JSON is cropped for its fields, file position and hash. The explanatory labels
-  remain readable without inventing a product control. Technical arguments require pausing or
-  full resolution; larger captions convey their role on a phone.
-- Export and reopening come from two real application processes, both with exit status 0.
-  The final command and attribution hold on a constructed end card.
+- 144 seconds, 4,320 frames, twelve story chapters plus one evidence-label overlay, English,
+  music only. The extra time explains the architecture rather than filling three minutes.
+- A login, download and explicit session become the terminal workspace. The camera establishes
+  the real UI, enlarges the actual signal and later returns to actual evidence and case review.
+- One point represents each of 3,542 imported records. Timestamp/source/host determine its
+  position; the 27 highlighted points match attached case evidence. This is an editorial data
+  visualization, not an interactive graph feature claimed for Sentinel.
+- The normalized record collapses into a recognizable local store. The architecture then shows
+  the Python runtime, actual MCP child process over stdio, DuckDB and JSON cases locally, with
+  selected excerpts and tool decisions crossing HTTPS to Meta. Packets have a defined route.
+- The verified November 4 live run is retained at a disclosed 2.03× playback speed. This editing
+  revision makes no additional model request. Actual action captions and role changes derive
+  from persisted activity timestamps. No fixed fixture is presented as live AI.
+- The original source, its record position and hash remain inspectable. Equal recorded transfer
+  totals are contrasted with different context, without clearing activity as authorized.
+- The captured report excerpt contains selected real fields. It is not an invented full JSON
+  response. Local schema, retrieved-reference and computed-receipt checks remain separate from
+  the model's interpretations. No confidence percentages or assertion of compromise is added.
 
-## Executed checks
+## Independent visual review and corrections
 
-Hyperframes static lint, browser runtime, layout, contrast, craft and audio validation passed
-in strict mode, with transition sampling enabled and no findings. The project contains one
-root composition and ten scene compositions. The installed CLI reports its separate optional
-motion audit as disabled; this is not described as an executed audit. Motion was reviewed in
-timed scene images, transition strips, the local editable preview and rendered frames.
+A fresh reviewer received only STORYBOARD.md and the scene, phone and seam sheets. Its
+observations were assessed against the actual evidence; it did not watch continuous motion or
+hear the soundtrack. The useful findings led to these changes:
 
-The live run C-6648e4baf12a completed in 51.26 seconds with 10 Meta requests, 9 actual MCP calls,
-27 attached events and 4 findings. The report finished with `stop` using strict JSON-schema
-output. Pydantic and deterministic source/receipt validation succeeded. The captured answer
-is used in an offline regression test; CI never repeats paid calls.
+- P0, backup: attribute “Approved nightly backup” explicitly to the log and display **Approval
+  remains unverified** at 34 px next to the quote. This uncertainty is no longer only a footer.
+- P1, live: enlarge the actual MCP crop to about two thirds of the frame and add specific call
+  captions. The crop follows the lower active log rows rather than only the older upper lines.
+- P1, session: show session-702 before the event ribbon assembles, and add the recorded byte
+  value to the Download node.
+- P1, source seam: one timed overlay carries Download / 840 MB / session-702 across the cut,
+  remaining readable while the download surface expands into the original evidence.
+- P1, conclusions: enlarge all three lanes and reveal them by the scene midpoint, then hold
+  them together deliberately so a first-time viewer can read the distinctions.
+- P1, closing: carry C-6648e4baf12a into the closing case stack before the wordmark appears.
 
-Application checks: Ruff formatting/lint; 39 passed and 1 platform-specific test skipped on
-macOS; 11 real-subprocess MCP integration tests; wheel build and isolated installation with a
-working sentinel entry point. Linux/Windows follow-up remains on hold at the owner's request.
+One suggested wording was not used: scheduled backup is the explanation for a different
+comparison account, svc-backup. The main morgan case retains possible compromise as an
+unproven hypothesis and unknown authorization as the open question.
 
-The prior source/assets were preserved before replacement. A fresh temporary film project
-installed locked npm and isolated Python dependencies, restored official licensed assets with
-hash checks, reencoded both recordings, rebuilt audio, generated byte-identical HTML and
-rendered the Meta/MCP diagram span from 24 to 27.2 seconds without a model call.
+## Executed verification
 
-The original project stayed on main at its recorded SHA. All 210 original tracked file hashes,
-clean tracked/untracked status and 19 ignored status groups still matched the preservation
-baseline. Existing untracked .DS_Store files in the Sentinel worktree were preserved and ignored.
+The application checks passed: Ruff formatting/lint, 39 tests passed and one Windows-only test
+skipped on macOS. The application/API code is unchanged by this editing revision. Linux and
+Windows follow-up remains on hold at the owner's request. No paid call ran in these checks.
 
-The delivered MP4's exact codec, duration, complete decoding, audio measurements, source hashes,
-record positions and credential-pattern scan are recorded in data/delivery-verification.json.
-Audio is measured rather than subjectively heard by the authoring agent. Music attribution
-and the public-upload description are retained in PUBLICATION.txt and the final end card.
+Hyperframes lint, runtime, layout, contrast, craft and audio passed in strict mode with animation
+transition sampling. The separate optional motion audit is reported as disabled by the installed
+CLI; it is not claimed as executed. Motion was reviewed in intermediate frames, scene/cut/phone
+sheets, the editable local preview and frames extracted from the encoded film.
 
-## Limits
+The small scoped layout markers identify intentional text-mask entrances/exits and full-frame
+object expansion. They do not excuse unreadable body copy. The conclusion lanes carry data-hold
+because their simultaneous reading hold is deliberate. Source and numerical references are
+validated independently of their screen layout.
 
-This is an edited explanation, not uninterrupted real-time API playback. API response time,
-availability and quota can vary on a later run. No live voice service or paid stock generation
-was used. The Drawlab reference supplied by the owner informed staging, color and depth;
-none of its footage, music or assets is reused. The densest shot is the MCP argument log;
-its full source recording and detached report make the details independently inspectable.
+The complete MP4 is decoded, probed and measured by scripts/verify_film.py. It also verifies
+source file hashes, original record positions, case references, 3,542 unique plotted IDs, the
+27 highlighted case IDs and the absence of credential patterns in publication inputs. Exact
+codec/audio/file measurements are in data/delivery-verification.json. Audio is measured, not
+subjectively heard by the authoring agent.
+
+A clean temporary project rebuild verifies locked dependencies, official licensed asset hashes,
+terminal reencoding, the new audio mix, generated HTML and a representative render span.
+Details are in data/clean-build-verification.json. Earlier completed films and source bundles
+are preserved in renders/revisions/v1 and v2 before replacement.
+
+## Limits and weakest shot
+
+The MCP log is still the densest shot: full argument strings and long IDs are best inspected
+at full resolution or by pausing. The larger action captions carry the meaning on smaller
+screens. Source terminal recordings and the detached report expose the complete detail.
+This is an edited explanation, not uninterrupted real-time API playback. Later API latency,
+quota and availability can vary. Public publication should retain the supplied music credit.

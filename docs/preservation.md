@@ -30,3 +30,7 @@ or change to repository visibility was performed.
 The live-JSON correction and revised Hyperframes film were also checked against that baseline:
 all 210 original hashes, main SHA, clean tracked/untracked status and 19 ignored groups matched.
 The two existing untracked .DS_Store files in the Sentinel checkout were left in place and ignored.
+
+The 144-second motion revision also preserved that baseline: main and its recorded SHA,
+all 210 tracked hashes, clean tracked/untracked status and all 19 ignored groups matched.
+Only the isolated Sentinel branch and generated film artifacts were changed.

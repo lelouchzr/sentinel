@@ -20,8 +20,10 @@
     "lint": "passed",
     "pytest_passed": 39,
     "pytest_skipped": 1,
-    "pytest_seconds": 81.55,
+    "pytest_seconds": 77.33,
     "actual_mcp_integration_tests": 11,
     "isolated_wheel_install": "passed"
-  }
+  },
+  "film_revision": 3,
+  "new_model_calls_for_edit": 0
 }
