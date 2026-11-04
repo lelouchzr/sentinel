@@ -39,7 +39,7 @@ class Runner:
         method_kwargs: dict | None = None,
     ) -> Outcome:
         paths = [str(root / "src"), str(root)]
-        command = [sys.executable, "-I", str(WORKER)]
+        command = [sys.executable, "-I", "-B", str(WORKER)]
         container_name = f"slim-{uuid4().hex}"
         if self.mode == "docker":
             paths = ["/source/src", "/source"]
@@ -68,6 +68,7 @@ class Runner:
                 "python:3.12-slim",
                 "python",
                 "-I",
+                "-B",
                 "/worker.py",
             ]
         payload = json.dumps(

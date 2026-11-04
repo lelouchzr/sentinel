@@ -1,11 +1,13 @@
 """One orchestration layer shared by HTTP and CLI; durable, guarded transitions."""
 
 import hashlib
+import logging
 import os
 import shutil
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from uuid import uuid4
 
 from slim.analysis import Codebase
 from slim.config import Settings
@@ -169,6 +171,13 @@ class ExtractionService:
             )
 
     def _fail(self, job_id: str, operation: str, exc: Exception) -> None:
+        if not isinstance(exc, SlimError):
+            logging.getLogger(__name__).error(
+                "Slim %s failed for %s",
+                operation,
+                job_id,
+                exc_info=(type(exc), exc, exc.__traceback__),
+            )
         message = (
             str(exc)
             if isinstance(exc, SlimError)
@@ -206,7 +215,10 @@ class ExtractionService:
         archive_dir = self.settings.data_dir / "downloads"
         archive_dir.mkdir(exist_ok=True)
         target = archive_dir / job_id
-        shutil.make_archive(str(target), "zip", destination)
+        temporary = archive_dir / f"{job_id}-{uuid4().hex}"
+        Path(shutil.make_archive(str(temporary), "zip", destination)).replace(
+            target.with_suffix(".zip")
+        )
         return target.with_suffix(".zip")
 
     def close(self) -> None:

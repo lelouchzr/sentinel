@@ -47,6 +47,7 @@ def test_bytes_and_async_results_are_normalized(tmp_path):
     assert outcome.status == "returned"
     assert outcome.value["type"] == "tuple"
     assert outcome.value["value"][0] == {"type": "bytes", "value": "ff00"}
+    assert not (tmp_path / "__pycache__").exists()
 
 
 def test_equal_errors_never_count_as_verified():
