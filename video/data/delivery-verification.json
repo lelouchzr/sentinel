@@ -1,7 +1,7 @@
 {
   "file": "sentinel-demo.mp4",
-  "sha256": "8277f1c9a068dd1f28d4968dade9fea3196585c8d282a8d4cf08d15427750593",
-  "bytes": 18022222,
+  "sha256": "63736fed435266713f45187a8e45f6f11bc9987b65cac2e103ed05aec9214396",
+  "bytes": 16412756,
   "duration_seconds": 115.2,
   "dimensions": [
     1920,
@@ -13,7 +13,7 @@
   "audio_codec": "aac",
   "audio_channels": 2,
   "integrated_lufs": -17.26,
-  "true_peak_dbtp": -1.28,
+  "true_peak_dbtp": -1.32,
   "full_decode": "passed",
   "publication_input_scan": "passed",
   "scanned_files": [
@@ -30,20 +30,25 @@
     "data/case-report.json",
     "data/toolchain.json",
     "data/clean-build-verification.json",
+    "data/meta-report-response.json",
     "data/delivery-verification.json",
     "compositions/case.html",
     "compositions/continue.html",
     "compositions/review.html",
+    "compositions/protocol.html",
     "compositions/context.html",
-    "compositions/ingest.html",
     "compositions/question.html",
     "compositions/agent.html",
-    "compositions/source.html"
+    "compositions/source.html",
+    "compositions/normalize.html",
+    "compositions/relations.html"
   ],
   "evidence_reference_validation": "passed",
   "original_source_hashes_and_records": "passed",
-  "case_id": "C-c8e20de558ff",
-  "saved_live_case_disclosed": true,
+  "case_id": "C-6648e4baf12a",
+  "new_live_investigation": true,
+  "live_model_calls": 10,
+  "actual_mcp_calls": 9,
   "voiceover": false,
   "audio_review": "Measured, not subjectively heard by the authoring agent"
 }

@@ -1,6 +1,6 @@
 {
-  "workspace": ".sentinel-video-saved",
-  "case_id": "C-c8e20de558ff",
+  "workspace": ".sentinel-video-live-v2",
+  "case_id": "C-6648e4baf12a",
   "platform": "darwin",
   "dimensions": [
     140,
@@ -9,8 +9,8 @@
   "real_terminal": true,
   "model": "Meta Model API",
   "manual_rehearsal": false,
-  "saved_live_case": true,
-  "question": "Investigate the successful authentication after failures. Retrieve the related session and export evidence. Separate recorded facts from hypotheses and explain what would establish authorization. Use a small number of focused searches, then conclude.",
+  "saved_live_case": false,
+  "question": "Trace this login and its session activity. Retrieve specific original events. Separate recorded facts from hypotheses and explain what would establish authorization. Use a small number of focused MCP searches and then conclude.",
   "recordings": [
     "workflow.cast",
     "reopen.cast"
@@ -19,6 +19,6 @@
     0,
     0
   ],
-  "new_model_calls_during_capture": 0,
-  "live_case_disclosure": "Previously completed live investigation"
+  "new_model_calls_during_capture": 10,
+  "new_mcp_calls_during_capture": 9
 }

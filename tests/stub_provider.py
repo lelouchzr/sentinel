@@ -51,6 +51,7 @@ class OfflineProvider:
                         "title": "Unauthorized access remains possible",
                         "category": "hypothesis",
                         "event_ids": event_ids[-2:],
+                        "receipt_ids": [],
                         "explanation": "The source and sequence warrant checking with the account owner.",
                         "limitations": "A legitimate user or integration could explain the activity.",
                     },

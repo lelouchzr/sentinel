@@ -35,7 +35,7 @@ uv run sentinel --workspace .sentinel-record demo --reset --no-tui
 
 The second command archives recognized demo state; it does not delete source data or old cases.
 Close other Sentinel sessions before resetting. Reset refuses a manual workspace. A rehearsal is a
-real paid investigation, not an automatic retry. Live validation measured about **66.5 seconds** for
+real paid investigation, not an automatic retry. Live validation measured about **51.3 seconds** for
 the full three-role investigation, excluding first import. Reserve 70 seconds in the timed script;
 latency is not guaranteed. If your rehearsal is slower, use the honest manual fallback below.
 
@@ -72,8 +72,7 @@ Sentinel itself. Actual captures of the implemented interface are in `docs/scree
 
 Suggested focused question (use this exact text for a short rehearsal):
 
-> Trace this login and its session activity. Separate recorded facts from hypotheses and explain
-> what evidence would establish authorization. Use focused searches and then conclude.
+> Trace this login and its session activity. Retrieve specific original events. Separate recorded facts from hypotheses and explain what would establish authorization. Use a small number of focused MCP searches and then conclude.
 
 If function keys control macOS media, hold Fn. Use Ctrl+A only inside inputs to replace text.
 Tab/Shift+Tab navigate all controls; clicking a tab is also supported. Ctrl+G cancels with completed

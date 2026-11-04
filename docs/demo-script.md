@@ -5,7 +5,7 @@ This is the optional original narrated format. The current delivered presentatio
 
 The intervals below total **180 seconds**: 18 + 17 + 15 + 70 + 20 + 20 + 20.
 Actions and quiet observation are part of each interval. Do not accelerate/fabricate model activity.
-The live-operation allocation reflects the measured 66.5-second validation. Rehearse with current
+The live-operation allocation reflects the measured 51.3-second validation. Rehearse with current
 API latency. If it exceeds this allocation, use the explicitly labeled manual fallback in the guide.
 
 | Time | Duration | Screen/action | Narration |

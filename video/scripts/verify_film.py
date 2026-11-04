@@ -62,7 +62,9 @@ def verify(path):
     report = json.loads((P / "data/case-report.json").read_text())
     capture = json.loads((P / "source-captures/capture.json").read_text())
     assert capture["real_terminal"] and capture["application_exit_codes"] == [0, 0]
-    assert capture["saved_live_case"] and capture["new_model_calls_during_capture"] == 0
+    assert not capture["saved_live_case"]
+    assert capture["new_model_calls_during_capture"] == facts["model_calls"] > 0
+    assert capture["new_mcp_calls_during_capture"] == facts["mcp_calls"] > 0
     assert facts["case_id"] == capture["case_id"] == report["case"]["case_id"]
     assert facts["dataset"]["event_count"] == report["manifest"]["accepted"]
     assert facts["case_provider"] == "Meta Model API" and facts["case_status"] == "reviewed"
@@ -89,7 +91,10 @@ def verify(path):
     assert facts["session"]["receipt"]["total_bytes"] == sum(
         event["bytes"] or 0 for event in facts["session"]["events"]
     )
-    assert "Previously completed live investigation" in (P / "compositions/agent.html").read_text()
+    assert "Recorded live" in (P / "compositions/agent.html").read_text()
+    response = json.loads((P / "data/meta-report-response.json").read_text())
+    assert response["finish_reason"] == "stop" and not response["refusal"]
+    assert len(json.loads(response["content"])["findings"]) == len(facts["findings"])
     scanned = []
     for folder in [P / "source-captures", P / "data", P / "compositions"]:
         for source in folder.iterdir():
@@ -121,7 +126,9 @@ def verify(path):
         "evidence_reference_validation": "passed",
         "original_source_hashes_and_records": "passed",
         "case_id": facts["case_id"],
-        "saved_live_case_disclosed": True,
+        "new_live_investigation": True,
+        "live_model_calls": facts["model_calls"],
+        "actual_mcp_calls": facts["mcp_calls"],
         "voiceover": False,
         "audio_review": "Measured, not subjectively heard by the authoring agent",
     }

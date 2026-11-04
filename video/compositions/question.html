@@ -2,51 +2,40 @@
 <style>
 @font-face{font-family:Manrope;src:url('assets/fonts/Manrope.ttf') format('truetype');font-weight:200 800}
 @font-face{font-family:'JetBrains Mono';src:url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype')}
-#root{position:absolute;inset:0;overflow:hidden;background:#0a1119;color:#e8f2ee;font-family:Manrope,sans-serif}
-*{box-sizing:border-box} h1,h2,p{margin:0} .mint{color:#79e4cb}.amber{color:#e7bc74}
-.headline{position:absolute;font-size:88px;line-height:1.06;font-weight:750;letter-spacing:-4px}
-.body{position:absolute;font-size:34px;line-height:1.35;font-weight:500;letter-spacing:-.6px}
-.mono{font-family:'JetBrains Mono',monospace}.label{position:absolute;font-size:28px;line-height:1.4;font-weight:500}
-.foot{position:absolute;bottom:56px;left:112px;font-size:28px;line-height:1.4;color:#acc4cc}
-.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}
-.terminal{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
-.picture{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
-.mask{position:absolute;overflow:hidden}.line{position:absolute;background:currentColor}
-.clip{position:absolute}
+#root{position:absolute;inset:0;overflow:hidden;background:#0b1320;color:#eff5f5;font-family:Manrope,sans-serif}
+*{box-sizing:border-box}h1,h2,p{margin:0}.teal{color:#56e1ca}.violet{color:#b3a5f6}.amber{color:#ffcd73}
+.title{position:absolute;left:112px;top:90px;font-size:86px;line-height:1.08;font-weight:750;letter-spacing:-4px}
+.body{position:absolute;font-size:34px;line-height:1.4;font-weight:500;letter-spacing:-.5px}
+.mono{font-family:'JetBrains Mono',monospace}.label{position:absolute;font:28px/1.4 'JetBrains Mono',monospace}
+.foot{position:absolute;left:114px;bottom:54px;font-size:28px;line-height:1.4;color:#a8becb}
+.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}.terminal{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.mask{position:absolute;overflow:hidden;background:#0a1119;border-radius:18px;box-shadow:0 30px 65px #0004}
+.clip{position:absolute}.wire{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
 
 
-#q-rule{left:112px;top:116px;width:10px;height:470px;color:#79e4cb}
-#q-title{left:156px;top:106px;font-size:152px;letter-spacing:-8px}
-#q-account{left:156px;top:488px;font-size:30px;color:#acc4cc}
-#q-records{position:absolute;left:974px;top:278px;width:818px}
-.q-record{display:flex;align-items:center;gap:32px;padding:36px 0;border-bottom:1px solid #284450;font-size:32px;font-family:'JetBrains Mono';white-space:nowrap}
-.q-record strong{font-size:28px;width:180px;font-weight:400}.q-record b{font-size:29px;font-weight:400}
+#root{background:#e8e4fa;color:#20213a}#hook{top:120px;font-size:109px;letter-spacing:-6px;z-index:4}#hook span{color:#6250ae}
+#sheets{position:absolute;left:930px;top:270px;width:800px;height:680px;perspective:1600px;transform-style:preserve-3d}
+.sheet{position:absolute;width:650px;height:210px;padding:24px 30px;border:1px solid #bab1e2;border-radius:16px;background:#faf9ff;box-shadow:0 35px 65px #493d7b30;transform-origin:50% 50%;font-size:29px;line-height:1.5}
+.sheet small{position:absolute;left:30px;top:20px;font:32px 'JetBrains Mono';color:#73679c}.sheet b{position:absolute;left:30px;top:68px;font-size:43px;letter-spacing:-2px}.sheet p{position:absolute;left:265px;top:74px;font-size:32px;line-height:1.1}.sheet i{position:absolute;left:30px;bottom:10px;font:30px 'JetBrains Mono';color:#6250ae}
+#sheet-b{left:65px;top:235px;background:#d3f7ef;border-color:#82bdb0}#sheet-c{left:130px;top:470px;background:#fff0c9;border-color:#d5bd80}
+#hook-question{left:118px;top:570px;font-size:53px;width:770px;font-weight:650} .foot{color:#605c7e}
 </style>
 <div id="root" data-composition-id="question" data-width="1920" data-height="1080">
-
-<div id="q-rule" class="line"></div>
-<h1 id="q-title" class="headline">What<br><span class="mint">happened?</span></h1>
-<p id="q-account" class="body mono">morgan · 203.0.113.74</p>
-<div id="q-records">
-  <div class="q-record" id="q-r1"><span>09:00:00</span><strong>LOGIN</strong><b class="amber">FAILURE</b></div>
-  <div class="q-record" id="q-r2"><span>09:03:20</span><strong>LOGIN</strong><b class="mint">SUCCESS</b></div>
-  <div class="q-record" id="q-r3"><span>09:04:20</span><strong>DOWNLOAD</strong><b>840 MB</b></div>
+<h1 id="hook" class="title">One account.<br>Scattered <span>logs.</span></h1>
+<div id="sheets" data-layout-allow-overflow>
+ <div id="sheet-a" class="sheet"><small>IDENTITY.CSV</small><b>09:03:20</b><p>morgan<br>login · success</p><i>203.0.113.74</i></div>
+ <div id="sheet-b" class="sheet"><small>SERVICES.JSONL</small><b>09:03:40</b><p>access · success<br>restricted export</p><i>session-702</i></div>
+ <div id="sheet-c" class="sheet"><small>SERVICES.JSONL</small><b>840 MB</b><p>download · success<br>storage-01</p><i>session-702</i></div>
+</div><p id="hook-question" class="body">What actually happened?</p>
+<p class="foot">Fictional records. Real software. Real Meta investigation.</p>
 </div>
-<p id="q-footer" class="foot">Fictional logs. A real investigation workspace.</p>
+<script>const tl=gsap.timeline({paused:true});
+tl.fromTo('#hook',{x:-75},{x:0,duration:.75,ease:'expo.out'},0);
+tl.fromTo('#sheet-a',{rotationY:-20,rotationZ:-8,x:90,y:60},{rotationY:-12,rotationZ:-2,x:0,y:0,duration:.9,ease:'back.out(1.3)'},0);
+tl.fromTo('#sheet-b',{x:330,y:180,rotationZ:12,opacity:0},{x:0,y:0,rotationZ:2,opacity:1,duration:.75,ease:'back.out(1.5)'},.5);
+tl.fromTo('#sheet-c',{x:450,y:250,rotationZ:-12,opacity:0},{x:0,y:0,rotationZ:-2,opacity:1,duration:.8,ease:'back.out(1.5)'},1.1);
+tl.fromTo('#hook-question',{scale:.88,opacity:0},{scale:1,opacity:1,duration:.7,ease:'back.out(1.1)'},2.6);
+tl.to('#sheets',{x:-190,y:-90,scale:.9,duration:.5,ease:'power3.in'},5.9);
 
-</div>
-<script>
-const tl = gsap.timeline({paused:true});
-
-tl.fromTo('#q-rule',{scaleY:.05},{scaleY:1,duration:.6,ease:'power3.out'},0);
-tl.fromTo('#q-title',{x:-32,opacity:1},{x:0,opacity:1,duration:.55,ease:'power3.out'},0);
-tl.fromTo('#q-account',{opacity:0},{opacity:1,duration:.3},.7);
-tl.fromTo('.q-record',{x:200,opacity:0},{x:0,opacity:1,stagger:.55,duration:.6,ease:'power3.out'},.5);
-tl.fromTo('#q-r3',{backgroundColor:'rgba(121,228,203,0)'},{backgroundColor:'rgba(121,228,203,.08)',duration:.4},3.1);
-tl.fromTo('#q-records',{x:0},{x:-26,duration:.5,ease:'power2.inOut'},4.7);
-tl.to('#q-title',{x:-120,opacity:0,duration:.35,ease:'power2.in'},5.95);
-
-window.__timelines = window.__timelines || {};
-window.__timelines['question'] = tl;
-</script>
+window.__timelines=window.__timelines||{};window.__timelines['question']=tl;</script>
 </template>

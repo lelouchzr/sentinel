@@ -1,7 +1,7 @@
 # SENTINEL — Follow the evidence
 
-The finished film is **115.2 seconds**, 1920×1080, 30 fps, H.264/AAC stereo. It uses English
-motion graphics, real macOS terminal output, licensed instrumental music and CC0 effects.
+The revised explanatory film is **115.2 seconds**, 1920×1080, 30 fps, H.264/AAC stereo. It uses English
+motion graphics, animated source/tool/session diagrams, depth, restrained springs, real macOS terminal output, licensed instrumental music and CC0 effects.
 There is no voiceover, avatar, synthetic product UI or generated footage.
 
 ## Deliverables
@@ -9,7 +9,7 @@ There is no voiceover, avatar, synthetic product UI or generated footage.
 - `renders/sentinel-demo.mp4`: the ready-to-upload film.
 - `renders/sentinel-source.zip`: the complete editable project with media, code and licenses.
 - `renders/poster.png`: a frame from the exported video, suitable as a thumbnail.
-- `renders/review/`: scene, transition and phone-size review sheets.
+- `renders/review-v2-final/`: scene, transition and phone-size review sheets.
 - `PUBLICATION.txt`: ready-to-copy description with music attribution and recording disclosure.
 - `data/delivery-verification.json`: executed codec, frame, duration, sound and evidence checks.
 
@@ -81,16 +81,25 @@ The capture opens the actual alert, explores the case activity, filters the sess
 original download, scrolls its provenance, inspects the backup context, exports both formats and
 reopens the saved case in a second application process. Both processes exited with status 0.
 
-The Meta sequence is labeled **“Previously completed live investigation”** throughout. Case
-`C-c8e20de558ff` is the earlier actual Meta investigation: ten model requests, eight MCP calls,
-27 attached events and six findings. Its stored activity is browsed, never replayed as new tool
-responses. The current header correctly shows no key configured in that viewing process.
+The film now uses **a newly recorded live Meta investigation**, case `C-6648e4baf12a`.
+It completed in **51.26 seconds** with ten model requests, nine actual MCP calls,
+27 attached events and four findings. The on-screen disclosure says **“Recorded live · 2.32×
+playback”**. The investigator selected searches from actual tool results; reviewer and reporter
+handoffs derive from persisted timestamps. No deterministic model fixture was used in this take.
 
-A new recording attempt, case `C-f9698db08d60`, made ten actual Meta requests and nine MCP calls,
-then failed final structured-report validation. Its 27 evidence records and review were retained.
-No paid retry occurred. That failed attempt is not spliced into the completed case; it remains
-locally in `.sentinel-video` and `artifacts/video-live-attempt-1/` for diagnosis. The output film
-uses the honestly labeled completed case instead of fabricating a successful new run.
+The report request uses Meta's documented `json_schema` response format with `strict=true`.
+All model-authored fields are required; system-owned verification is excluded. Pydantic,
+retrieved-reference checks and deterministic quantitative verification still run locally.
+The answer-only response is retained before validation, with credential redaction, a size bound,
+finish reason and safe diagnostic paths. Refusals and truncated reports preserve partial work.
+`data/meta-report-response.json` captures this successful fictional-data response for offline
+regression tests; it does not contain private model reasoning or a key.
+
+The prior failed attempt `C-f9698db08d60` remains documented in `data/capture-attempts.json`.
+Its raw final response was not retained by the old implementation, so its exact schema violation
+cannot be reconstructed. The former completed film is preserved locally under
+`renders/revisions/v1/`. A new user request authorized this fresh run; no automatic paid retry
+was made. The previous saved-case segment has been replaced, not mixed with the new results.
 
 No API key is included in the film, source recordings, case snapshot or source bundle.
 Live capture is an explicitly paid operation, separate from rebuilding this existing film.
@@ -99,7 +108,19 @@ for the key privately before capture begins; never add that command to CI or aut
 
 ## Timing and review
 
-The eight scenes cover the full workflow in 115.2 seconds; [SPEC.md](SPEC.md) records the shot
+The ten scenes cover the full workflow in 115.2 seconds; [SPEC.md](SPEC.md) records the shot
 timings and [REVIEW.md](REVIEW.md) records executed checks and limits. The original 180-second
 narration in `../docs/demo-script.md` is retained as an optional manual demonstration format.
 The delivered music-only film is the current hackathon presentation.
+
+## Reopen this captured investigation locally
+
+The recording workspace remains available on the production Mac:
+
+```sh
+uv run sentinel --workspace .sentinel-video-live-v2 cases open C-6648e4baf12a
+```
+
+Run that from the Sentinel repository root. No key is needed to browse the saved case.
+The generated workspace is intentionally ignored by Git; a clean clone can inspect the
+detached fictional case and evidence in `data/case-report.json` or start a fresh `sentinel demo`.

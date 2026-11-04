@@ -26,3 +26,4 @@ video/assets/audio/
 video/assets/vendor/
 .sites-runtime/
 .wrangler/
+.DS_Store

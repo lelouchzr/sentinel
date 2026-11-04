@@ -10,6 +10,9 @@ installed and tested in pyproject.toml; uv.lock records transitive versions and 
   tool-call replies, structured JSON output and completion limits.
 - [Meta reasoning controls](https://dev.meta.ai/docs/reasoning): `reasoning_effort=low` used for bounded
   investigation turns; no raw private reasoning is displayed or saved.
+- [Meta structured output](https://dev.meta.ai/docs/structured-output): report requests use
+  `response_format.type=json_schema`, `strict=true`, all properties required, and
+  `additionalProperties=false`. JSON-object mode alone does not enforce a report schema.
 - [Official MCP SDK v1 documentation](https://py.sdk.modelcontextprotocol.io/v1/) and
   [v1 source](https://github.com/modelcontextprotocol/python-sdk/tree/v1.x): maintenance-line pinning,
   FastMCP structured tools, stdio_client and ClientSession. Sentinel uses 1.30.0 only.

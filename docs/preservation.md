@@ -26,3 +26,7 @@ The follow-up platform work was pushed only to `projet/sentinel` in the existing
 Windows and macOS validation: the recorded branch/SHA, all 210 tracked hashes, clean
 tracked/untracked status and 19 ignored status groups still matched. No merge into `main`
 or change to repository visibility was performed.
+
+The live-JSON correction and revised Hyperframes film were also checked against that baseline:
+all 210 original hashes, main SHA, clean tracked/untracked status and 19 ignored groups matched.
+The two existing untracked .DS_Store files in the Sentinel checkout were left in place and ignored.

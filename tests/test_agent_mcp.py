@@ -1,4 +1,6 @@
 import asyncio
+import json
+from pathlib import Path
 
 import httpx
 import pytest
@@ -10,6 +12,7 @@ from sentinel.cases import Cases
 from sentinel.config import AgentConfig
 from sentinel.detection import load_alerts
 from sentinel.mcp_client import connect
+from sentinel.models import ReportDraft
 from sentinel.security import SentinelError
 from sentinel.storage import Store
 
@@ -22,6 +25,17 @@ def setup_case(demo):
 
 def configuration(**changes):
     return AgentConfig(api_key="offline-test-not-a-live-key", deadline=90, **changes)
+
+
+def test_captured_live_meta_report_matches_current_contract_without_paid_calls():
+    # Captured fictional evidence is a regression fixture, never a live CI request.
+    response = json.loads(
+        (Path(__file__).resolve().parents[1] / "video/data/meta-report-response.json").read_text()
+    )
+    draft = ReportDraft.model_validate_json(response["content"])
+    assert len(draft.findings) == 4
+    assert response["finish_reason"] == "stop" and not response["refusal"]
+    assert response["schema"] == ReportDraft.model_json_schema()
 
 
 @pytest.mark.integration
@@ -123,6 +137,90 @@ async def test_meta_transport_failure_is_safe_and_no_retry():
         await provider.complete([{"role": "user", "content": "test"}])
     assert "sensitive" not in str(error.value) and len(requests) == 1
     await provider.close()
+
+
+async def test_meta_report_uses_strict_schema_and_retains_finish_reason():
+    requests = []
+
+    async def handler(request):
+        requests.append(json.loads(request.content))
+        return httpx.Response(
+            200,
+            json={
+                "id": "test-completion",
+                "object": "chat.completion",
+                "created": 1,
+                "model": "muse-spark-1.3",
+                "choices": [
+                    {
+                        "index": 0,
+                        "message": {
+                            "role": "assistant",
+                            "content": '{"findings": [], "open_questions": []}',
+                            "reasoning_content": "Private reasoning must never be retained",
+                        },
+                        "finish_reason": "length",
+                    }
+                ],
+            },
+        )
+
+    provider = MetaProvider(configuration())
+    await provider.client.close()
+    provider.client = AsyncOpenAI(
+        api_key="offline-test-not-a-live-key",
+        base_url="https://api.meta.ai/v1",
+        max_retries=0,
+        http_client=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
+    )
+    schema = ReportDraft.model_json_schema()
+    response = await provider.complete([{"role": "user", "content": "Report"}], schema=schema)
+    assert requests[0]["response_format"] == {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "SentinelReport",
+            "strict": True,
+            "schema": schema,
+        },
+    }
+    for definition in [schema, *schema["$defs"].values()]:
+        assert definition["additionalProperties"] is False
+        assert set(definition["required"]) == set(definition["properties"])
+    assert "verification" not in schema["$defs"]["FindingDraft"]["properties"]
+    assert response["finish_reason"] == "length" and "reasoning_content" not in response
+    await provider.close()
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("failure", ["schema", "length", "refusal"])
+async def test_rejected_report_retains_safe_diagnostics_and_completed_evidence(demo, failure):
+    cases, case = setup_case(demo)
+
+    class RejectedReport(OfflineProvider):
+        async def complete(self, messages, tools=None, schema=None):
+            response = await super().complete(messages, tools, schema)
+            if schema:
+                if failure == "schema":
+                    response["content"] = '{"findings": "offline-test-not-a-live-key"}'
+                elif failure == "length":
+                    response["finish_reason"] = "length"
+                else:
+                    response["refusal"] = True
+            return response
+
+    provider = RejectedReport()
+    with pytest.raises(SentinelError, match="retained"):
+        await investigate(cases, case.case_id, "Inspect activity", configuration(), provider)
+    saved = cases.get(case.case_id)
+    assert saved.status == "interrupted" and len(saved.evidence_ids) == 27
+    files = list(demo.path("artifacts").glob(f"{case.case_id}-report-response-*.json"))
+    assert len(files) == 1
+    assert "offline-test-not-a-live-key" not in files[0].read_text()
+    assert "Private reasoning" not in files[0].read_text()
+    if failure == "schema":
+        diagnostic = next(demo.path("artifacts").glob(f"{case.case_id}-report-validation-*.json"))
+        assert json.loads(diagnostic.read_text())["errors"]
+    assert provider.closed
 
 
 @pytest.mark.integration

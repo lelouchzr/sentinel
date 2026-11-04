@@ -304,6 +304,19 @@ def capture(args):
                 "model": None if args.manual else "Meta Model API",
                 "manual_rehearsal": args.manual,
                 "saved_live_case": bool(args.saved_case),
+                "new_model_calls_during_capture": (
+                    0
+                    if args.manual or args.saved_case
+                    else sum(a["action"] == "Model request started" for a in case["activity"])
+                ),
+                "new_mcp_calls_during_capture": (
+                    0
+                    if args.manual or args.saved_case
+                    else sum(
+                        a["role"] == "MCP" and a["action"].startswith("Calling ")
+                        for a in case["activity"]
+                    )
+                ),
                 "question": (
                     next(
                         a["details"]["question"]

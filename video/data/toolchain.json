@@ -18,8 +18,10 @@
   "application_checks": {
     "format": "passed",
     "lint": "passed",
-    "pytest_passed": 34,
+    "pytest_passed": 39,
     "pytest_skipped": 1,
-    "pytest_seconds": 68.48
+    "pytest_seconds": 81.55,
+    "actual_mcp_integration_tests": 11,
+    "isolated_wheel_install": "passed"
   }
 }

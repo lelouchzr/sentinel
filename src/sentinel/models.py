@@ -150,9 +150,20 @@ class Finding(Model):
     verification: str = "Pending verification"
 
 
+class FindingDraft(Model):
+    """Model-authored fields only; verification is exclusively owned by Sentinel."""
+
+    title: str = Field(max_length=200)
+    category: Literal["observed_fact", "hypothesis", "open_question"]
+    event_ids: list[str] = Field(max_length=100)
+    explanation: str = Field(max_length=12000)
+    limitations: str = Field(max_length=2000)
+    receipt_ids: list[str] = Field(max_length=10)
+
+
 class ReportDraft(Model):
-    findings: list[Finding] = Field(max_length=15)
-    open_questions: list[str] = Field(default_factory=list, max_length=10)
+    findings: list[FindingDraft] = Field(min_length=1, max_length=6)
+    open_questions: list[str] = Field(max_length=10)
 
 
 class Activity(Model):

@@ -4,9 +4,12 @@ A terminal-native security investigation workspace powered by Meta models and re
 Import CSV/JSONL logs, investigate transparent alerts, inspect original evidence, distinguish
 facts from hypotheses, export a report and reopen the saved case.
 
-This edited macOS demonstration uses fictional logs. The Meta/MCP segment shows a previously
-completed live investigation, explicitly labeled on screen. Its saved activity is explored in
-the real application; it is not a new API response or a simulated model run.
+This edited macOS demonstration uses fictional logs and a newly recorded live Meta investigation.
+The 51.26-second investigation is shown at 2.32× playback, labeled on screen. It made ten
+model requests and nine actual MCP tool calls, retained 27 events and saved four findings.
+The source recording includes the full run, evidence inspection, export and independent reopening.
+Explanatory diagrams illustrate the real architecture; they are separate from recorded UI.
+Selected log excerpts are sent to the configured Meta API during live investigations.
 
 Music: “Cipher” Kevin MacLeod (incompetech.com)
 Licensed under Creative Commons: By Attribution 4.0 License

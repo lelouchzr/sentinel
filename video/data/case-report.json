@@ -1,11 +1,11 @@
 {
   "product": "SENTINEL",
   "case": {
-    "case_id": "C-c8e20de558ff",
+    "case_id": "C-6648e4baf12a",
     "title": "AUTH-002 \u00b7 morgan",
     "dataset_id": "D-5c9f98be2b243b47d24d0964",
-    "created_at": "2026-11-04T18:46:27.153955+00:00",
-    "updated_at": "2026-11-04T19:14:35.055037+00:00",
+    "created_at": "2026-11-04T22:25:20.931670+00:00",
+    "updated_at": "2026-11-04T22:26:18.221130+00:00",
     "status": "reviewed",
     "alert_ids": [
       "A-f312fe687a350032"
@@ -45,13 +45,16 @@
         "category": "observed_fact",
         "event_ids": [
           "E-f418bfcc7b120c25fd1b8e47",
-          "E-afac4455b878ef2e465944c5",
+          "E-4e2ba4636cd07963f949401d",
+          "E-b9eafc67a49da8c087b55f3b",
+          "E-62c6b144f1878191842a8c84",
+          "E-16c80416cddfb79edc212810",
           "E-913c9796f1ace5dc29e5e5e5"
         ],
-        "explanation": "2026-10-20T09:00:00.000000+00:00: morgan | login | failure | /sso | source IP 203.0.113.74 | session request-701 [E-f418bfcc7b120c25fd1b8e47]\n2026-10-20T09:03:04.000000+00:00: morgan | login | failure | /sso | source IP 203.0.113.74 | session request-701 [E-afac4455b878ef2e465944c5]\n2026-10-20T09:03:20.000000+00:00: morgan | login | success | /sso | source IP 203.0.113.74 | session session-702 [E-913c9796f1ace5dc29e5e5e5]\nComputed query Q-10e242b0fbbbacbd9188: 27 matching events; 840,000,000 recorded bytes; action/outcome counts {\"access/success\": 1, \"download/success\": 1, \"login/failure\": 24, \"login/success\": 1} (truncated=False); range 2026-10-20T09:00:00.000000+00:00 to 2026-10-20T09:04:20.000000+00:00; filters {\"account\":\"morgan\",\"source_ip\":\"203.0.113.74\"}.",
+        "explanation": "2026-10-20T09:00:00.000000+00:00: morgan | login | failure | /sso | source IP 203.0.113.74 | session request-701 [E-f418bfcc7b120c25fd1b8e47]\n2026-10-20T09:00:08.000000+00:00: morgan | login | failure | /sso | source IP 203.0.113.74 | session request-701 [E-4e2ba4636cd07963f949401d]\n2026-10-20T09:00:16.000000+00:00: morgan | login | failure | /sso | source IP 203.0.113.74 | session request-701 [E-b9eafc67a49da8c087b55f3b]\n2026-10-20T09:00:24.000000+00:00: morgan | login | failure | /sso | source IP 203.0.113.74 | session request-701 [E-62c6b144f1878191842a8c84]\n2026-10-20T09:00:32.000000+00:00: morgan | login | failure | /sso | source IP 203.0.113.74 | session request-701 [E-16c80416cddfb79edc212810]\n2026-10-20T09:03:20.000000+00:00: morgan | login | success | /sso | source IP 203.0.113.74 | session session-702 [E-913c9796f1ace5dc29e5e5e5]\nComputed query Q-652cf8fc12e9de90247b: 27 matching events; 840,000,000 recorded bytes; action/outcome counts {\"access/success\": 1, \"download/success\": 1, \"login/failure\": 24, \"login/success\": 1} (truncated=False); range 2026-10-20T09:00:00.000000+00:00 to 2026-10-20T09:04:20.000000+00:00; filters {\"account\":\"morgan\",\"source_ip\":\"203.0.113.74\"}.",
         "limitations": "These records establish logged activity only. They do not establish operator identity, authorization, compromise, or malicious intent. Counts describe the exact receipt filters; byte sums include only recorded byte fields.",
         "receipt_ids": [
-          "Q-10e242b0fbbbacbd9188"
+          "Q-652cf8fc12e9de90247b"
         ],
         "verification": "Canonical fields and quantitative results verified in code"
       },
@@ -71,78 +74,55 @@
         "verification": "Canonical fields and quantitative results verified in code"
       },
       {
-        "title": "Recorded events and computed query results",
-        "category": "observed_fact",
-        "event_ids": [
-          "E-913c9796f1ace5dc29e5e5e5",
-          "E-df24520841597e17d622d586",
-          "E-17ff17e651d4d2cb0e47c3f4"
-        ],
-        "explanation": "2026-10-20T09:03:20.000000+00:00: morgan | login | success | /sso | source IP 203.0.113.74 | session session-702 [E-913c9796f1ace5dc29e5e5e5]\n2026-10-20T09:03:40.000000+00:00: morgan | access | success | /restricted/customer-export | source IP 203.0.113.74 | session session-702 [E-df24520841597e17d622d586]\n2026-10-20T09:04:20.000000+00:00: morgan | download | success | /restricted/customer-export/accounts.csv | source IP 203.0.113.74 | session session-702 [E-17ff17e651d4d2cb0e47c3f4]\nComputed query Q-10e242b0fbbbacbd9188: 27 matching events; 840,000,000 recorded bytes; action/outcome counts {\"access/success\": 1, \"download/success\": 1, \"login/failure\": 24, \"login/success\": 1} (truncated=False); range 2026-10-20T09:00:00.000000+00:00 to 2026-10-20T09:04:20.000000+00:00; filters {\"account\":\"morgan\",\"source_ip\":\"203.0.113.74\"}.\nComputed query Q-31fbd3c8a3cc94641b3e: 3 matching events; 840,000,000 recorded bytes; action/outcome counts {\"access/success\": 1, \"download/success\": 1, \"login/success\": 1} (truncated=False); range 2026-10-20T09:03:20.000000+00:00 to 2026-10-20T09:04:20.000000+00:00; filters {\"session_id\":\"session-702\"}.",
-        "limitations": "These records establish logged activity only. They do not establish operator identity, authorization, compromise, or malicious intent. Counts describe the exact receipt filters; byte sums include only recorded byte fields.",
-        "receipt_ids": [
-          "Q-10e242b0fbbbacbd9188",
-          "Q-31fbd3c8a3cc94641b3e"
-        ],
-        "verification": "Canonical fields and quantitative results verified in code"
-      },
-      {
-        "title": "Sequence consistent with guessing then use of authenticated session",
+        "title": "Guessing-then-use is unproven alternate explanations remain",
         "category": "hypothesis",
         "event_ids": [
           "E-f418bfcc7b120c25fd1b8e47",
           "E-913c9796f1ace5dc29e5e5e5",
-          "E-17ff17e651d4d2cb0e47c3f4"
-        ],
-        "explanation": "Repeated failures followed by success and restricted export is consistent with password attempts followed by use of authenticated session, but operator identity, intent and credential source are not recorded.",
-        "limitations": "Unproven; benign password retries by legitimate user not excluded.",
-        "receipt_ids": [],
-        "verification": "References valid; interpretation remains unproven"
-      },
-      {
-        "title": "Legitimate retry and authorized export not excluded",
-        "category": "hypothesis",
-        "event_ids": [
           "E-df24520841597e17d622d586",
           "E-17ff17e651d4d2cb0e47c3f4"
         ],
-        "explanation": "Application permission check accepted access, which could reflect legitimate user retries then authorized export. No entitlement or approval record was retrieved to decide.",
-        "limitations": "No role, ticket or baseline reviewed.",
-        "receipt_ids": [],
+        "explanation": "Pattern is consistent with password-guessing followed by use of session-702 for export, but is also consistent with legitimate user retrying mistyped password then performing intended export. Retrieved events do not establish operator identity, intent, compromise, or exfiltration.",
+        "limitations": "No MFA logs, device posture, behavioral baseline, or identity proof retrieved. Severity and volume do not prove maliciousness. Plausible benign alternative is user error followed by authorized work.",
+        "receipt_ids": [
+          "Q-652cf8fc12e9de90247b",
+          "Q-31fbd3c8a3cc94641b3e"
+        ],
         "verification": "References valid; interpretation remains unproven"
       },
       {
-        "title": "Authorization and MFA status undetermined",
+        "title": "Authorization and authentication strength remain unresolved",
         "category": "open_question",
         "event_ids": [
           "E-913c9796f1ace5dc29e5e5e5",
+          "E-df24520841597e17d622d586",
           "E-17ff17e651d4d2cb0e47c3f4"
         ],
         "explanation": "The model proposed a quantitative interpretation that has not been accepted as a verified claim. Review the cited events and computed query receipts.",
-        "limitations": "Requires IAM, ticketing and device evidence not in current results.",
-        "receipt_ids": [],
-        "verification": "References valid; interpretation remains unproven"
+        "limitations": "Owner review of approvals, role baseline, MFA requirement, and downstream handling needed. Without that, treat as unauthorized-unconfirmed.",
+        "receipt_ids": [
+          "Q-31fbd3c8a3cc94641b3e"
+        ],
+        "verification": "Quantitative wording withheld; use the attached computed receipts"
       }
     ],
     "open_questions": [
-      "What role/entitlement and explicit approval authorized E-17ff17e651d4d2cb0e47c3f4?",
-      "Was MFA completed for session-702 and tied to legitimate device?",
-      "What is normal baseline for morgan restricted exports?"
+      "What approval, ticket, role or business need authorized morgan to access /restricted/customer-export and download accounts.csv on 2026-10-20?",
+      "Was MFA required for session-702 and what do MFA or device logs show given MFA not recorded in login event?",
+      "What is the expected baseline for morgan exports and how was the 840MB file handled after download?"
     ],
-    "notes": [
-      "Model note (unverified interpretation): AUTH-002 morgan 203.0.113.74: 24 failures (request-701) then success (session-702) 09:03:20, then /restricted/customer-export access 09:03:40 and 840MB download 09:04:20 same session-702. Auth success does not prove compromise; authorization for restricted export not observed. Needs ticket/approval/role/MFA review."
-    ],
+    "notes": [],
     "activity": [
       {
-        "timestamp": "2026-11-04T18:46:27.168683+00:00",
+        "timestamp": "2026-11-04T22:25:26.966513+00:00",
         "role": "Investigator",
         "action": "Investigation started",
         "details": {
-          "question": "Investigate the successful authentication after failures. Retrieve the related session and export evidence. Separate recorded facts from hypotheses and explain what would establish authorization. Use a small number of focused searches, then conclude."
+          "question": "Trace this login and its session activity. Retrieve specific original events. Separate recorded facts from hypotheses and explain what would establish authorization. Use a small number of focused MCP searches and then conclude."
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:27.428577+00:00",
+        "timestamp": "2026-11-04T22:25:27.226966+00:00",
         "role": "MCP",
         "action": "Discovered tools through stdio",
         "details": {
@@ -159,7 +139,7 @@
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:27.429723+00:00",
+        "timestamp": "2026-11-04T22:25:27.228448+00:00",
         "role": "MCP",
         "action": "Calling get_dataset_summary",
         "details": {
@@ -168,17 +148,17 @@
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:27.443150+00:00",
+        "timestamp": "2026-11-04T22:25:27.245184+00:00",
         "role": "MCP",
         "action": "Completed get_dataset_summary",
         "details": {
           "returned": 0,
           "total": null,
-          "artifact": "artifacts/C-c8e20de558ff-tool-01-8461a0c66894.json"
+          "artifact": "artifacts/C-6648e4baf12a-tool-01-61319311df33.json"
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:27.443829+00:00",
+        "timestamp": "2026-11-04T22:25:27.246474+00:00",
         "role": "Meta",
         "action": "Model request started",
         "details": {
@@ -186,7 +166,7 @@
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:30.235119+00:00",
+        "timestamp": "2026-11-04T22:25:31.646047+00:00",
         "role": "Meta",
         "action": "Model response received",
         "details": {
@@ -194,7 +174,7 @@
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:30.236343+00:00",
+        "timestamp": "2026-11-04T22:25:31.648208+00:00",
         "role": "MCP",
         "action": "Calling list_alerts",
         "details": {
@@ -206,17 +186,17 @@
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:30.246564+00:00",
+        "timestamp": "2026-11-04T22:25:31.659793+00:00",
         "role": "MCP",
         "action": "Completed list_alerts",
         "details": {
           "returned": 0,
           "total": 15,
-          "artifact": "artifacts/C-c8e20de558ff-tool-02-555c878fbf59.json"
+          "artifact": "artifacts/C-6648e4baf12a-tool-02-555c878fbf59.json"
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:30.247968+00:00",
+        "timestamp": "2026-11-04T22:25:31.661701+00:00",
         "role": "Meta",
         "action": "Model request started",
         "details": {
@@ -224,7 +204,7 @@
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:34.173043+00:00",
+        "timestamp": "2026-11-04T22:25:34.761113+00:00",
         "role": "Meta",
         "action": "Model response received",
         "details": {
@@ -232,7 +212,81 @@
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:34.177257+00:00",
+        "timestamp": "2026-11-04T22:25:34.767314+00:00",
+        "role": "MCP",
+        "action": "Calling get_event",
+        "details": {
+          "arguments": {
+            "event_id": "E-f418bfcc7b120c25fd1b8e47"
+          },
+          "call": 3
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:34.799324+00:00",
+        "role": "MCP",
+        "action": "Completed get_event",
+        "details": {
+          "returned": 1,
+          "total": null,
+          "artifact": "artifacts/C-6648e4baf12a-tool-03-634d0f8030d7.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:34.801066+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 3
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:36.754465+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 3
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:36.756397+00:00",
+        "role": "MCP",
+        "action": "Calling get_event",
+        "details": {
+          "arguments": {
+            "event_id": "E-913c9796f1ace5dc29e5e5e5"
+          },
+          "call": 4
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:36.777129+00:00",
+        "role": "MCP",
+        "action": "Completed get_event",
+        "details": {
+          "returned": 1,
+          "total": null,
+          "artifact": "artifacts/C-6648e4baf12a-tool-04-01eff670700c.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:36.778445+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 4
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:39.814223+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 4
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:39.816357+00:00",
         "role": "MCP",
         "action": "Calling get_entity_activity",
         "details": {
@@ -242,234 +296,185 @@
             "offset": 0,
             "value": "session-702"
           },
-          "call": 3
+          "call": 5
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:34.237324+00:00",
+        "timestamp": "2026-11-04T22:25:39.852592+00:00",
         "role": "MCP",
         "action": "Completed get_entity_activity",
         "details": {
           "returned": 3,
           "total": 3,
-          "artifact": "artifacts/C-c8e20de558ff-tool-03-ffc04a34e101.json"
+          "artifact": "artifacts/C-6648e4baf12a-tool-05-1ab3f370c1bc.json"
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:34.238415+00:00",
+        "timestamp": "2026-11-04T22:25:39.854066+00:00",
         "role": "Meta",
         "action": "Model request started",
         "details": {
-          "call": 3
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:46:39.940205+00:00",
-        "role": "Meta",
-        "action": "Model response received",
-        "details": {
-          "call": 3
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:46:39.944303+00:00",
-        "role": "MCP",
-        "action": "Calling search_events",
-        "details": {
-          "arguments": {
-            "filters": "{\"account\": \"morgan\", \"source_ip\": \"203.0.113.74\"}",
-            "limit": 30,
-            "offset": 0
-          },
-          "call": 4
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:46:40.107266+00:00",
-        "role": "MCP",
-        "action": "Completed search_events",
-        "details": {
-          "returned": 27,
-          "total": 27,
-          "artifact": "artifacts/C-c8e20de558ff-tool-04-345f242e1083.json"
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:46:40.109129+00:00",
-        "role": "Meta",
-        "action": "Model request started",
-        "details": {
-          "call": 4
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:46:44.671560+00:00",
-        "role": "Meta",
-        "action": "Model response received",
-        "details": {
-          "call": 4
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:46:44.675612+00:00",
-        "role": "MCP",
-        "action": "Calling get_event",
-        "details": {
-          "arguments": {
-            "event_id": "E-913c9796f1ace5dc29e5e5e5"
-          },
           "call": 5
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:44.703872+00:00",
+        "timestamp": "2026-11-04T22:25:43.563556+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 5
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:43.565573+00:00",
+        "role": "MCP",
+        "action": "Calling search_events",
+        "details": {
+          "arguments": {
+            "filters": {
+              "account": "morgan",
+              "source_ip": "203.0.113.74"
+            },
+            "limit": 5,
+            "offset": 0
+          },
+          "call": 6
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:43.601855+00:00",
+        "role": "MCP",
+        "action": "Completed search_events",
+        "details": {
+          "returned": 5,
+          "total": 27,
+          "artifact": "artifacts/C-6648e4baf12a-tool-06-e2abf5f498b8.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:43.603494+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 6
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:48.136171+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 6
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:48.138229+00:00",
+        "role": "MCP",
+        "action": "Calling get_event",
+        "details": {
+          "arguments": {
+            "event_id": "E-df24520841597e17d622d586"
+          },
+          "call": 7
+        }
+      },
+      {
+        "timestamp": "2026-11-04T22:25:48.159711+00:00",
         "role": "MCP",
         "action": "Completed get_event",
         "details": {
           "returned": 1,
           "total": null,
-          "artifact": "artifacts/C-c8e20de558ff-tool-05-01eff670700c.json"
+          "artifact": "artifacts/C-6648e4baf12a-tool-07-bd85940c77b1.json"
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:44.704764+00:00",
+        "timestamp": "2026-11-04T22:25:48.161322+00:00",
         "role": "Meta",
         "action": "Model request started",
         "details": {
-          "call": 5
+          "call": 7
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:49.109984+00:00",
+        "timestamp": "2026-11-04T22:25:50.688798+00:00",
         "role": "Meta",
         "action": "Model response received",
         "details": {
-          "call": 5
+          "call": 7
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:49.114100+00:00",
+        "timestamp": "2026-11-04T22:25:50.691031+00:00",
         "role": "MCP",
         "action": "Calling get_event",
         "details": {
           "arguments": {
             "event_id": "E-17ff17e651d4d2cb0e47c3f4"
           },
-          "call": 6
+          "call": 8
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:49.143124+00:00",
+        "timestamp": "2026-11-04T22:25:50.711474+00:00",
         "role": "MCP",
         "action": "Completed get_event",
         "details": {
           "returned": 1,
           "total": null,
-          "artifact": "artifacts/C-c8e20de558ff-tool-06-de5dc0d41290.json"
+          "artifact": "artifacts/C-6648e4baf12a-tool-08-de5dc0d41290.json"
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:49.144362+00:00",
+        "timestamp": "2026-11-04T22:25:50.712890+00:00",
         "role": "Meta",
         "action": "Model request started",
         "details": {
-          "call": 6
+          "call": 8
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:53.033711+00:00",
+        "timestamp": "2026-11-04T22:25:54.169813+00:00",
         "role": "Meta",
         "action": "Model response received",
         "details": {
-          "call": 6
+          "call": 8
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:53.041072+00:00",
+        "timestamp": "2026-11-04T22:25:54.171689+00:00",
         "role": "MCP",
         "action": "Calling attach_evidence",
         "details": {
           "arguments": {
             "event_ids": [
+              "E-f418bfcc7b120c25fd1b8e47",
               "E-913c9796f1ace5dc29e5e5e5",
               "E-df24520841597e17d622d586",
               "E-17ff17e651d4d2cb0e47c3f4"
             ]
           },
-          "call": 7
+          "call": 9
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:53.071245+00:00",
+        "timestamp": "2026-11-04T22:25:54.185000+00:00",
         "role": "MCP",
         "action": "Completed attach_evidence",
         "details": {
           "returned": 0,
           "total": null,
-          "artifact": "artifacts/C-c8e20de558ff-tool-07-0ae4e76cd52d.json"
+          "artifact": "artifacts/C-6648e4baf12a-tool-09-3f05e61db73a.json"
         }
       },
       {
-        "timestamp": "2026-11-04T18:46:53.072425+00:00",
-        "role": "Meta",
-        "action": "Model request started",
-        "details": {
-          "call": 7
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:46:59.628951+00:00",
-        "role": "Meta",
-        "action": "Model response received",
-        "details": {
-          "call": 7
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:46:59.630399+00:00",
-        "role": "MCP",
-        "action": "Calling save_case_notes",
-        "details": {
-          "arguments": {
-            "note": "AUTH-002 morgan 203.0.113.74: 24 failures (request-701) then success (session-702) 09:03:20, then /restricted/customer-export access 09:03:40 and 840MB download 09:04:20 same session-702. Auth success does not prove compromise; authorization for restricted export not observed. Needs ticket/approval/role/MFA review."
-          },
-          "call": 8
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:46:59.637897+00:00",
-        "role": "MCP",
-        "action": "Completed save_case_notes",
-        "details": {
-          "returned": 0,
-          "total": null,
-          "artifact": "artifacts/C-c8e20de558ff-tool-08-04c1c338b549.json"
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:46:59.639309+00:00",
-        "role": "Meta",
-        "action": "Model request started",
-        "details": {
-          "call": 8
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:47:08.880066+00:00",
-        "role": "Meta",
-        "action": "Model response received",
-        "details": {
-          "call": 8
-        }
-      },
-      {
-        "timestamp": "2026-11-04T18:47:08.883266+00:00",
+        "timestamp": "2026-11-04T22:25:54.186968+00:00",
         "role": "Evidence reviewer",
         "action": "Checking support, gaps, and alternative explanations",
         "details": {}
       },
       {
-        "timestamp": "2026-11-04T18:47:08.887269+00:00",
+        "timestamp": "2026-11-04T22:25:54.188509+00:00",
         "role": "Meta",
         "action": "Model request started",
         "details": {
@@ -477,7 +482,7 @@
         }
       },
       {
-        "timestamp": "2026-11-04T18:47:20.400304+00:00",
+        "timestamp": "2026-11-04T22:26:06.566096+00:00",
         "role": "Meta",
         "action": "Model response received",
         "details": {
@@ -485,21 +490,21 @@
         }
       },
       {
-        "timestamp": "2026-11-04T18:47:20.403246+00:00",
+        "timestamp": "2026-11-04T22:26:06.568827+00:00",
         "role": "Evidence reviewer",
         "action": "Review saved",
         "details": {
-          "artifact": "artifacts/C-c8e20de558ff-review-8a369e9caca3.json"
+          "artifact": "artifacts/C-6648e4baf12a-review-efdcc3bd1e6c.json"
         }
       },
       {
-        "timestamp": "2026-11-04T18:47:20.404341+00:00",
+        "timestamp": "2026-11-04T22:26:06.570377+00:00",
         "role": "Reporter",
         "action": "Producing structured findings with source references",
         "details": {}
       },
       {
-        "timestamp": "2026-11-04T18:47:20.407375+00:00",
+        "timestamp": "2026-11-04T22:26:06.572904+00:00",
         "role": "Meta",
         "action": "Model request started",
         "details": {
@@ -507,7 +512,7 @@
         }
       },
       {
-        "timestamp": "2026-11-04T18:47:33.278245+00:00",
+        "timestamp": "2026-11-04T22:26:18.175945+00:00",
         "role": "Meta",
         "action": "Model response received",
         "details": {
@@ -515,26 +520,26 @@
         }
       },
       {
-        "timestamp": "2026-11-04T18:47:33.377688+00:00",
+        "timestamp": "2026-11-04T22:26:18.185123+00:00",
         "role": "Reporter",
-        "action": "Case summary saved",
+        "action": "Report response retained",
         "details": {
-          "findings": 6,
-          "model_calls": 10,
-          "tool_calls": 8,
-          "elapsed_seconds": 66.21
+          "artifact": "artifacts/C-6648e4baf12a-report-response-cdeb9fb3a6d2.json"
         }
       },
       {
-        "timestamp": "2026-11-04T18:59:38.442193+00:00",
-        "role": "System",
-        "action": "Revalidated the saved live report with current deterministic checks",
+        "timestamp": "2026-11-04T22:26:18.220721+00:00",
+        "role": "Reporter",
+        "action": "Case summary saved",
         "details": {
-          "live_model_rerun": false
+          "findings": 4,
+          "model_calls": 10,
+          "tool_calls": 9,
+          "elapsed_seconds": 51.26
         }
       }
     ],
-    "summary": "Review contains 3 observed findings, 2 hypotheses, and 1 open question.\nHypothesis (unproven): Sequence consistent with guessing then use of authenticated session\nHypothesis (unproven): Legitimate retry and authorized export not excluded\nOpen question: Authorization and MFA status undetermined\nObserved findings below contain canonical event fields and exact computed query results. Reference validity does not prove the model's interpretation.",
+    "summary": "Review contains 2 observed findings, 1 hypothesis, and 1 open question.\nHypothesis (unproven): Guessing-then-use is unproven alternate explanations remain\nOpen question: Authorization and authentication strength remain unresolved\nObserved findings below contain canonical event fields and exact computed query results. Reference validity does not prove the model's interpretation.",
     "provider": "Meta Model API"
   },
   "manifest": {
@@ -1430,7 +1435,7 @@
   ],
   "computed_queries": [
     {
-      "receipt_id": "Q-10e242b0fbbbacbd9188",
+      "receipt_id": "Q-652cf8fc12e9de90247b",
       "dataset_id": "D-5c9f98be2b243b47d24d0964",
       "filters": {
         "account": "morgan",
@@ -1460,29 +1465,7 @@
         "E-4e2ba4636cd07963f949401d",
         "E-b9eafc67a49da8c087b55f3b",
         "E-62c6b144f1878191842a8c84",
-        "E-16c80416cddfb79edc212810",
-        "E-436cc24a70a37ebfd8b5ae9d",
-        "E-62a4f237b53a1f573937ae7c",
-        "E-8aa7d0044ce106992e4da0a6",
-        "E-8c6a4739902b99e02480fa30",
-        "E-e0c45b549ae9adf80906c0c4",
-        "E-7b9a9e0c2383336f6e7f46b1",
-        "E-70c3b3c17072e18e0bf7085e",
-        "E-c8f18c6c68399d87590eeec5",
-        "E-8db680f5d823ca31be2e34ce",
-        "E-2ecd7f93b91b9cdb609d1442",
-        "E-ec9d65428b2640cacdba5b13",
-        "E-a8355aae3ec3f3afbe5407f1",
-        "E-67fee14778eb8ca394014150",
-        "E-2421263eb257c73431298973",
-        "E-57927fb01f55a77edfbc5574",
-        "E-78ca5edcc12a06bd7cd336b1",
-        "E-cb9dc9a5b44fcd5c9b00199c",
-        "E-955a549f9e275b32ebbda981",
-        "E-afac4455b878ef2e465944c5",
-        "E-913c9796f1ace5dc29e5e5e5",
-        "E-df24520841597e17d622d586",
-        "E-17ff17e651d4d2cb0e47c3f4"
+        "E-16c80416cddfb79edc212810"
       ],
       "description": "Exact filtered count and byte sum, computed by DuckDB over all matching events."
     },

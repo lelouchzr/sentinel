@@ -14,7 +14,7 @@ from pydantic import ValidationError
 from .cases import Cases, summarize_findings, verify_findings
 from .config import AgentConfig
 from .mcp_client import connect
-from .models import ReportDraft
+from .models import Finding, ReportDraft
 from .security import SentinelError, plain
 from .storage import Store
 
@@ -74,8 +74,12 @@ class MetaProvider:
             kwargs["tools"] = tools
             kwargs["parallel_tool_calls"] = False
         if schema:
-            # JSON mode plus local Pydantic validation works across compatible Meta endpoints.
-            kwargs["response_format"] = {"type": "json_object"}
+            # JSON-object mode guarantees syntax only. Meta's constrained decoder
+            # must receive the same strict schema that we validate locally.
+            kwargs["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {"name": "SentinelReport", "strict": True, "schema": schema},
+            }
             kwargs["messages"] = [
                 *messages,
                 {
@@ -87,9 +91,13 @@ class MetaProvider:
             result = await self.client.chat.completions.create(**kwargs)
             message = result.choices[0].message.model_dump(exclude_none=True)
             # Only the protocol fields needed for the next call; never retain reasoning fields.
-            return {
+            response = {
                 key: message[key] for key in ("role", "content", "tool_calls") if key in message
             }
+            if schema:
+                response["finish_reason"] = result.choices[0].finish_reason
+                response["refusal"] = bool(message.get("refusal"))
+            return response
         except asyncio.CancelledError:
             raise
         except Exception as exc:
@@ -361,11 +369,45 @@ async def investigate(
                         ],
                         schema=ReportDraft.model_json_schema(),
                     )
+                    # Retain only public answer content, never reasoning or raw SDK
+                    # exceptions. Diagnostics survive a rejected report without a
+                    # second paid call. Redact the configured credential even if echoed.
+                    content = report.get("content") or ""
+                    safe_content = content.replace(config.api_key.get_secret_value(), "[redacted]")
+                    report_path = cases.artifact(
+                        case_id,
+                        "report-response",
+                        {
+                            "content": plain(safe_content, 100000),
+                            "content_truncated": len(content) > 100000,
+                            "finish_reason": report.get("finish_reason"),
+                            "refusal": bool(report.get("refusal")),
+                            "schema": ReportDraft.model_json_schema(),
+                        },
+                    )
+                    activity("Reporter", "Report response retained", {"artifact": report_path})
+                    if report.get("refusal") or report.get("finish_reason", "stop") != "stop":
+                        raise SentinelError(
+                            "Meta did not finish the report; response, evidence and review were retained"
+                        )
                     try:
+                        if len(content) > 100000:
+                            raise SentinelError("Meta report exceeded the safe size limit")
                         draft = ReportDraft.model_validate_json(report.get("content") or "")
                     except ValidationError as exc:
+                        diagnostic = cases.artifact(
+                            case_id,
+                            "report-validation",
+                            {
+                                "errors": [
+                                    {"location": list(e["loc"]), "type": e["type"]}
+                                    for e in exc.errors(include_input=False, include_context=False)
+                                ]
+                            },
+                        )
+                        activity("Reporter", "Report schema rejected", {"artifact": diagnostic})
                         raise SentinelError(
-                            "Meta returned an invalid structured report; evidence and review were retained"
+                            "Meta returned an invalid structured report; response, validation diagnostics, evidence and review were retained"
                         ) from exc
                     # Never permit guessed IDs, even if they happen to exist in this dataset.
                     eligible = []
@@ -378,7 +420,7 @@ async def investigate(
                                 "Rejected a finding citing evidence not retrieved in this investigation"
                             )
                         else:
-                            eligible.append(finding)
+                            eligible.append(Finding.model_validate(finding.model_dump()))
                     findings, extra = verify_findings(store, eligible)
                     warnings.extend(extra)
                     if not findings:

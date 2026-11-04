@@ -1,50 +1,50 @@
 [
   {
     "name": "workspace",
-    "time": 0.6374
+    "time": 3.5447
   },
   {
     "name": "case-open",
-    "time": 5.0643
+    "time": 7.959
   },
   {
     "name": "agent-start",
-    "time": 10.697
+    "time": 12.8667
   },
   {
     "name": "review",
-    "time": 29.5183
+    "time": 64.882
   },
   {
     "name": "timeline",
-    "time": 36.837
+    "time": 72.1875
   },
   {
     "name": "session",
-    "time": 43.1032
+    "time": 78.4297
   },
   {
     "name": "event",
-    "time": 47.1451
+    "time": 82.4534
   },
   {
     "name": "provenance",
-    "time": 51.4594
+    "time": 86.7644
   },
   {
     "name": "benign-search",
-    "time": 59.0347
+    "time": 94.3018
   },
   {
     "name": "benign-record",
-    "time": 63.0781
+    "time": 98.3396
   },
   {
     "name": "case-review",
-    "time": 70.7092
+    "time": 105.9595
   },
   {
     "name": "export",
-    "time": 76.1285
+    "time": 111.3761
   }
 ]

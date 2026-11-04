@@ -98,3 +98,13 @@ exports encode control characters. Reports and artifacts are written only under 
 The MCP child does not inherit Meta credentials. Technical transport output goes to a workspace
 log, never into the TUI or MCP stdout. The standalone server reserves stdout for protocol traffic.
 Local workspace files are trusted application state; they are not cryptographically signed.
+
+## Structured Meta reports
+
+The reporter uses Meta's documented Chat Completions `json_schema` response format with
+`strict=true`. `FindingDraft` contains required model-authored fields only. Sentinel adds
+verification after checking retrieved IDs and receipts; schema conformity does not establish
+factual support. Public answer content is retained atomically before Pydantic validation,
+with a size bound and configured-credential redaction. Private reasoning and raw SDK exceptions
+are not retained. Truncation, refusal and validation failures leave the case interrupted with
+completed evidence and safe diagnostics. No automatic paid repair request is made.

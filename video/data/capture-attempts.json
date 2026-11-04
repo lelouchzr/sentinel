@@ -1,6 +1,6 @@
 {
-  "selected_case": "C-c8e20de558ff",
-  "selected_case_capture": "actual stored activity and evidence, explicitly disclosed",
+  "selected_case": "C-6648e4baf12a",
+  "selected_case_capture": "new live Meta investigation, recorded through a real terminal",
   "new_live_attempt": {
     "case_id": "C-f9698db08d60",
     "status": "interrupted",
@@ -10,5 +10,21 @@
     "reason": "Meta returned an invalid structured report; evidence and review were retained",
     "paid_retry_count": 0,
     "included_in_film": false
+  },
+  "previous_selected_case": "C-c8e20de558ff",
+  "new_successful_capture": {
+    "case_id": "C-6648e4baf12a",
+    "status": "reviewed",
+    "model_requests": 10,
+    "mcp_calls": 9,
+    "evidence_retained": 27,
+    "elapsed_seconds": 51.26,
+    "findings": 4,
+    "finish_reason": "stop",
+    "response_format": "json_schema",
+    "strict": true,
+    "paid_retry_count": 0,
+    "authorization": "Explicit new user request to fix JSON validation and record a fresh live investigation",
+    "included_in_film": true
   }
 }

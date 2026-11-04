@@ -21,9 +21,8 @@ def package():
         "assets/fonts",
         "assets/vendor",
         "assets/captures",
-        "renders/review",
-        "renders/final-details",
-        "renders/mcp-refinement",
+        "renders/review-v2-final",
+        "renders/final-v2",
     ]
     files = [
         "index.html",

@@ -1,26 +1,18 @@
 {
-  "directory": "/private/tmp/sentinel-film-clean-krxtf6cb/video",
+  "directory": "/private/tmp/sentinel-film-v2-clean-z6esqiew/video",
   "npm_ci": "passed",
   "isolated_python_install": "passed",
   "official_asset_download_and_hashes": "passed",
   "terminal_reencoding": "passed",
   "audio_rebuild": "passed",
   "generated_html_identical": true,
-  "lint": "passed",
-  "rendered_span_seconds": [
-    57.6,
-    60.8
-  ],
-  "model_calls": 0,
   "rendered_spans_seconds": [
     [
-      57.6,
-      60.8
-    ],
-    [
-      32,
-      35.2
+      24,
+      27.2
     ]
   ],
-  "final_refinement_html_identical": true
+  "rendered_duration_seconds": 3.2,
+  "model_calls": 0,
+  "case_id": "C-6648e4baf12a"
 }

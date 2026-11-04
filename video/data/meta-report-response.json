@@ -1,0 +1,92 @@
+{
+  "content": "{\"findings\": [{\"category\": \"observed_fact\", \"event_ids\": [\"E-f418bfcc7b120c25fd1b8e47\", \"E-4e2ba4636cd07963f949401d\", \"E-b9eafc67a49da8c087b55f3b\", \"E-62c6b144f1878191842a8c84\", \"E-16c80416cddfb79edc212810\", \"E-913c9796f1ace5dc29e5e5e5\"], \"explanation\": \"Account morgan from 203.0.113.74 on identity-01 /sso shows login failure at 2026-10-20T09:00:00Z with session_id request-701 and context Password authentication rejected, followed by login success at 2026-10-20T09:03:20Z with session_id session-702 and context Password authentication accepted; MFA not recorded. Alert A-f312fe687a350032 describes sequence as successful login after 24 failures within 300s and states it does not establish compromise.\", \"limitations\": \"Only first failure and final success were individually retrieved; remaining failures rely on alert list and aggregate receipt, not individual review. Failure session request-701 differs from success session session-702, so linkage is by account plus IP plus time, not shared session.\", \"receipt_ids\": [\"Q-652cf8fc12e9de90247b\"], \"title\": \"Login sequence shows failures followed by success for morgan\"}, {\"category\": \"observed_fact\", \"event_ids\": [\"E-913c9796f1ace5dc29e5e5e5\", \"E-df24520841597e17d622d586\", \"E-17ff17e651d4d2cb0e47c3f4\"], \"explanation\": \"Session-702 contains login success on identity-01, then access success to /restricted/customer-export on portal-02 at 09:03:40Z with context Permission check accepted by application, then download success of /restricted/customer-export/accounts.csv on storage-01 at 09:04:20Z with same account morgan, source_ip 203.0.113.74 and session_id session-702. The session aggregate reports total_count 3 and total_bytes 840000000.\", \"limitations\": \"Correlation uses explicit shared account, source_ip and session_id fields. Permission check text alone does not prove business authorization. No destination-use evidence retrieved.\", \"receipt_ids\": [\"Q-31fbd3c8a3cc94641b3e\"], \"title\": \"Session-702 performed restricted access and large download\"}, {\"category\": \"hypothesis\", \"event_ids\": [\"E-f418bfcc7b120c25fd1b8e47\", \"E-913c9796f1ace5dc29e5e5e5\", \"E-df24520841597e17d622d586\", \"E-17ff17e651d4d2cb0e47c3f4\"], \"explanation\": \"Pattern is consistent with password-guessing followed by use of session-702 for export, but is also consistent with legitimate user retrying mistyped password then performing intended export. Retrieved events do not establish operator identity, intent, compromise, or exfiltration.\", \"limitations\": \"No MFA logs, device posture, behavioral baseline, or identity proof retrieved. Severity and volume do not prove maliciousness. Plausible benign alternative is user error followed by authorized work.\", \"receipt_ids\": [\"Q-652cf8fc12e9de90247b\", \"Q-31fbd3c8a3cc94641b3e\"], \"title\": \"Guessing-then-use is unproven alternate explanations remain\"}, {\"category\": \"open_question\", \"event_ids\": [\"E-913c9796f1ace5dc29e5e5e5\", \"E-df24520841597e17d622d586\", \"E-17ff17e651d4d2cb0e47c3f4\"], \"explanation\": \"Authorization for /restricted/customer-export access and 840MB download is not established. Success context says MFA not recorded, with no MFA log, approval, role entitlement, or business need in retrieved evidence.\", \"limitations\": \"Owner review of approvals, role baseline, MFA requirement, and downstream handling needed. Without that, treat as unauthorized-unconfirmed.\", \"receipt_ids\": [\"Q-31fbd3c8a3cc94641b3e\"], \"title\": \"Authorization and authentication strength remain unresolved\"}], \"open_questions\": [\"What approval, ticket, role or business need authorized morgan to access /restricted/customer-export and download accounts.csv on 2026-10-20?\", \"Was MFA required for session-702 and what do MFA or device logs show given MFA not recorded in login event?\", \"What is the expected baseline for morgan exports and how was the 840MB file handled after download?\"]}",
+  "content_truncated": false,
+  "finish_reason": "stop",
+  "refusal": false,
+  "schema": {
+    "$defs": {
+      "FindingDraft": {
+        "additionalProperties": false,
+        "description": "Model-authored fields only; verification is exclusively owned by Sentinel.",
+        "properties": {
+          "title": {
+            "maxLength": 200,
+            "title": "Title",
+            "type": "string"
+          },
+          "category": {
+            "enum": [
+              "observed_fact",
+              "hypothesis",
+              "open_question"
+            ],
+            "title": "Category",
+            "type": "string"
+          },
+          "event_ids": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "title": "Event Ids",
+            "type": "array"
+          },
+          "explanation": {
+            "maxLength": 12000,
+            "title": "Explanation",
+            "type": "string"
+          },
+          "limitations": {
+            "maxLength": 2000,
+            "title": "Limitations",
+            "type": "string"
+          },
+          "receipt_ids": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "title": "Receipt Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "title",
+          "category",
+          "event_ids",
+          "explanation",
+          "limitations",
+          "receipt_ids"
+        ],
+        "title": "FindingDraft",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "findings": {
+        "items": {
+          "$ref": "#/$defs/FindingDraft"
+        },
+        "maxItems": 6,
+        "minItems": 1,
+        "title": "Findings",
+        "type": "array"
+      },
+      "open_questions": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 10,
+        "title": "Open Questions",
+        "type": "array"
+      }
+    },
+    "required": [
+      "findings",
+      "open_questions"
+    ],
+    "title": "ReportDraft",
+    "type": "object"
+  }
+}

@@ -21,11 +21,11 @@ def run(args):
 def mix():
     # These effects are placed on authored transitions, never used to imply an
     # application interaction that is absent from the recorded terminal.
-    taps = [6.4, 19.2, 32.0, 57.6, 76.8, 89.6, 102.4, 110.4]
+    taps = [6.4, 12.8, 22.4, 35.2, 57.6, 70.4, 80.0, 89.6, 102.4, 110.4]
     chains = [
         "[0:a]atrim=start=6.4:end=121.6,asetpts=PTS-STARTPTS,"
         "afade=t=in:d=0.25,afade=t=out:st=111.6:d=3.6,volume=0.78[bed]",
-        "[1:a]asplit=8" + "".join(f"[tap{i}]" for i in range(8)),
+        f"[1:a]asplit={len(taps)}" + "".join(f"[tap{i}]" for i in range(len(taps))),
     ]
     for i, time in enumerate(taps):
         chains.append(
@@ -33,8 +33,8 @@ def mix():
         )
     chains.append(
         "[bed]"
-        + "".join(f"[s{i}]" for i in range(8))
-        + "amix=inputs=9:duration=first:normalize=0[mix]"
+        + "".join(f"[s{i}]" for i in range(len(taps)))
+        + f"amix=inputs={len(taps) + 1}:duration=first:normalize=0[mix]"
     )
     run(
         [
