@@ -22,7 +22,7 @@ demo:
 	uv run slim demo
 
 benchmark:
-	SLIM_ALLOW_EXECUTION=1 uv run python scripts/benchmark.py
+	SLIM_ALLOW_EXECUTION=1 uv run --extra upstream python scripts/benchmark.py
 
 web-build:
 	cd web && npm run build

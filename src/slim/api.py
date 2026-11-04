@@ -6,6 +6,7 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from slim import __version__
@@ -184,4 +185,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         except (UnicodeError, OSError):
             raise SlimError("File is not readable text") from None
 
+    distribution = settings.workspace / "web" / "dist"
+    if distribution.is_dir():
+        app.mount("/", StaticFiles(directory=distribution, html=True), name="workbench")
     return app
