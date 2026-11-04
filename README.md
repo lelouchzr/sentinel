@@ -2,8 +2,10 @@
 
 **Une image. Une aventure.**
 
-FRAME turns an illustration into a small browser escape game. The first room,
-_Le dernier service_, is playable from the gallery. The homepage starts with an
+FRAME turns an illustration into a browser escape game. The gallery includes four
+curated long adventures: _Le dernier service_, _Le Secret de la serre_,
+_Le Phare des marées_ and _La Vigie de la Lune_. Each has four illustrated chapters,
+20 interactions and two choice-dependent conclusions (about 30 minutes, estimated). The homepage starts with an
 image import (PNG, JPEG or WebP, up to 10 MB) or a prompt for Muse Image. Creators can edit
 objects and clues, ask Meta Muse Spark to propose a scenario, use SAM 3.1 to
 segment an interactive object, play-test the result and publish an immutable
@@ -66,8 +68,12 @@ structured-output schema, timeout and response validation.
 ## Game and publication contracts
 
 `lib/game.ts` defines a bounded ruleset. An object can be inspected, collected,
-opened with a code, unlocked or used as the exit. Actions can require previously
+opened with a code, unlocked, used to make a narrative choice or used as the exit. Actions can require previously
 resolved objects. Items are not consumed and actions do not undo progress.
+Chapter gates and object dependencies share the same deterministic validation.
+Travel only exposes the current scene; hints cannot be requested in another scene.
+Inventories, visited places, choices and earned journal entries persist across travel
+and reload. Later chapter images and introductions are withheld until unlocked.
 A fixed-point search checks reachability and rejects missing dependencies,
 duplicate IDs, cycles and invalid regions. This proves reachability within this
 ruleset; it does not establish that an illustration or clue is understandable.
@@ -85,6 +91,25 @@ stay private until they are used by an active publication. Playing requires no
 account when the Site's audience is public; creating and publishing require
 sign-in. New Sites are owner-private until their audience is explicitly changed.
 
+## Illustrated long editions
+
+`lib/stories/` contains the authored narrative definitions. The canonical gallery
+URLs omit the suffixes of the three earlier short publications. Those original
+snapshots and existing sessions remain intact; their reader offers a link to the
+long edition. A restored kitchen session also retains its original definition.
+New kitchen games start the long edition. No publication or D1 migration is needed.
+
+The player adds chapter arrival cards, a map for revisiting unlocked places,
+scene transitions, subtle camera movement and scene-specific particles. Targets
+and artwork share the same transform. Animation respects reduced-motion settings
+and can be paused. A procedural soundscape is off by default and starts only
+after an explicit gesture. There is no generated video or voice-over.
+
+The editor preserves chapter/choice definitions, shows the selected chapter's
+objects and image, edits chapter prose/gates and ending variants, and sends that
+chapter's image to SAM. Replacing one scene clears only its contours. Whole-room
+scenario replacement is disabled for chaptered stories to avoid discarding them.
+
 ## Checks
 
 ```sh
@@ -92,6 +117,12 @@ make check
 # With the local development server running:
 make integration
 ```
+
+`tests/stories.test.ts` checks all eight narrative routes, chapter gates,
+backtracking, ending/journal persistence, redaction, target overlap and illustration
+hashes. `tests/story-api.integration.ts` exercises all eight routes through D1,
+including invalid travel, forged choices, revision conflicts and a published
+secondary chapter image whose access is revoked on withdrawal.
 
 `tests/game.test.ts` checks complete playthroughs, wrong codes, locked actions,
 invalid generated input, answer redaction and hint behavior. The API integration
@@ -116,7 +147,7 @@ images or all model generations work.
 
 ## Artwork and licenses
 
-The kitchen artwork is by jcrown41, CC0-1.0, from
+The original classic kitchen artwork is by jcrown41, CC0-1.0, from
 https://opengameart.org/content/kitchen-background-4-styles.
 The Japanese room is by HachiStudio, CC0-1.0, from
 https://opengameart.org/content/japanese-room.
@@ -128,3 +159,14 @@ Meta's parser retains its own package license. FRAME's authored code uses MIT.
 
 The self-hosted Geist font retains its SIL OFL notice in `public/licenses/`.
 That directory also preserves the Meta SAM parser, Lucide, React and Zod notices.
+
+The long editions use 16 Muse Image illustrations. Thirteen were generated for
+these chapters using real `muse-image-1.0` calls; three starting scenes were copied
+byte-for-byte from the previously approved FRAME publications.
+`public/stories/manifest.json` and `base-manifest.json` retain original PNG hashes,
+credits, prompts and available generation provenance. Their narrative text is
+manually authored and is not presented as a model-generated output.
+`node scripts/author-illustrations.mjs <prompt-list.json>` accepts hidden TTY
+stdin authorization, reuses completed assets and never automatically retries a
+paid failed call. `scripts/collect-story-art.mjs` similarly accepts hidden private
+Site authorization for read-only collection of the three original scenes.

@@ -4,8 +4,9 @@ export default function HowToPlay() {
   return (
     <div className="how-to-play">
       <p>
-        Chaque histoire est un petit escape game dans une illustration. Votre
-        objectif : découvrir comment sortir de la pièce.
+        Explorez les illustrations et faites avancer le récit grâce à vos
+        découvertes. Les histoires longues se déroulent dans plusieurs lieux,
+        jusqu’à une conclusion qui dépend de votre choix.
       </p>
       <ol>
         <li>
@@ -33,11 +34,13 @@ export default function HowToPlay() {
         <li>
           <DoorOpen size={21} />
           <div>
-            <h3>Ouvrez la sortie</h3>
+            <h3>Avancez dans l’histoire</h3>
             <p>
-              Certains objets restent bloqués jusqu’à une autre découverte.
-              Revenez-y après avoir avancé. La partie se termine lorsque vous
-              ouvrez la sortie.
+              Une découverte peut ouvrir un nouveau lieu : choisissez-le dans la
+              carte sous l’image. Vous pouvez revenir dans les pièces déjà
+              visitées ; certains indices servent ailleurs. Votre inventaire
+              vous suit. Le dernier choix détermine la conclusion, puis un
+              dernier objet termine le récit.
             </p>
           </div>
         </li>

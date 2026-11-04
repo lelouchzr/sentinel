@@ -13,6 +13,7 @@ import {
   LoaderCircle,
   DoorOpen,
   Check,
+  MessageCircle,
 } from "lucide-react";
 import type { Room, GameState, playerRoom } from "@/lib/game";
 
@@ -28,6 +29,8 @@ export type Card = {
   duration: number;
   author: string;
   builtin?: boolean;
+  chapterCount?: number;
+  interactionCount?: number;
 };
 export type PublicRoom = ReturnType<typeof playerRoom>;
 export type PlayData = {
@@ -49,6 +52,7 @@ export const icons = {
   code: LockKeyhole,
   unlock: KeyRound,
   exit: DoorOpen,
+  choose: MessageCircle,
 };
 export const actionNames = {
   inspect: "Observer",
@@ -56,6 +60,7 @@ export const actionNames = {
   code: "Ouvrir avec un code",
   unlock: "Déverrouiller",
   exit: "Sortir",
+  choose: "Décider",
 };
 
 export function Loading({

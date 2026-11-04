@@ -81,7 +81,8 @@ export default function Gallery({ viewer }: { viewer: Viewer | undefined }) {
             <p className="section-kicker">La galerie</p>
             <h2 id="gallery-heading">Choisissez votre histoire.</h2>
             <p className="gallery-intro">
-              Une image à explorer, des indices à relier, une sortie à trouver.
+              Des lieux à découvrir, des secrets à éclaircir, une histoire à
+              faire avancer.
             </p>
           </div>
           <div className="gallery-heading-tools">
@@ -227,6 +228,12 @@ function RoomCard({ room }: { room: Card }) {
           {room.duration} min
         </span>
       </div>
+      {room.chapterCount && room.chapterCount > 1 && (
+        <p className="card-chapters">
+          {room.chapterCount} chapitres · {room.interactionCount} interactions ·
+          2 conclusions
+        </p>
+      )}
       <h3>{room.title}</h3>
       <p>{room.description}</p>
       <div className="room-card-bottom">

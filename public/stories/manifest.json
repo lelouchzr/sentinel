@@ -1,0 +1,277 @@
+{
+  "assets": [
+    {
+      "id": "serre-atelier",
+      "path": "/stories/serre-atelier.png",
+      "sha256": "a9add1bd3e0edf5fe3049a933ac43f0107227f95e1d8a5210a17a76f23f8d958",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "16e7f17e-d8c2-4cc6-87b8-36b8a9d38e05",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. A Victorian botanist’s workshop lit by late amber afternoon sun, sage green wood and copper details. Writing desk with a closed notebook on the left, small wooden seed box in the center foreground, shelves with glass bottles on the right, a wooden door on the back wall. Warm mysterious mood. Five distinct clickable props.",
+        "generatedAt": "2026-11-04T14:07:14.233Z"
+      },
+      "credits": [
+        {
+          "title": "L’atelier d’Ada",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "serre-passage",
+      "path": "/stories/serre-passage.png",
+      "sha256": "e3d3f5bf80fdd4374d99e3d602ca9d684417cade564610615986a6b875a0d531",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "1e6839fc-3836-426d-af7e-a7e6f66151ad",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. An old brick passage beneath a greenhouse, soft blue shadows, hanging lamp on the left, brass water valve centered on a large pipe, a little wall locker on the right, stone stairs leading up to daylight at the back. Roots and small ferns around brick arches. Cozy mystery, no threat.",
+        "generatedAt": "2026-11-04T14:07:14.996Z"
+      },
+      "credits": [
+        {
+          "title": "Le passage sous la serre",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "serre-jardin",
+      "path": "/stories/serre-jardin.png",
+      "sha256": "0daf1a5f58866c5ff27d804964f109c1b20acf29285b85e0a50bf4ab0d01f6b2",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "08837fb4-a3b6-4bb7-8515-ee3cd46af847",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. A secret botanical garden at sunrise, soft gold and pink light, sage leaves. A wooden bench with a folded canvas bag on the left, round fountain in the center, a bed of small seedlings on the right, a wrought iron gate in the back. A gardener’s notebook on a low stone near the fountain.",
+        "generatedAt": "2026-11-04T14:07:24.897Z"
+      },
+      "credits": [
+        {
+          "title": "Le jardin d’Ada",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "phare-mecanisme",
+      "path": "/stories/phare-mecanisme.png",
+      "sha256": "869b27e7692d694ff4113e8d2b75110f453cc5d482bf01fc876ba6fb352e793d",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "e73a7d75-e2fa-4da4-8c8b-ae109e46c452",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Inside a small old Breton lighthouse, a mechanical chamber in blue painted wood, amber lamplight. Large brass gear wheel on the left, a panel of simple mechanical levers in the center, a repair workbench and tools on the right, narrow door in the back. Salt-worn surfaces, serene maritime adventure.",
+        "generatedAt": "2026-11-04T14:07:27.895Z"
+      },
+      "credits": [
+        {
+          "title": "La salle des engrenages",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "phare-grotte",
+      "path": "/stories/phare-grotte.png",
+      "sha256": "bc7d1f98dcc998d8c2b22a5a2109285e3d4a2107ddb6bad147a12ed6808e1afc",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "e42059a6-de02-449f-9dc6-59848abc183d",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. A quiet sea cave beneath a Breton lighthouse, teal blue reflections and soft warm lamp light. Wooden chest on the left foreground, red lifebuoy resting in the center, stone niche containing a closed notebook on the right, stairs climbing toward daylight at the back. Damp rock texture, no people or danger.",
+        "generatedAt": "2026-11-04T14:07:35.713Z"
+      },
+      "credits": [
+        {
+          "title": "La grotte des marées",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "phare-lanterne",
+      "path": "/stories/phare-lanterne.png",
+      "sha256": "1d4c14852ba436067cec4386325fb2dfc7df33247885c0f7171fd20e103000d2",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "90535af8-59f2-447c-9ad2-9c4a674539b0",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Top lantern room of an old Breton lighthouse at dawn, huge faceted glass Fresnel lens in the center, nautical signal console on the left, low wooden chest on the right, glass terrace door in the back right, blue sea and apricot sky outside. Copper, blue painted wood and amber glass.",
+        "generatedAt": "2026-11-04T14:07:39.444Z"
+      },
+      "credits": [
+        {
+          "title": "La chambre de la lanterne",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "kitchen-base",
+      "path": "/stories/kitchen-base.png",
+      "sha256": "821fce800b2ed081ccce1178964838f676f39a7d24438c0e250c5beef475a18c",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "9f61cf2e-69a4-4b3d-b1cd-ce02a6e84b69",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Warm family bistro kitchen at closing time, golden evening light, sage and cream cupboards. Plate shelf on upper left, drawer unit on lower left, bowl of fruit on the center worktop, old oven on the right, wooden back door on the rear right. A tea towel and a notebook are clearly visible. Cozy French bistro.",
+        "generatedAt": "2026-11-04T14:07:48.125Z"
+      },
+      "credits": [
+        {
+          "title": "La cuisine du dernier service",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "kitchen-reserve",
+      "path": "/stories/kitchen-reserve.png",
+      "sha256": "83fde3ce0f9d3b0707674d02c4db991562b52dc5efb0945e8db7986789b7630b",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "912af4e3-65d9-4076-b1e6-7bee2202c292",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Small family bistro pantry, warm ochre and sage palette, shelves of glass jars on the left, a wooden storage chest in the center foreground, tall cupboard on the right, back door in the center rear. An old shopping ledger on a shelf. Cozy and lived-in, no readable jar labels.",
+        "generatedAt": "2026-11-04T14:07:54.836Z"
+      },
+      "credits": [
+        {
+          "title": "La réserve du bistrot",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "kitchen-salle",
+      "path": "/stories/kitchen-salle.png",
+      "sha256": "320d560ed3858e91a633c817a69fa9d573fba5449882a462784b289df63305c2",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "bab0b842-0a2e-4a77-86b1-abfb0b56123a",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Empty French family bistro dining room after closing, painterly amber lamps and deep green walls. One carefully set dining table in the center, old wooden service counter on the left, upright piano on the right, glass door at the back opening into a courtyard. Small vase, closed guestbook and a covered serving dish clearly visible.",
+        "generatedAt": "2026-11-04T14:07:59.375Z"
+      },
+      "credits": [
+        {
+          "title": "La salle du bistrot",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "kitchen-cour",
+      "path": "/stories/kitchen-cour.png",
+      "sha256": "7b3883c0e7d4741feea808bc92ad5d025bcbf57b312566688dd19a2d8c9815e8",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "d85b3e28-f7e6-4370-9ae9-7404b3f7e195",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Quiet courtyard behind a French bistro at sunrise. Wooden bench with an old suitcase on the left, small table with a closed recipe notebook in the center, old leafy tree and a watering can on the right, an openable gate at the back. Golden morning light, warm terracotta and sage colors, intimate hopeful atmosphere.",
+        "generatedAt": "2026-11-04T14:08:03.588Z"
+      },
+      "credits": [
+        {
+          "title": "La cour du matin",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "vigie-archives",
+      "path": "/stories/vigie-archives.png",
+      "sha256": "74425deb5d91b6a040a52b343efcd3c545a3cea914c12200916de5c94045a618",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "cf881581-03da-486b-ae1a-332aa4e2fcba",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Old astronomical archive inside a stone observatory, moonlit teal and copper palette, a tall bookcase on the left, a large wooden writing desk in the center, a celestial globe on the right, a heavy wooden door in the back. A sealed letter and a small wooden box are distinct on the desk. Night sky through a small arched window.",
+        "generatedAt": "2026-11-04T14:08:10.312Z"
+      },
+      "credits": [
+        {
+          "title": "Les archives de la vigie",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "vigie-terrasse",
+      "path": "/stories/vigie-terrasse.png",
+      "sha256": "e80dc23dd25954d57fadb6090a4bccb7cfe0c52ceac3888a575c1a297abc328d",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "294bf87e-ead3-4478-baec-1589f736dab9",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Open terrace of an old astronomical observatory under a large moon and stars, deep blue and warm amber palette. Brass telescope on the left, star chart console with paper maps in the center, low wooden chest on the right, small iron gate at the back opening to a garden path. Calm wondrous night, no people, no readable numbers or words.",
+        "generatedAt": "2026-11-04T14:11:14.980Z"
+      },
+      "credits": [
+        {
+          "title": "La terrasse de la Lune",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    },
+    {
+      "id": "vigie-optique",
+      "path": "/stories/vigie-optique.png",
+      "sha256": "67e307ade2148aa525b3df275b15087ebefc8f7cb8b5a512d9dc4f991d392a8c",
+      "provider": "Meta Model API",
+      "providerResponseId": null,
+      "imageProvenance": {
+        "model": "muse-image-1.0",
+        "runId": "81e4312e-276a-4c5a-8d1f-cf806e9aa861",
+        "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Optical workshop in an old stone observatory at night, copper and midnight blue, warm lantern light. Workbench with several distinct round lenses in the center, tall dark wood cabinet on the left, brass optical mechanism on the right, narrow door at the back. A polishing cloth and a closed tool box on the workbench. No readable markings.",
+        "generatedAt": "2026-11-04T14:11:15.266Z"
+      },
+      "credits": [
+        {
+          "title": "L’atelier d’optique",
+          "author": "Muse Image · Meta",
+          "license": "Image générée pour FRAME",
+          "url": "https://dev.meta.ai/models/muse-image"
+        }
+      ]
+    }
+  ]
+}

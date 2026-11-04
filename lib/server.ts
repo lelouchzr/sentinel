@@ -5,13 +5,22 @@ import {
   initialState,
   playerRoom,
   validateRoom,
+  GameRuleError,
   solution,
   sceneSchema,
   discoveredMessages,
+  moveChapter,
+  illustrationPaths,
   type Room,
   type GameState,
 } from "./game";
-import { kitchen, japanese, seedCard } from "./rooms";
+import { kitchen, japanese } from "./rooms";
+import {
+  catalogueStory,
+  storyCatalog,
+  storyCard,
+  legacyEditions,
+} from "./stories";
 import { ApiError, json, body, user, assertSameOrigin, hash } from "./http";
 import {
   generateRoom,
@@ -70,21 +79,29 @@ async function ownedDraft(id: string, ownerId: string) {
   if (!row) throw new ApiError(404, "Ce brouillon est introuvable.");
   return row;
 }
-async function checkImage(room: Pick<Room, "image">, ownerId: string) {
-  if (!room.image.startsWith("/api/assets/")) return;
-  const asset = await db()
-    .prepare("SELECT id FROM assets WHERE id=? AND owner_id=?")
-    .bind(room.image.split("/").at(-1), ownerId)
-    .first();
-  if (!asset)
-    throw new ApiError(
-      403,
-      "Cette illustration n’appartient pas à votre atelier.",
-    );
+async function checkImage(
+  room: Pick<Room, "image"> & Partial<Pick<Room, "chapters">>,
+  ownerId: string,
+) {
+  for (const image of illustrationPaths(room)) {
+    if (!image.startsWith("/api/assets/")) continue;
+    const asset = await db()
+      .prepare("SELECT id FROM assets WHERE id=? AND owner_id=?")
+      .bind(image.split("/").at(-1), ownerId)
+      .first();
+    if (!asset)
+      throw new ApiError(
+        403,
+        "Une illustration de cette histoire n’appartient pas à votre atelier.",
+      );
+  }
 }
 async function publicRoom(slug: string) {
-  if (slug === seedCard.slug)
-    return { definition: kitchen, id: "builtin-kitchen" };
+  const story = catalogueStory(slug);
+  if (story)
+    return { definition: story.definition, id: `story:${slug}:narrative-v1` };
+  if (slug === "le-dernier-service-classique")
+    return { definition: kitchen, id: "builtin-kitchen-classic" };
   const row = await db()
     .prepare(
       "SELECT id, definition FROM publications WHERE slug=? AND active=1",
@@ -112,6 +129,8 @@ function card(row: any) {
     author: row.author,
     createdAt: row.created_at,
     builtin: false,
+    chapterCount: room.chapters?.length ?? 1,
+    interactionCount: room.objects.length,
   };
 }
 async function imageInput(
@@ -173,7 +192,10 @@ export async function handle(request: Request): Promise<Response> {
       const q = (url.searchParams.get("q") ?? "").toLocaleLowerCase();
       const theme = url.searchParams.get("theme");
       return json({
-        rooms: [seedCard, ...rows.results.map(card)].filter(
+        rooms: [
+          ...storyCatalog.map(storyCard),
+          ...rows.results.filter((r: any) => !legacyEditions[r.slug]).map(card),
+        ].filter(
           (c) =>
             (!q ||
               `${c.title} ${c.description} ${c.author}`
@@ -185,11 +207,25 @@ export async function handle(request: Request): Promise<Response> {
     }
     if (method === "GET" && path[0] === "rooms" && path[1]) {
       const room = await publicRoom(path[1]);
-      return json({ room: playerRoom(room.definition) });
+      return json({
+        room: playerRoom(room.definition),
+        ...(legacyEditions[path[1]]
+          ? {
+              longEdition: {
+                slug: legacyEditions[path[1]],
+                title: room.definition.title,
+              },
+            }
+          : {}),
+      });
     }
     if (method === "GET" && path[0] === "templates") {
       user(request);
-      return json({ room: path[1] === "japanese" ? japanese : kitchen });
+      return json({
+        room:
+          catalogueStory(path[1])?.definition ??
+          (path[1] === "japanese" ? japanese : kitchen),
+      });
     }
     if (path[0] === "drafts") {
       const u = user(request)!;
@@ -213,7 +249,10 @@ export async function handle(request: Request): Promise<Response> {
             updatedAt: r.updated_at,
             room: JSON.parse(r.definition),
           })),
-          publications: pubs.results,
+          publications: pubs.results.map((p: any) => ({
+            ...p,
+            longEdition: legacyEditions[p.slug],
+          })),
         });
       }
       if (method === "POST" && !path[1]) {
@@ -351,7 +390,7 @@ export async function handle(request: Request): Promise<Response> {
         }
         const id = crypto.randomUUID();
         const token = crypto.randomUUID() + crypto.randomUUID();
-        const state = initialState();
+        const state = initialState(definition);
         await db()
           .prepare(
             "INSERT INTO play_sessions (id,token_hash,room_id,definition,state,revision,started_at) VALUES (?,?,?,?,?,0,?)",
@@ -372,7 +411,7 @@ export async function handle(request: Request): Promise<Response> {
             state,
             journal: [],
             revision: 0,
-            room: playerRoom(definition),
+            room: playerRoom(definition, state),
           },
           201,
         );
@@ -398,7 +437,7 @@ export async function handle(request: Request): Promise<Response> {
             state: JSON.parse(row.state),
             journal: discoveredMessages(definition, JSON.parse(row.state)),
             revision: row.revision,
-            room: playerRoom(definition),
+            room: playerRoom(definition, JSON.parse(row.state)),
           });
         if (method === "POST") {
           const data = await body(request);
@@ -408,17 +447,37 @@ export async function handle(request: Request): Promise<Response> {
               "La partie a changé. Rechargez-la pour continuer.",
             );
           if (
-            typeof data.objectId !== "string" ||
-            (data.code !== undefined && typeof data.code !== "string")
+            (data.chapterId !== undefined &&
+              typeof data.chapterId !== "string") ||
+            (data.code !== undefined && typeof data.code !== "string") ||
+            (data.choiceId !== undefined && typeof data.choiceId !== "string")
           )
             throw new ApiError(400, "Action invalide.");
-          const result = act(
-            definition,
-            JSON.parse(row.state) as GameState,
-            data.objectId,
-            data.code as string | undefined,
-            data.hint === true,
-          );
+          if (
+            data.chapterId !== undefined &&
+            (data.objectId !== undefined ||
+              data.hint !== undefined ||
+              data.choiceId !== undefined ||
+              data.code !== undefined)
+          )
+            throw new ApiError(
+              400,
+              "Choisissez un déplacement ou une interaction.",
+            );
+          if (data.chapterId === undefined && typeof data.objectId !== "string")
+            throw new ApiError(400, "Choisissez un objet ou un lieu.");
+          const previous = JSON.parse(row.state) as GameState;
+          const result =
+            typeof data.chapterId === "string"
+              ? moveChapter(definition, previous, data.chapterId)
+              : act(
+                  definition,
+                  previous,
+                  data.objectId as string,
+                  data.code as string | undefined,
+                  data.hint === true,
+                  data.choiceId as string | undefined,
+                );
           const updated = await db()
             .prepare(
               "UPDATE play_sessions SET state=?,revision=revision+1,completed_at=COALESCE(completed_at,?) WHERE id=? AND revision=?",
@@ -437,6 +496,7 @@ export async function handle(request: Request): Promise<Response> {
             );
           return json({
             ...result,
+            room: playerRoom(definition, result.state),
             journal: discoveredMessages(definition, result.state),
             revision: row.revision + 1,
           });
@@ -471,9 +531,9 @@ export async function handle(request: Request): Promise<Response> {
         if (user(request, false)?.id !== asset.owner_id) {
           const pub = await db()
             .prepare(
-              "SELECT id FROM publications WHERE image=? AND active=1 LIMIT 1",
+              "SELECT id FROM publications WHERE active=1 AND (image=? OR EXISTS (SELECT 1 FROM json_each(publications.definition, '$.chapters') chapter WHERE json_extract(chapter.value, '$.image')=?)) LIMIT 1",
             )
-            .bind(`/api/assets/${path[1]}`)
+            .bind(`/api/assets/${path[1]}`, `/api/assets/${path[1]}`)
             .first();
           if (!pub) throw new ApiError(404, "Image introuvable.");
         }
@@ -514,7 +574,14 @@ export async function handle(request: Request): Promise<Response> {
             ? sceneSchema.parse(data.scene)
             : validateRoom(data.room)
           : room;
-      const source = scene ? await imageInput(request, scene, u.id) : null;
+      // SAM must see the illustration that belongs to the selected object.
+      const targetObject = room?.objects.find((o) => o.id === data.objectId);
+      const targetChapter = room?.chapters?.find(
+        (c) => c.id === targetObject?.chapterId,
+      );
+      const source = scene
+        ? await imageInput(request, targetChapter ?? scene, u.id)
+        : null;
       const runId = crypto.randomUUID();
       const model =
         path[1] === "segment"
@@ -630,6 +697,8 @@ export async function handle(request: Request): Promise<Response> {
   } catch (error) {
     if (error instanceof ApiError)
       return json({ error: error.message }, error.status);
+    if (error instanceof GameRuleError)
+      return json({ error: error.message }, 422);
     if (error instanceof ZodError)
       return json(
         {

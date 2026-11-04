@@ -1,7 +1,40 @@
 import { z } from "zod";
 
+/** A rejected game rule is a validation response, never a server failure. */
+export class GameRuleError extends Error {}
+
 const id = z.string().regex(/^[a-z][a-z0-9-]{0,39}$/);
 const line = (max: number) => z.string().trim().min(1).max(max);
+export const imageSchema = z
+  .string()
+  .regex(
+    /^\/(?:scenes\/(?:kitchen|kitchen-empty|japanese)\.png|stories\/[a-z0-9-]+\.png|api\/assets\/[a-f0-9-]{36})$/,
+  );
+const creditsSchema = z
+  .array(
+    z
+      .object({
+        title: line(150),
+        author: line(100),
+        license: line(100),
+        url: z
+          .string()
+          .url()
+          .max(500)
+          .refine((s) => s.startsWith("https://")),
+      })
+      .strict(),
+  )
+  .min(1)
+  .max(5);
+const imageProvenanceSchema = z
+  .object({
+    model: z.literal("muse-image-1.0"),
+    runId: z.string().uuid(),
+    prompt: z.string().max(2000),
+    generatedAt: z.string().datetime(),
+  })
+  .strict();
 export const regionSchema = z
   .object({
     x: z.number().min(0).max(1),
@@ -19,19 +52,26 @@ export const objectSchema = z
     id,
     name: line(80),
     prompt: line(100),
-    action: z.enum(["inspect", "collect", "code", "unlock", "exit"]),
+    action: z.enum(["inspect", "collect", "code", "unlock", "choose", "exit"]),
     region: regionSchema,
-    requires: z.array(id).max(10),
+    requires: z.array(id).max(24),
     code: z.string().trim().min(1).max(16).nullable(),
     itemName: z.string().trim().min(1).max(80).nullable(),
-    message: line(800),
+    message: line(1800),
     lockedMessage: line(300),
     hint: line(300),
+    chapterId: id.optional(),
+    speaker: line(60).optional(),
+    choices: z
+      .array(z.object({ id, label: line(120), reply: line(1800) }).strict())
+      .min(2)
+      .max(3)
+      .optional(),
     mask: z
       .object({
         path: z
           .string()
-          .max(300_000)
+          .max(300000)
           .regex(/^[MmLlHhVvCcSsQqTtAaZz0-9eE.,\s+\-]*$/),
         width: z.number().int().positive().max(6000),
         height: z.number().int().positive().max(6000),
@@ -48,44 +88,48 @@ export const objectSchema = z
       .optional(),
   })
   .strict();
+export const chapterSchema = z
+  .object({
+    id,
+    title: line(100),
+    subtitle: line(160),
+    objective: line(300),
+    story: line(2400),
+    image: imageSchema,
+    credits: creditsSchema,
+    imageProvenance: imageProvenanceSchema.optional(),
+    requires: z.array(id).max(24),
+    unlockMessage: line(300),
+    ambience: z.enum(["leaves", "rain", "dust", "stars", "steam", "petals"]),
+  })
+  .strict();
 export const roomSchema = z
   .object({
     title: line(80),
     description: line(400),
-    story: line(1200),
+    story: line(2400),
     theme: z.enum(["mystere", "cosy", "aventure"]),
     difficulty: z.enum(["facile", "intermediaire", "difficile"]),
-    duration: z.number().int().min(1).max(60),
-    image: z
-      .string()
-      .regex(
-        /^\/(?:scenes\/(?:kitchen|kitchen-empty|japanese)\.png|api\/assets\/[a-f0-9-]{36})$/,
-      ),
-    imageProvenance: z
+    duration: z.number().int().min(1).max(90),
+    image: imageSchema,
+    imageProvenance: imageProvenanceSchema.optional(),
+    objects: z.array(objectSchema).min(2).max(32),
+    credits: creditsSchema,
+    chapters: z.array(chapterSchema).min(2).max(6).optional(),
+    ending: z
       .object({
-        model: z.literal("muse-image-1.0"),
-        runId: z.string().uuid(),
-        prompt: z.string().max(2000),
-        generatedAt: z.string().datetime(),
+        sourceObjectId: id,
+        variants: z
+          .array(
+            z
+              .object({ choiceId: id, title: line(120), text: line(3000) })
+              .strict(),
+          )
+          .min(2)
+          .max(3),
       })
       .strict()
       .optional(),
-    objects: z.array(objectSchema).min(2).max(12),
-    credits: z
-      .array(
-        z.object({
-          title: line(150),
-          author: line(100),
-          license: line(100),
-          url: z
-            .string()
-            .url()
-            .max(500)
-            .refine((s) => s.startsWith("https://")),
-        }),
-      )
-      .min(1)
-      .max(5),
     provenance: z
       .object({
         method: z.enum(["manual", "meta"]),
@@ -98,12 +142,11 @@ export const roomSchema = z
   })
   .strict();
 export type Room = z.infer<typeof roomSchema>;
-// An illustration is enough to begin authoring. New creators do not need a
-// complete puzzle definition (or the kitchen template) to request a scenario.
 export const sceneSchema = roomSchema
   .pick({ title: true, image: true, credits: true, imageProvenance: true })
   .extend({ title: line(80).default("Nouvelle aventure") });
 export type Scene = z.infer<typeof sceneSchema>;
+export type Chapter = z.infer<typeof chapterSchema>;
 /** An editable manual starting point; its two zones must be placed by the author. */
 export function manualRoom(scene: Scene): Room {
   return validateRoom({
@@ -152,83 +195,249 @@ export type GameState = {
   complete: boolean;
   moves: number;
   hints: number;
+  chapterId?: string;
+  visited?: string[];
+  choices?: Record<string, string>;
 };
-/** Only discoveries already earned by the player may survive a reload. */
+export function initialState(room?: Room): GameState {
+  return {
+    resolved: [],
+    inventory: [],
+    complete: false,
+    moves: 0,
+    hints: 0,
+    ...(room?.chapters?.length
+      ? {
+          chapterId: room.chapters[0].id,
+          visited: [room.chapters[0].id],
+          choices: {},
+        }
+      : {}),
+  };
+}
+export function currentChapter(room: Room, state: GameState) {
+  return room.chapters?.find(
+    (c) => c.id === (state.chapterId ?? room.chapters?.[0].id),
+  );
+}
+export function chapterUnlocked(
+  chapter: Chapter,
+  state: Pick<GameState, "resolved">,
+) {
+  return chapter.requires.every((id) => state.resolved.includes(id));
+}
+export function endingFor(room: Room, state: GameState) {
+  if (!state.complete || !room.ending) return undefined;
+  const choice = state.choices?.[room.ending.sourceObjectId];
+  const variant = room.ending.variants.find((v) => v.choiceId === choice);
+  return variant ? { title: variant.title, text: variant.text } : undefined;
+}
+function discoveryFor(room: Room, state: GameState, object: GameObject) {
+  if (object.action === "exit")
+    return endingFor(room, state)?.text ?? object.message;
+  if (object.action === "choose")
+    return (
+      object.choices?.find((c) => c.id === state.choices?.[object.id])?.reply ??
+      object.message
+    );
+  return object.message;
+}
+/** The journal contains only discoveries earned by this session, including its chosen ending. */
 export function discoveredMessages(room: Room, state: GameState): string[] {
   return state.resolved.flatMap((id) => {
-    const object = room.objects.find((o) => o.id === id);
-    return object ? [object.message] : [];
+    const o = room.objects.find((o) => o.id === id);
+    return o ? [discoveryFor(room, state, o)] : [];
   });
 }
-/** Select the asset fields explicitly; API metadata must not enter a room. */
+export function illustrationPaths(
+  room: Pick<Room, "image"> & Partial<Pick<Room, "chapters">>,
+) {
+  return [
+    ...new Set([room.image, ...(room.chapters ?? []).map((c) => c.image)]),
+  ];
+}
+/** Changing a chapter invalidates only contours tied to that illustration. */
 export function replaceIllustration(
   room: Room,
   proposal: Pick<Room, "image" | "credits" | "imageProvenance">,
+  chapterId?: string,
 ): Room {
+  if (room.chapters && chapterId) {
+    const first = room.chapters[0].id === chapterId;
+    return validateRoom({
+      ...room,
+      ...(first
+        ? {
+            image: proposal.image,
+            credits: proposal.credits,
+            imageProvenance: proposal.imageProvenance,
+          }
+        : {}),
+      chapters: room.chapters.map((c) =>
+        c.id === chapterId
+          ? {
+              ...c,
+              image: proposal.image,
+              credits: proposal.credits,
+              imageProvenance: proposal.imageProvenance,
+            }
+          : c,
+      ),
+      objects: room.objects.map((o) =>
+        o.chapterId === chapterId ? { ...o, mask: undefined } : o,
+      ),
+    });
+  }
   return validateRoom({
     ...room,
     image: proposal.image,
     credits: proposal.credits,
     imageProvenance: proposal.imageProvenance,
-    objects: room.objects.map((object) => ({ ...object, mask: undefined })),
+    objects: room.objects.map((o) => ({ ...o, mask: undefined })),
   });
 }
-export const initialState = (): GameState => ({
-  resolved: [],
-  inventory: [],
-  complete: false,
-  moves: 0,
-  hints: 0,
-});
-
-/** Rules are data, never model-authored executable code. */
+function readyObject(room: Room, object: GameObject, resolved: Set<string>) {
+  const chapter = room.chapters?.find((c) => c.id === object.chapterId);
+  return (
+    object.requires.every((id) => resolved.has(id)) &&
+    (!chapter || chapter.requires.every((id) => resolved.has(id)))
+  );
+}
+/** Deterministic contracts apply equally to authored and model-proposed narratives. */
 export function validateRoom(input: unknown): Room {
-  const room = roomSchema.parse(input);
-  const ids = new Set(room.objects.map((o) => o.id));
+  const room = roomSchema.parse(input),
+    ids = new Set(room.objects.map((o) => o.id));
   if (ids.size !== room.objects.length)
-    throw new Error("Chaque objet doit avoir un identifiant unique.");
-  if (room.objects.filter((o) => o.action === "exit").length !== 1)
-    throw new Error("Il faut exactement une sortie.");
+    throw new GameRuleError("Chaque objet doit avoir un identifiant unique.");
+  const exits = room.objects.filter((o) => o.action === "exit");
+  if (exits.length !== 1)
+    throw new GameRuleError("Il faut exactement une sortie.");
+  const chapterIds = new Set(room.chapters?.map((c) => c.id) ?? []);
+  if (room.chapters) {
+    if (chapterIds.size !== room.chapters.length)
+      throw new GameRuleError(
+        "Chaque chapitre doit avoir un identifiant unique.",
+      );
+    if (room.chapters[0].requires.length)
+      throw new GameRuleError(
+        "Le premier chapitre doit être accessible sans prérequis.",
+      );
+    if (room.image !== room.chapters[0].image)
+      throw new GameRuleError(
+        "La couverture doit correspondre au premier chapitre.",
+      );
+    for (const chapter of room.chapters) {
+      if (chapter.requires.some((id) => !ids.has(id) || id === exits[0].id))
+        throw new GameRuleError(
+          `Prérequis de chapitre invalide : ${chapter.title}.`,
+        );
+      if (new Set(chapter.requires).size !== chapter.requires.length)
+        throw new GameRuleError("Prérequis de chapitre dupliqué.");
+      if (!room.objects.some((o) => o.chapterId === chapter.id))
+        throw new GameRuleError(
+          `Le chapitre ${chapter.title} ne contient aucun objet.`,
+        );
+    }
+  }
   for (const object of room.objects) {
-    if (object.requires.some((r) => !ids.has(r) || r === object.id))
-      throw new Error(`Dépendance invalide pour ${object.name}.`);
+    if (
+      object.requires.some(
+        (r) => !ids.has(r) || r === object.id || r === exits[0].id,
+      )
+    )
+      throw new GameRuleError(`Dépendance invalide pour ${object.name}.`);
     if (new Set(object.requires).size !== object.requires.length)
-      throw new Error("Dépendance dupliquée.");
+      throw new GameRuleError("Dépendance dupliquée.");
     if ((object.action === "code") !== (object.code !== null))
-      throw new Error(`Code incohérent pour ${object.name}.`);
+      throw new GameRuleError(`Code incohérent pour ${object.name}.`);
     if (object.action === "exit" && object.itemName)
-      throw new Error("Une sortie ne peut pas être un objet d’inventaire.");
+      throw new GameRuleError(
+        "Une sortie ne peut pas être un objet d’inventaire.",
+      );
+    if (
+      room.chapters
+        ? !object.chapterId || !chapterIds.has(object.chapterId)
+        : !!object.chapterId
+    )
+      throw new GameRuleError(`Chapitre invalide pour ${object.name}.`);
+    if ((object.action === "choose") !== !!object.choices)
+      throw new GameRuleError(`Choix incohérents pour ${object.name}.`);
+    if (
+      object.choices &&
+      new Set(object.choices.map((c) => c.id)).size !== object.choices.length
+    )
+      throw new GameRuleError("Les réponses d’un choix doivent être uniques.");
   }
-  // Monotone rules never consume items. A fixed-point search proves reachability
-  // for this bounded ruleset, without claiming human-readable clues are correct.
   const reachable = new Set<string>();
-  for (let pass = 0; pass < room.objects.length; pass++) {
+  for (let pass = 0; pass < room.objects.length; pass++)
     for (const object of room.objects)
-      if (object.requires.every((r) => reachable.has(r)))
-        reachable.add(object.id);
-  }
+      if (readyObject(room, object, reachable)) reachable.add(object.id);
   if (reachable.size !== ids.size)
-    throw new Error("Des dépendances circulaires bloquent la partie.");
-  const exit = room.objects.find((o) => o.action === "exit")!;
-  if (exit.requires.length === 0)
-    throw new Error("La sortie doit dépendre d’au moins une énigme.");
+    throw new GameRuleError(
+      "Des dépendances circulaires ou des chapitres inaccessibles bloquent la partie.",
+    );
+  if (!exits[0].requires.length)
+    throw new GameRuleError("La sortie doit dépendre d’au moins une énigme.");
+  if (room.ending) {
+    const source = room.objects.find(
+      (o) => o.id === room.ending!.sourceObjectId,
+    );
+    if (source?.action !== "choose" || !source.choices)
+      throw new GameRuleError(
+        "La conclusion doit être liée à un choix existant.",
+      );
+    const variants = new Set(room.ending.variants.map((v) => v.choiceId));
+    if (
+      variants.size !== room.ending.variants.length ||
+      source.choices.some((c) => !variants.has(c.id)) ||
+      variants.size !== source.choices.length
+    )
+      throw new GameRuleError(
+        "Chaque réponse doit posséder une conclusion unique.",
+      );
+    const ancestors = new Set<string>();
+    const pending = [...exits[0].requires];
+    while (pending.length) {
+      const id = pending.pop()!;
+      if (ancestors.has(id)) continue;
+      ancestors.add(id);
+      pending.push(...room.objects.find((o) => o.id === id)!.requires);
+    }
+    if (!ancestors.has(source.id))
+      throw new GameRuleError(
+        "La sortie doit attendre le choix qui détermine la conclusion.",
+      );
+  }
   return room;
 }
-
+export function moveChapter(
+  room: Room,
+  previous: GameState,
+  chapterId: string,
+) {
+  const chapter = room.chapters?.find((c) => c.id === chapterId);
+  if (!chapter) throw new GameRuleError("Ce lieu n’existe pas.");
+  if (previous.complete)
+    throw new GameRuleError("Cette histoire est terminée.");
+  if (!chapterUnlocked(chapter, previous))
+    throw new GameRuleError(chapter.unlockMessage);
+  const state: GameState = structuredClone(previous);
+  if (state.chapterId !== chapterId) state.moves++;
+  state.chapterId = chapterId;
+  state.visited = [...new Set([...(state.visited ?? []), chapterId])];
+  return { state, message: chapter.story, outcome: "travel" as const };
+}
 export function act(
   room: Room,
   previous: GameState,
   objectId: string,
   code?: string,
   hint = false,
+  choiceId?: string,
 ) {
   const object = room.objects.find((o) => o.id === objectId);
-  if (!object) throw new Error("Cet objet n’existe pas.");
+  if (!object) throw new GameRuleError("Cet objet n’existe pas.");
   const state: GameState = structuredClone(previous);
-  if (hint) {
-    state.hints++;
-    return { state, message: object.hint, outcome: "hint" as const };
-  }
   if (state.complete)
     return {
       state,
@@ -236,6 +445,17 @@ export function act(
         "Cette aventure est terminée. Vous pouvez recommencer une partie.",
       outcome: "complete" as const,
     };
+  const chapter = currentChapter(room, state);
+  if (room.chapters && object.chapterId !== chapter?.id)
+    throw new GameRuleError(
+      "Cet objet se trouve dans un autre lieu. Déplacez-vous avant de l’explorer.",
+    );
+  if (chapter && !chapterUnlocked(chapter, state))
+    throw new GameRuleError("Ce lieu n’est pas encore accessible.");
+  if (hint) {
+    state.hints++;
+    return { state, message: object.hint, outcome: "hint" as const };
+  }
   state.moves++;
   if (!object.requires.every((r) => state.resolved.includes(r)))
     return { state, message: object.lockedMessage, outcome: "locked" as const };
@@ -243,16 +463,26 @@ export function act(
     object.action === "code" &&
     !state.resolved.includes(object.id) &&
     (code ?? "").trim().toLocaleUpperCase() !== object.code!.toLocaleUpperCase()
-  ) {
+  )
     return {
       state,
       message:
         code === undefined
           ? object.lockedMessage
-          : "Ce code ne fonctionne pas. Regardez les indices de la pièce.",
+          : "Ce code ne fonctionne pas. Relisez les découvertes de votre carnet.",
       outcome:
         code === undefined ? ("needs_code" as const) : ("wrong_code" as const),
     };
+  if (object.action === "choose" && !state.resolved.includes(object.id)) {
+    if (!choiceId)
+      return {
+        state,
+        message: object.message,
+        outcome: "needs_choice" as const,
+      };
+    if (!object.choices?.some((c) => c.id === choiceId))
+      throw new GameRuleError("Choisissez une des réponses proposées.");
+    state.choices = { ...state.choices, [object.id]: choiceId };
   }
   if (!state.resolved.includes(object.id)) {
     state.resolved.push(object.id);
@@ -262,40 +492,67 @@ export function act(
   if (object.action === "exit") state.complete = true;
   return {
     state,
-    message: object.message,
+    message: discoveryFor(room, state, object),
     outcome: state.complete ? ("complete" as const) : ("resolved" as const),
   };
 }
-
-/** Player payloads omit puzzle solutions and the hidden prerequisite graph. */
-export function playerRoom(room: Room) {
+/** Only the current scene and earned chapter introductions enter player payloads. */
+export function playerRoom(room: Room, state: GameState = initialState(room)) {
+  const chapter = currentChapter(room, state);
   return {
     title: room.title,
     description: room.description,
-    story: room.story,
-    image: room.image,
+    story: chapter?.story ?? room.story,
+    introduction: room.story,
+    image: chapter?.image ?? room.image,
     theme: room.theme,
     difficulty: room.difficulty,
     duration: room.duration,
-    credits: room.credits,
-    objects: room.objects.map(({ id, name, region, action, mask }) => ({
-      id,
-      name,
-      region,
-      action,
-      mask,
-    })),
+    credits: chapter?.credits ?? room.credits,
+    objects: room.objects
+      .filter((o) => !room.chapters || o.chapterId === chapter?.id)
+      .map(({ id, name, region, action, mask, speaker, choices }) => ({
+        id,
+        name,
+        region,
+        action,
+        mask,
+        speaker,
+        ...(choices
+          ? { choices: choices.map(({ id, label }) => ({ id, label })) }
+          : {}),
+      })),
+    totalObjects: room.objects.length,
+    chapterId: chapter?.id,
+    ambience: chapter?.ambience,
+    objective: chapter?.objective,
+    chapters: room.chapters?.map((c) => {
+      const unlocked = chapterUnlocked(c, state);
+      return {
+        id: c.id,
+        title: c.title,
+        subtitle: c.subtitle,
+        unlocked,
+        visited: state.visited?.includes(c.id) ?? false,
+        unlockMessage: c.unlockMessage,
+        ...(unlocked
+          ? { objective: c.objective, story: c.story, image: c.image }
+          : {}),
+      };
+    }),
+    ending: endingFor(room, state),
   };
 }
-
 export function solution(room: Room) {
-  const pending = [...room.objects];
-  const resolved = new Set<string>();
-  const steps: string[] = [];
+  const pending = [...room.objects],
+    resolved = new Set<string>(),
+    steps: string[] = [];
   while (pending.length) {
-    const index = pending.findIndex((o) =>
-      o.requires.every((r) => resolved.has(r)),
+    let index = pending.findIndex(
+      (o) => o.action !== "exit" && readyObject(room, o, resolved),
     );
+    if (index < 0)
+      index = pending.findIndex((o) => readyObject(room, o, resolved));
     if (index < 0) break;
     const [o] = pending.splice(index, 1);
     resolved.add(o.id);

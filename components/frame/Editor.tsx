@@ -43,6 +43,7 @@ export default function Editor({
   draftId?: string;
 }) {
   const [room, setRoom] = useState<Room | null>(null),
+    [chapterId, setChapterId] = useState<string>(),
     [id, setId] = useState(draftId),
     [revision, setRevision] = useState(0),
     [dirty, setDirty] = useState(false),
@@ -76,6 +77,7 @@ export default function Editor({
     api(draftId ? `drafts/${draftId}` : "templates/kitchen")
       .then((r) => {
         setRoom(r.room);
+        setChapterId(r.room.chapters?.[0]?.id);
         setSelected(r.room.objects[0]?.id);
         if (r.id) {
           setId(r.id);
@@ -194,6 +196,7 @@ export default function Editor({
       setId(undefined);
       setRevision(0);
       setRoom(result.room);
+      setChapterId(result.room.chapters?.[0]?.id);
       setSelected(result.room.objects[0]?.id);
       setDirty(false);
       setTested(false);
@@ -221,18 +224,22 @@ export default function Editor({
       const result = await post("assets", { dataUrl });
       if (room)
         change(
-          replaceIllustration(room, {
-            image: result.image,
-            credits: [
-              {
-                title: file.name,
-                author: viewer?.displayName ?? "Créateur",
-                license: "Illustration fournie par le créateur",
-                url: "https://frame-escape-atelier.lelouchrz.chatgpt.site",
-              },
-            ],
-            imageProvenance: undefined,
-          }),
+          replaceIllustration(
+            room,
+            {
+              image: result.image,
+              credits: [
+                {
+                  title: file.name,
+                  author: viewer?.displayName ?? "Créateur",
+                  license: "Illustration fournie par le créateur",
+                  url: "https://frame-escape-atelier.lelouchrz.chatgpt.site",
+                },
+              ],
+              imageProvenance: undefined,
+            },
+            chapterId,
+          ),
         );
       setNotice(
         "Illustration importée. Générez un scénario adapté ou ajustez les objets et leurs zones.",
@@ -297,16 +304,26 @@ export default function Editor({
       </div>
     );
   const object = room.objects.find((o) => o.id === selected);
+  const chapter =
+    room.chapters?.find((c) => c.id === chapterId) ?? room.chapters?.[0];
+  const sceneObjects = room.objects.filter(
+    (o) => !room.chapters || o.chapterId === chapter?.id,
+  );
+  const sceneRoom = {
+    ...room,
+    ...(chapter ? { image: chapter.image, credits: chapter.credits } : {}),
+    objects: sceneObjects,
+  };
   const shownRoom = pendingMask
     ? {
-        ...room,
-        objects: room.objects.map((o) =>
+        ...sceneRoom,
+        objects: sceneObjects.map((o) =>
           o.id === pendingMask.objectId
             ? { ...o, region: pendingMask.region, mask: pendingMask.mask }
             : o,
         ),
       }
-    : room;
+    : sceneRoom;
   return (
     <div className="editor-shell">
       <div className="editor-heading">
@@ -381,11 +398,34 @@ export default function Editor({
       <div className="editor-layout">
         <aside className="object-panel">
           <div className="panel-heading">
-            <h2>Objets interactifs</h2>
-            <span>{room.objects.length}</span>
+            <h2>Objets de ce lieu</h2>
+            <span>{sceneObjects.length}</span>
           </div>
+          {room.chapters && (
+            <label className="editor-chapter-select">
+              Chapitre à modifier
+              <select
+                value={chapter?.id}
+                onChange={(e) => {
+                  setChapterId(e.target.value);
+                  setSelected(
+                    room.objects.find((o) => o.chapterId === e.target.value)
+                      ?.id,
+                  );
+                  setPendingMask(null);
+                  setDrawing(false);
+                }}
+              >
+                {room.chapters.map((c, i) => (
+                  <option key={c.id} value={c.id}>
+                    {i + 1}. {c.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <div className="object-list">
-            {room.objects.map((o, i) => {
+            {sceneObjects.map((o, i) => {
               const Icon = icons[o.action];
               return (
                 <button
@@ -412,7 +452,7 @@ export default function Editor({
           </div>
           <button
             className="add-object"
-            disabled={room.objects.length >= 12 || !!busy}
+            disabled={room.objects.length >= 32 || !!busy}
             onClick={() => {
               const objectId = `objet-${crypto.randomUUID().slice(0, 6)}`;
               change({
@@ -421,6 +461,7 @@ export default function Editor({
                   ...room.objects,
                   {
                     id: objectId,
+                    ...(chapter ? { chapterId: chapter.id } : {}),
                     name: "Nouvel objet",
                     prompt: "object",
                     action: "inspect",
@@ -485,10 +526,10 @@ export default function Editor({
                 Pièce japonaise
               </button>
               <IllustrationMaker
-                room={room}
+                room={sceneRoom}
                 disabled={!!busy || !metaReady}
                 onApply={(proposal) => {
-                  change(replaceIllustration(room, proposal));
+                  change(replaceIllustration(room, proposal, chapter?.id));
                   setNotice(
                     "Illustration Meta appliquée. Adaptez les objets et générez un scénario pour cette nouvelle pièce.",
                   );
@@ -549,7 +590,7 @@ export default function Editor({
             }}
           >
             <img
-              src={room.image}
+              src={sceneRoom.image}
               alt="Illustration de votre escape game avec les zones interactives"
               draggable={false}
             />
@@ -578,7 +619,7 @@ export default function Editor({
                 ? "Tracez la zone de l’objet dans l’image."
                 : "Les zones numérotées sont les objets que le joueur peut explorer."}
             </span>
-            <span>{room.objects.length} objets</span>
+            <span>{sceneObjects.length} objets dans ce lieu</span>
           </div>
           <section className="meta-studio">
             <div className="meta-heading">
@@ -607,10 +648,19 @@ export default function Editor({
               placeholder="L’ambiance, les énigmes, ce que vous imaginez…"
             />
             <div className="meta-bottom">
-              <p>Vous gardez le dernier mot sur chaque proposition.</p>
+              <p>
+                {room.chapters
+                  ? "Cette histoire comporte plusieurs chapitres. Modifiez les lieux et leurs objets ci-dessous ; une nouvelle proposition Meta remplace le scénario entier."
+                  : "Vous gardez le dernier mot sur chaque proposition."}
+              </p>
               <button
                 className="button primary"
-                disabled={!!busy || brief.trim().length < 10 || !metaReady}
+                disabled={
+                  !!busy ||
+                  brief.trim().length < 10 ||
+                  !metaReady ||
+                  !!room.chapters
+                }
                 onClick={generate}
               >
                 {busy === "generate" ? (
@@ -624,6 +674,144 @@ export default function Editor({
               </button>
             </div>
           </section>
+          {chapter && (
+            <section className="room-settings">
+              <h2>Ce chapitre</h2>
+              <label>
+                Titre du lieu
+                <input
+                  value={chapter.title}
+                  maxLength={100}
+                  onChange={(e) =>
+                    change({
+                      ...room,
+                      chapters: room.chapters!.map((c) =>
+                        c.id === chapter.id
+                          ? { ...c, title: e.target.value }
+                          : c,
+                      ),
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Objectif
+                <textarea
+                  value={chapter.objective}
+                  maxLength={300}
+                  rows={2}
+                  onChange={(e) =>
+                    change({
+                      ...room,
+                      chapters: room.chapters!.map((c) =>
+                        c.id === chapter.id
+                          ? { ...c, objective: e.target.value }
+                          : c,
+                      ),
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Récit à l’arrivée
+                <textarea
+                  value={chapter.story}
+                  maxLength={2400}
+                  rows={8}
+                  onChange={(e) =>
+                    change({
+                      ...room,
+                      chapters: room.chapters!.map((c) =>
+                        c.id === chapter.id
+                          ? { ...c, story: e.target.value }
+                          : c,
+                      ),
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Objets à résoudre pour accéder à ce lieu
+                <select
+                  multiple
+                  disabled={room.chapters?.[0].id === chapter.id}
+                  value={chapter.requires}
+                  onChange={(e) =>
+                    change({
+                      ...room,
+                      chapters: room.chapters!.map((c) =>
+                        c.id === chapter.id
+                          ? {
+                              ...c,
+                              requires: Array.from(
+                                e.target.selectedOptions,
+                                (o) => o.value,
+                              ),
+                            }
+                          : c,
+                      ),
+                    })
+                  }
+                >
+                  {room.objects
+                    .filter(
+                      (o) => o.action !== "exit" && o.chapterId !== chapter.id,
+                    )
+                    .map((o) => (
+                      <option key={o.id} value={o.id}>
+                        {o.name}
+                      </option>
+                    ))}
+                </select>
+              </label>
+            </section>
+          )}
+          {room.ending && (
+            <section className="room-settings">
+              <h2>Les conclusions</h2>
+              {room.ending.variants.map((v, i) => (
+                <div key={v.choiceId}>
+                  <label>
+                    Titre de la conclusion {i + 1}
+                    <input
+                      value={v.title}
+                      maxLength={120}
+                      onChange={(e) =>
+                        change({
+                          ...room,
+                          ending: {
+                            ...room.ending!,
+                            variants: room.ending!.variants.map((a, n) =>
+                              n === i ? { ...a, title: e.target.value } : a,
+                            ),
+                          },
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    Conclusion
+                    <textarea
+                      value={v.text}
+                      maxLength={3000}
+                      rows={8}
+                      onChange={(e) =>
+                        change({
+                          ...room,
+                          ending: {
+                            ...room.ending!,
+                            variants: room.ending!.variants.map((a, n) =>
+                              n === i ? { ...a, text: e.target.value } : a,
+                            ),
+                          },
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+              ))}
+            </section>
+          )}
           <section className="room-settings">
             <h2>Votre aventure</h2>
             <label>
@@ -649,7 +837,7 @@ export default function Editor({
               Début de l’histoire
               <textarea
                 rows={3}
-                maxLength={1200}
+                maxLength={2400}
                 value={room.story}
                 onChange={(e) => change({ ...room, story: e.target.value })}
               />
@@ -693,7 +881,7 @@ export default function Editor({
                 <input
                   type="number"
                   min={1}
-                  max={60}
+                  max={90}
                   value={room.duration}
                   onChange={(e) =>
                     change({ ...room, duration: Number(e.target.value) })
@@ -727,6 +915,21 @@ export default function Editor({
                       patchObject({
                         action: e.target.value as GameObject["action"],
                         code: e.target.value === "code" ? "00" : null,
+                        choices:
+                          e.target.value === "choose"
+                            ? [
+                                {
+                                  id: "option-a",
+                                  label: "Premier choix",
+                                  reply: "La première voie s’ouvre.",
+                                },
+                                {
+                                  id: "option-b",
+                                  label: "Second choix",
+                                  reply: "La seconde voie s’ouvre.",
+                                },
+                              ]
+                            : undefined,
                         ...(e.target.value === "exit"
                           ? { itemName: null }
                           : {}),
@@ -749,6 +952,44 @@ export default function Editor({
                       onChange={(e) => patchObject({ code: e.target.value })}
                     />
                   </label>
+                )}
+                {object.choices && (
+                  <div className="editor-choices">
+                    <h3>Les réponses proposées</h3>
+                    {object.choices.map((c, i) => (
+                      <div key={c.id}>
+                        <label>
+                          Réponse {i + 1}
+                          <input
+                            value={c.label}
+                            maxLength={120}
+                            onChange={(e) =>
+                              patchObject({
+                                choices: object.choices!.map((v, n) =>
+                                  n === i ? { ...v, label: e.target.value } : v,
+                                ),
+                              })
+                            }
+                          />
+                        </label>
+                        <label>
+                          Conséquence
+                          <textarea
+                            value={c.reply}
+                            rows={4}
+                            maxLength={1800}
+                            onChange={(e) =>
+                              patchObject({
+                                choices: object.choices!.map((v, n) =>
+                                  n === i ? { ...v, reply: e.target.value } : v,
+                                ),
+                              })
+                            }
+                          />
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 )}
                 <div className="form-label">À résoudre avant cet objet</div>
                 <div className="dependency-list">
@@ -775,7 +1016,7 @@ export default function Editor({
                   Ce que le joueur découvre
                   <textarea
                     rows={4}
-                    maxLength={800}
+                    maxLength={1800}
                     value={object.message}
                     onChange={(e) => patchObject({ message: e.target.value })}
                   />
