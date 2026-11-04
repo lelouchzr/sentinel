@@ -1,74 +1,88 @@
 # Architecture
 
-Status: the local application, connected API paths, provider adapters and two SQL migrations are implemented. Automated checks use local fixtures, mocked HTTP and embedded PostgreSQL. No remote database migration, provider call or deployment has been performed.
+Slim is a local-first extraction workbench. The product promise is **move a
+feature, adapt its boundary, and show behavioral evidence**. It is deliberately
+more than copying a function and deliberately less than proving program equivalence.
 
-## Decisions and layout
+## System
 
-The application uses Next.js App Router, React, strict TypeScript, Tailwind CSS and Zod. Supabase provides the planned runtime Auth, PostgreSQL and private Storage; Meta supplies text, image extraction and transcription; Azure supplies Korean speech synthesis. Vercel is the intended deployment target, pending validation.
+```mermaid
+flowchart LR
+    UI[React workbench] --> API[FastAPI / local API]
+    CLI[Typer CLI] --> Engine
+    API --> Store[(SQLite + artifact directory)]
+    API --> Engine[Extraction service]
+    Engine --> Index[AST index / symbol graph]
+    Index --> Plan[Reviewed plan]
+    Llama[Meta Llama / configurable endpoint] -. structured advisory .-> Plan
+    Plan --> Transform[AST boundary rewrite]
+    Transform --> Package[Package + provenance + scenarios]
+    Package --> Runner[Bounded subprocess / optional Docker]
+    Runner --> Report[Per-case comparison report]
+    Package --> Target[Independent consumer codebase]
+```
 
-`src/app` contains routes and thin HTTP handlers; `src/features` contains imports, vocabulary, speaking and feedback UI; `src/lib` contains shared contracts, local guided practice and pure learning mutations; `src/server` contains verified authentication, data access, learning validation, provider adapters and usage enforcement. Versioned SQL is under `supabase/migrations`.
+## Boundaries and ownership
 
-Short recorded turns use ordinary HTTP requests. The MVP has no vector database, background queue, voice relay or general agent framework.
+* `analysis`: parse source files, index module-level symbols, resolve imports and
+  compute a transitive dependency closure. No source code is executed.
+* `models`: versioned, validated wire contracts shared by CLI, API and exports.
+* `extraction`: deterministic transforms, packaging, provenance and integrity.
+* `validation`: fresh process per original/candidate case, tagged JSON values,
+  timeout and resource bounds, exception comparison, explicit unverified results.
+* `providers`: optional Llama guidance with validated structured output. Model
+  suggestions never execute commands and never change a reviewed plan silently.
+* `repository`: bounded local paths and pinned, read-only HTTPS GitHub clones.
+* `service`: orchestrates stages, commits durable events and produces artifacts.
+* `api`: local HTTP boundary, input validation, downloads and background jobs.
+* `web`: accessible workbench, real backend data, no fabricated success states.
 
-## Local and connected boundaries
+## Important decisions
 
-The local guided mode runs on the device with predefined Korean partner replies and typed input. It identifies itself explicitly, does not call providers and does not judge language proficiency. Its results cannot contribute spoken evidence or oral-review progress. Local collections, archives and guided history remain in browser storage.
+**AST rather than regex.** Python's parser gives source ranges, scope and import
+structure. Resolution is conservative: unsupported dynamic behavior becomes a
+warning or blocker. The original source remains available next to generated code.
 
-Account collections and connected conversation history are separate from device data. Copying a device collection to the account is an explicit action; loading account data does not overwrite the local library. Changes use optimistic revisions, and the server preserves each conversation's original target-expression snapshot.
+**Preserve modules rather than flatten everything.** Relative modules keep their
+namespaces and are relocated into a generated package. This avoids symbol
+collisions and makes provenance inspectable. Only needed declarations are retained.
 
-Sensitive modules import `server-only`. Provider credentials and the Supabase secret key never reach the browser. The server obtains identity through verified Auth, checks complete ownership chains and uses RLS for user reads. Privileged writes are scoped to that verified identity. Mutation endpoints validate origin, size and schemas before work.
+**Explicit dependency injection.** A reviewed boundary such as
+`db.load_shipping_rules()` can become a keyword-only `shipping_rules` parameter
+on the selected entry function. Calls deeper in the closure are rejected rather
+than partially rewritten. Comparison fixtures provide original DB state and the
+same rules to the candidate; Slim records this adaptation.
 
-## Import and confirmation
+**SQLite rather than a distributed queue.** One local process and a bounded
+executor suffice for a filmable prototype. Durable stages and events survive a
+browser refresh; interrupted jobs are marked interrupted on startup. A production
+multi-tenant system would need authenticated workers, queue leases and stronger
+container isolation.
 
-Text exports are parsed in the browser without a model. Mapping, editing and explicit confirmation produce practice-ready entries with per-field provenance. Canonical expression/meaning IDs and deterministic deduplication preserve separate meanings.
+**Model advice rather than model authority.** The offline analyzer is complete
+without a model. A Meta Llama endpoint may rank symbols and explain boundaries.
+The UI records the exact provider and model. Failed model calls are visible and
+do not become a claim of AI-assisted execution.
 
-Images upload to an owned path in the private `vocabulary-pages` bucket. Extraction accepts that path, never an arbitrary remote URL. The server checks ownership, actual format, dimensions and size, strips metadata by re-encoding, and resizes to at most 1600 pixels per edge. Extracted source text remains distinct from generated examples. The learner confirms the proposed vocabulary before using it.
+**Evidence rather than equivalence claims.** Reports distinguish matching,
+divergent and unverified cases. A matching exception is a valid tested behavior;
+an import failure or timeout is not. No percentage implies coverage of all inputs.
 
-Client and server attempt source removal after extraction. The implemented maintenance endpoint removes abandoned images older than 24 hours in bounded batches; configuring its periodic invocation is a deployment task. Storage policies and a database trigger prevent new or late uploads during account deletion, including uploads attempted with a stale token after the Auth account has gone.
+## Execution model
 
-## Connected speaking and learning
+The default server disables arbitrary execution. The checked-in commerce demo
+is trusted and runnable. Other repositories require the operator to enable local
+execution or select Docker. A local subprocess is process isolation, **not a
+security sandbox**. Docker uses no network, a read-only filesystem, dropped
+capabilities, a non-root user, memory/CPU/PID limits and a temporary writable area.
+Docker itself is still not a complete hostile-code security boundary.
 
-1. Snapshot three selected confirmed entries and the learner's scenario.
-2. Reserve an operation before dispatching a paid request.
-3. Record and validate a short WAV clip, then request transcription.
-4. Show the transcript for confirmation or correction. The turn carries its transcription operation ID.
-5. Verify that the completed transcription belongs to the same owner and conversation, then persist the reply, transcript and assistance state.
-6. Synthesize only an existing owned partner turn. Text remains available if audio playback fails.
-7. On completion, validate model observations against actual turns, opportunity and assistance before updating review selection.
+## Delivery
 
-Typed input remains available and is labeled separately. A client-supplied “spoken” label cannot establish oral evidence. Unsupported feedback and uncertain transcription remain uncertain; absent opportunities remain unobserved. There is no fabricated pronunciation score.
+Source → analysis → user confirms symbol → plan → user reviews boundaries →
+package → user requests validation → comparison → wheel → install in consumer.
 
-Transcript amendments and feedback disputes run without a paid call, check revisions and invalidate affected observations. Audit history records the reason. Corrections clear stale provider replay content; replaying an old request returns current session state rather than resurrecting invalidated feedback. A deliberate feedback reevaluation, when requested, remains a separately budgeted operation.
-
-## Implemented HTTP surface
-
-| Routes | Responsibility |
-| --- | --- |
-| `GET /api/status` | Configuration booleans and verified account identity; no secrets |
-| `GET /api/collections`, `POST /api/collections` | Read or create confirmed account collections |
-| `PATCH /api/collections/:id`, `DELETE /api/collections/:id` | Revision-checked editing and deletion |
-| `POST /api/imports/extract` | Extract an already-uploaded owned image |
-| `GET /api/sessions`, `POST /api/sessions` | Paginated history or bounded scenario creation |
-| `GET /api/sessions/:id`, `DELETE /api/sessions/:id` | Recover or delete an owned conversation |
-| `POST /api/transcribe` | Validate bounded audio and return transcript provenance |
-| `POST /api/sessions/:id/turns` | Process confirmed typed or verified transcribed input |
-| `PATCH /api/sessions/:id/turns/:turnId` | Amend a transcript with revision and audit checks |
-| `POST /api/sessions/:id/hints`, `POST /api/sessions/:id/complete` | Progressive assistance and evidence validation |
-| `POST /api/sessions/:id/feedback/flags` | Dispute an observation and invalidate affected review evidence |
-| `POST /api/speech` | Synthesize an existing owned partner turn |
-| `GET /api/account`, `GET /api/account/export`, `DELETE /api/account` | Account state, bounded complete export and recoverable deletion |
-| `GET /api/usage` | Separate Meta/Azure estimates, pending reservations and unknown charges |
-| `POST /api/maintenance/uploads` | Private dry-run or bounded upload cleanup |
-| `POST /api/maintenance/reconcile` | Private documented billing reconciliation |
-
-Text preview and confirmation are browser operations; they do not require separate import-preview APIs. Maintenance requires a dedicated server bearer secret, never the anonymous browser key.
-
-## State, recovery and privacy
-
-PostgreSQL serializes reservations, corrections, deletion barriers and upload metadata changes. Operation IDs and request fingerprints prevent duplicate billing; session revisions prevent lost edits. Unresolved paid requests retain their reservation and exclusion until a documented administrative reconciliation. The application never silently retries an ambiguous billable timeout.
-
-Reconciliation records a reason, external billing reference and explicit amount. A reconciled charge does not prove that the application received a usable result: replay is marked and refused as a business success. Minimal accounting can remain after account deletion while owner links and private replay content are scrubbed.
-
-Account deletion first blocks new work, removes owned Storage objects in batches, then deletes Auth. A partial failure leaves a recoverable deletion state visible in settings. Account export pages owned records and fails explicitly if its per-table limit is exceeded; no partial download is presented as complete.
-
-Raw microphone recordings and synthesized audio are transient. Browser playback may cache audio for the current view. Full transcripts are private conversation data, not telemetry. Provider status, request IDs and measured token/audio usage may be retained for accounting without logging secrets or media. See [the budget policy](budget.md) and [connection runbook](development.md).
+Artifacts include generated source, source hashes and commit, dependency list,
+upstream license copies, README, scenarios and validation report. Local output
+paths and API IDs are confined to the configured workspace. Source checkouts are
+never modified by extraction.
