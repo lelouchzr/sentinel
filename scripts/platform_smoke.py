@@ -34,6 +34,12 @@ def main() -> None:
         root = Path(temporary)
 
         def run(command: list[str]) -> str:
+            label = (
+                "MCP subprocess probe"
+                if len(command) > 1 and command[1] == "-c"
+                else " ".join(command[:4])
+            )
+            print(f"{time.monotonic() - started:6.1f}s {label[:180]}", file=sys.stderr, flush=True)
             result = subprocess.run(
                 command,
                 cwd=root,
