@@ -1,0 +1,50 @@
+[
+  {
+    "name": "workspace",
+    "time": 0.6374
+  },
+  {
+    "name": "case-open",
+    "time": 5.0643
+  },
+  {
+    "name": "agent-start",
+    "time": 10.697
+  },
+  {
+    "name": "review",
+    "time": 29.5183
+  },
+  {
+    "name": "timeline",
+    "time": 36.837
+  },
+  {
+    "name": "session",
+    "time": 43.1032
+  },
+  {
+    "name": "event",
+    "time": 47.1451
+  },
+  {
+    "name": "provenance",
+    "time": 51.4594
+  },
+  {
+    "name": "benign-search",
+    "time": 59.0347
+  },
+  {
+    "name": "benign-record",
+    "time": 63.0781
+  },
+  {
+    "name": "case-review",
+    "time": 70.7092
+  },
+  {
+    "name": "export",
+    "time": 76.1285
+  }
+]

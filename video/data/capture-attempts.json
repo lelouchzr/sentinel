@@ -1,0 +1,14 @@
+{
+  "selected_case": "C-c8e20de558ff",
+  "selected_case_capture": "actual stored activity and evidence, explicitly disclosed",
+  "new_live_attempt": {
+    "case_id": "C-f9698db08d60",
+    "status": "interrupted",
+    "model_requests": 10,
+    "mcp_calls": 9,
+    "evidence_retained": 27,
+    "reason": "Meta returned an invalid structured report; evidence and review were retained",
+    "paid_retry_count": 0,
+    "included_in_film": false
+  }
+}

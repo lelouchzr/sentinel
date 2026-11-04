@@ -1,0 +1,34 @@
+{
+  "duration": 115.2,
+  "music": "Cipher by Kevin MacLeod",
+  "license": "CC BY 4.0",
+  "source_start_seconds": 6.4,
+  "source_end_seconds": 121.6,
+  "effects": "Kenney Interface Sounds, CC0",
+  "effects_at_seconds": [
+    6.4,
+    19.2,
+    32.0,
+    57.6,
+    76.8,
+    89.6,
+    102.4,
+    110.4
+  ],
+  "normalization_target_lufs": -16,
+  "true_peak_target_dbtp": -1.5,
+  "voiceover": false,
+  "measured_before_normalization": {
+    "input_i": "-18.78",
+    "input_tp": "-1.40",
+    "input_lra": "10.30",
+    "input_thresh": "-29.07",
+    "output_i": "-15.23",
+    "output_tp": "-1.50",
+    "output_lra": "7.10",
+    "output_thresh": "-25.30",
+    "normalization_type": "dynamic",
+    "target_offset": "-0.77"
+  },
+  "review_note": "Audio levels are measured, not subjectively heard by the authoring agent."
+}

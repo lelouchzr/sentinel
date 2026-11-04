@@ -1,0 +1,51 @@
+<template>
+<style>
+@font-face{font-family:Manrope;src:url('assets/fonts/Manrope.ttf') format('truetype');font-weight:200 800}
+@font-face{font-family:'JetBrains Mono';src:url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype')}
+#root{position:absolute;inset:0;overflow:hidden;background:#0a1119;color:#e8f2ee;font-family:Manrope,sans-serif}
+*{box-sizing:border-box} h1,h2,p{margin:0} .mint{color:#79e4cb}.amber{color:#e7bc74}
+.headline{position:absolute;font-size:88px;line-height:1.06;font-weight:750;letter-spacing:-4px}
+.body{position:absolute;font-size:34px;line-height:1.35;font-weight:500;letter-spacing:-.6px}
+.mono{font-family:'JetBrains Mono',monospace}.label{position:absolute;font-size:28px;line-height:1.4;font-weight:500}
+.foot{position:absolute;bottom:56px;left:112px;font-size:28px;line-height:1.4;color:#acc4cc}
+.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}
+.terminal{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.picture{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.mask{position:absolute;overflow:hidden}.line{position:absolute;background:currentColor}
+.clip{position:absolute}
+
+
+#r-title{left:112px;top:86px;font-size:84px}
+#r-fact,#r-hypothesis,#r-question{position:absolute;left:118px;width:1120px;border-left:5px solid #79e4cb;padding-left:34px}
+#r-fact{top:310px}#r-hypothesis{top:500px;border-color:#e7bc74}#r-question{top:690px;border-color:#6f91aa}
+#r-fact span,#r-hypothesis span,#r-question span{display:block;font:28px 'JetBrains Mono';margin-bottom:23px;color:#79e4cb}
+#r-hypothesis span{color:#e7bc74}#r-question span{color:#acc4cc}
+#r-fact strong,#r-hypothesis strong,#r-question strong{display:block;font-size:47px;line-height:1.2;font-weight:600;letter-spacing:-1.4px}
+#r-window{left:1320px;top:298px;width:488px;height:594px;opacity:.65}#r-camera{left:-455px;top:-68px}
+</style>
+<div id="root" data-composition-id="review" data-width="1920" data-height="1080">
+
+<h2 id="r-title" class="headline">A case you can <span class="mint">defend.</span></h2>
+<div id="r-fact"><span>OBSERVED</span><strong>24 failures → login → download</strong></div>
+<div id="r-hypothesis"><span>HYPOTHESIS · UNPROVEN</span><strong>Compromised account</strong></div>
+<div id="r-question"><span>OPEN QUESTION</span><strong>Who authorized this session?</strong></div>
+<div id="r-window" class="mask" data-layout-allow-overflow>
+ <div id="r-camera" class="camera"><video id="r-video" class="clip terminal" data-start="0" data-duration="12.8" data-media-start="70.7092" data-hf-media-start-basis="local" data-playback-rate="0.300000" data-track-index="0" src="assets/captures/workflow.mp4" muted playsinline></video></div>
+</div>
+<p id="r-footer" class="foot">Valid references do not prove an interpretation.</p>
+
+</div>
+<script>
+const tl = gsap.timeline({paused:true});
+
+tl.fromTo('#r-title',{opacity:0},{opacity:1,duration:.4},0);
+tl.fromTo('#r-camera',{scale:.95},{scale:.95,duration:12.7},0);
+tl.fromTo('#r-fact',{x:-60,opacity:0},{x:0,opacity:1,duration:.5,ease:'power3.out'},.6);
+tl.fromTo('#r-hypothesis',{x:-60,opacity:0},{x:0,opacity:1,duration:.5,ease:'power3.out'},3.2);
+tl.fromTo('#r-question',{x:-60,opacity:0},{x:0,opacity:1,duration:.5,ease:'power3.out'},6.4);
+tl.fromTo('#r-footer',{opacity:0},{opacity:1,duration:.4},8.0);
+
+window.__timelines = window.__timelines || {};
+window.__timelines['review'] = tl;
+</script>
+</template>

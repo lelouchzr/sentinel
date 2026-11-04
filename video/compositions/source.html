@@ -1,0 +1,49 @@
+<template>
+<style>
+@font-face{font-family:Manrope;src:url('assets/fonts/Manrope.ttf') format('truetype');font-weight:200 800}
+@font-face{font-family:'JetBrains Mono';src:url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype')}
+#root{position:absolute;inset:0;overflow:hidden;background:#0a1119;color:#e8f2ee;font-family:Manrope,sans-serif}
+*{box-sizing:border-box} h1,h2,p{margin:0} .mint{color:#79e4cb}.amber{color:#e7bc74}
+.headline{position:absolute;font-size:88px;line-height:1.06;font-weight:750;letter-spacing:-4px}
+.body{position:absolute;font-size:34px;line-height:1.35;font-weight:500;letter-spacing:-.6px}
+.mono{font-family:'JetBrains Mono',monospace}.label{position:absolute;font-size:28px;line-height:1.4;font-weight:500}
+.foot{position:absolute;bottom:56px;left:112px;font-size:28px;line-height:1.4;color:#acc4cc}
+.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}
+.terminal{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.picture{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.mask{position:absolute;overflow:hidden}.line{position:absolute;background:currentColor}
+.clip{position:absolute}
+
+
+#s-title{left:112px;top:76px;font-size:88px}#s-path{position:absolute;left:117px;top:239px;display:flex;align-items:center;gap:38px;font:28px 'JetBrains Mono';color:#acc4cc}
+#s-path span{line-height:1.6}#s-path b{font-size:30px;color:#e8f2ee;font-weight:400}#s-path i{font-style:normal;color:#79e4cb}
+#s-window{left:112px;top:407px;width:1190px;height:525px;background:#101e2b}#s-camera{left:-165px;top:-78px}
+#s-details{position:absolute;left:1380px;top:413px;font-size:31px;line-height:1.5;width:420px}#s-details>p:first-child{font-size:28px;color:#79e4cb}
+#s-details strong{font-size:86px;line-height:1.5;font-weight:750;letter-spacing:-4px}#s-details hr{border:0;border-top:2px solid #284450;margin:25px 0}.s-hash{font-size:28px;color:#acc4cc;margin-top:25px}
+</style>
+<div id="root" data-composition-id="source" data-width="1920" data-height="1080">
+
+<h2 id="s-title" class="headline">Follow the <span class="mint">source.</span></h2>
+<div id="s-path"><span>09:03:20<br><b>LOGIN</b></span><i>→</i><span>09:03:40<br><b>ACCESS</b></span><i>→</i><span>09:04:20<br><b>DOWNLOAD</b></span></div>
+<div id="s-window" class="mask" data-layout-allow-overflow>
+ <div id="s-camera" class="camera"><video id="s-video" class="clip terminal" data-start="0" data-duration="19.2" data-media-start="43.1032" data-hf-media-start-basis="local" data-playback-rate="0.800000" data-track-index="0" src="assets/captures/workflow.mp4" muted playsinline></video></div>
+</div>
+<div id="s-details"><p class="mono">session-702</p><strong>840 MB</strong><p>recorded download</p><hr><p>services.jsonl<br>line 2379</p><p class="s-hash mono">SHA-256<br>795f77fad564fff3…</p></div>
+<p id="s-footer" class="foot">Original fields, source position and file hash.</p>
+
+</div>
+<script>
+const tl = gsap.timeline({paused:true});
+
+tl.fromTo('#s-title',{y:40,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out'},0);
+tl.fromTo('#s-path span',{opacity:0},{opacity:1,stagger:.65,duration:.4},.7);
+tl.fromTo('#s-path i',{scaleX:0},{scaleX:1,stagger:.65,duration:.4},1.1);
+tl.fromTo('#s-camera',{scale:1},{scale:1.05,duration:.7,ease:'power2.inOut'},0);
+tl.to('#s-camera',{x:-20,y:-236,scale:1.18,duration:.8,ease:'power2.inOut'},8.4);
+tl.fromTo('#s-details',{x:120,opacity:0},{x:0,opacity:1,duration:.6,ease:'power3.out'},3.2);
+tl.fromTo('#s-footer',{opacity:0},{opacity:1,duration:.4},6.4);
+
+window.__timelines = window.__timelines || {};
+window.__timelines['source'] = tl;
+</script>
+</template>

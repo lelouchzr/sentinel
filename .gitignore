@@ -15,5 +15,14 @@ build/
 *.egg-info/
 recordings/
 artifacts/
+.video-venv/
+video/node_modules/
+video/renders/
+video/.hyperframes/
+video/.thumbnails/
+video/.waveform-cache/
+video/assets/captures/
+video/assets/audio/
+video/assets/vendor/
 .sites-runtime/
 .wrangler/

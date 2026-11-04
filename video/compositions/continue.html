@@ -1,0 +1,54 @@
+<template>
+<style>
+@font-face{font-family:Manrope;src:url('assets/fonts/Manrope.ttf') format('truetype');font-weight:200 800}
+@font-face{font-family:'JetBrains Mono';src:url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype')}
+#root{position:absolute;inset:0;overflow:hidden;background:#0a1119;color:#e8f2ee;font-family:Manrope,sans-serif}
+*{box-sizing:border-box} h1,h2,p{margin:0} .mint{color:#79e4cb}.amber{color:#e7bc74}
+.headline{position:absolute;font-size:88px;line-height:1.06;font-weight:750;letter-spacing:-4px}
+.body{position:absolute;font-size:34px;line-height:1.35;font-weight:500;letter-spacing:-.6px}
+.mono{font-family:'JetBrains Mono',monospace}.label{position:absolute;font-size:28px;line-height:1.4;font-weight:500}
+.foot{position:absolute;bottom:56px;left:112px;font-size:28px;line-height:1.4;color:#acc4cc}
+.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}
+.terminal{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.picture{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.mask{position:absolute;overflow:hidden}.line{position:absolute;background:currentColor}
+.clip{position:absolute}
+
+
+#e-window{left:112px;top:237px;width:1696px;height:637px}#e-export,#e-reopen{left:0;top:0}
+#e-title{left:112px;top:79px;font-size:84px}#e-state{left:118px;top:906px;font-size:31px}
+#e-close{position:absolute;inset:0;background:#0a1119;text-align:center;padding-top:190px}#e-close h1{font-size:154px;font-weight:800;letter-spacing:9px;line-height:1.4}
+#e-close p{font-size:37px;line-height:1.5;color:#acc4cc;margin-top:25px}#e-close strong{display:inline-block;font-size:41px;font-weight:400;color:#79e4cb;margin-top:70px;border-bottom:2px solid #356158;padding-bottom:20px}
+#e-mark{display:flex;gap:14px;justify-content:center;height:74px;margin-bottom:30px}#e-mark span{width:16px;background:#79e4cb;height:62px}#e-mark span:nth-child(2){height:38px}#e-mark span:nth-child(3){height:18px}
+#e-credit{position:absolute;left:112px;bottom:36px;font-size:28px;line-height:1.4;color:#acc4cc}
+</style>
+<div id="root" data-composition-id="continue" data-width="1920" data-height="1080">
+
+<div id="e-window" class="mask" data-layout-allow-overflow>
+ <div id="e-export" class="camera"><video id="e-vexport" class="clip terminal" data-start="0" data-duration="4" data-media-start="75.5285" data-hf-media-start-basis="local" data-playback-rate="0.900000" data-track-index="0" src="assets/captures/workflow.mp4" muted playsinline></video></div>
+ <div id="e-reopen" class="camera"><video id="e-vreopen" class="clip terminal" data-start="4" data-duration="4.8" data-media-start="1.5412" data-hf-media-start-basis="local" data-playback-rate="1.000000" data-track-index="0" src="assets/captures/reopen.mp4" muted playsinline></video></div>
+</div>
+<h2 id="e-title" class="headline">Export. Reopen. Continue.</h2>
+<p id="e-state" class="body">Markdown + JSON · Saved evidence and notes</p>
+<div id="e-close" data-layout-allow-overflow><div id="e-mark"><span></span><span></span><span></span></div><h1>SENTINEL</h1><p>From scattered events to defensible investigations.</p><strong class="mono">uv run sentinel demo</strong></div>
+<p id="e-credit">Music: “Cipher” — Kevin MacLeod · CC BY 4.0<br>incompetech.com · Edited for this film</p>
+
+</div>
+<script>
+const tl = gsap.timeline({paused:true});
+
+tl.fromTo('#e-export',{scale:1},{scale:1,duration:4},0);
+tl.fromTo('#e-reopen',{scale:1},{scale:1,duration:4.8},4);
+tl.fromTo('#e-title',{opacity:0},{opacity:1,duration:.4},0);
+tl.fromTo('#e-state',{opacity:0},{opacity:1,duration:.4},1.6);
+tl.fromTo('#e-close',{y:1080},{y:0,duration:.6,ease:'power3.inOut'},7.4);
+tl.fromTo('#e-mark span',{scaleY:0},{scaleY:1,stagger:.12,duration:.4,ease:'power3.out'},7.9);
+tl.fromTo('#e-close h1',{scaleX:1.12,opacity:0},{scaleX:1,opacity:1,duration:.6,ease:'power3.out'},8.0);
+tl.fromTo('#e-close p',{opacity:0},{opacity:1,duration:.4},8.65);
+tl.fromTo('#e-close strong',{opacity:0},{opacity:1,duration:.4},9.2);
+tl.fromTo('#e-credit',{opacity:0},{opacity:1,duration:.4},8.7);
+
+window.__timelines = window.__timelines || {};
+window.__timelines['continue'] = tl;
+</script>
+</template>

@@ -1,0 +1,52 @@
+<template>
+<style>
+@font-face{font-family:Manrope;src:url('assets/fonts/Manrope.ttf') format('truetype');font-weight:200 800}
+@font-face{font-family:'JetBrains Mono';src:url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype')}
+#root{position:absolute;inset:0;overflow:hidden;background:#0a1119;color:#e8f2ee;font-family:Manrope,sans-serif}
+*{box-sizing:border-box} h1,h2,p{margin:0} .mint{color:#79e4cb}.amber{color:#e7bc74}
+.headline{position:absolute;font-size:88px;line-height:1.06;font-weight:750;letter-spacing:-4px}
+.body{position:absolute;font-size:34px;line-height:1.35;font-weight:500;letter-spacing:-.6px}
+.mono{font-family:'JetBrains Mono',monospace}.label{position:absolute;font-size:28px;line-height:1.4;font-weight:500}
+.foot{position:absolute;bottom:56px;left:112px;font-size:28px;line-height:1.4;color:#acc4cc}
+.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}
+.terminal{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.picture{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.mask{position:absolute;overflow:hidden}.line{position:absolute;background:currentColor}
+.clip{position:absolute}
+
+
+#q-rule{left:112px;top:116px;width:10px;height:470px;color:#79e4cb}
+#q-title{left:156px;top:106px;font-size:152px;letter-spacing:-8px}
+#q-account{left:156px;top:488px;font-size:30px;color:#acc4cc}
+#q-records{position:absolute;left:974px;top:278px;width:818px}
+.q-record{display:flex;align-items:center;gap:32px;padding:36px 0;border-bottom:1px solid #284450;font-size:32px;font-family:'JetBrains Mono';white-space:nowrap}
+.q-record strong{font-size:28px;width:180px;font-weight:400}.q-record b{font-size:29px;font-weight:400}
+</style>
+<div id="root" data-composition-id="question" data-width="1920" data-height="1080">
+
+<div id="q-rule" class="line"></div>
+<h1 id="q-title" class="headline">What<br><span class="mint">happened?</span></h1>
+<p id="q-account" class="body mono">morgan · 203.0.113.74</p>
+<div id="q-records">
+  <div class="q-record" id="q-r1"><span>09:00:00</span><strong>LOGIN</strong><b class="amber">FAILURE</b></div>
+  <div class="q-record" id="q-r2"><span>09:03:20</span><strong>LOGIN</strong><b class="mint">SUCCESS</b></div>
+  <div class="q-record" id="q-r3"><span>09:04:20</span><strong>DOWNLOAD</strong><b>840 MB</b></div>
+</div>
+<p id="q-footer" class="foot">Fictional logs. A real investigation workspace.</p>
+
+</div>
+<script>
+const tl = gsap.timeline({paused:true});
+
+tl.fromTo('#q-rule',{scaleY:.05},{scaleY:1,duration:.6,ease:'power3.out'},0);
+tl.fromTo('#q-title',{x:-32,opacity:1},{x:0,opacity:1,duration:.55,ease:'power3.out'},0);
+tl.fromTo('#q-account',{opacity:0},{opacity:1,duration:.3},.7);
+tl.fromTo('.q-record',{x:200,opacity:0},{x:0,opacity:1,stagger:.55,duration:.6,ease:'power3.out'},.5);
+tl.fromTo('#q-r3',{backgroundColor:'rgba(121,228,203,0)'},{backgroundColor:'rgba(121,228,203,.08)',duration:.4},3.1);
+tl.fromTo('#q-records',{x:0},{x:-26,duration:.5,ease:'power2.inOut'},4.7);
+tl.to('#q-title',{x:-120,opacity:0,duration:.35,ease:'power2.in'},5.95);
+
+window.__timelines = window.__timelines || {};
+window.__timelines['question'] = tl;
+</script>
+</template>

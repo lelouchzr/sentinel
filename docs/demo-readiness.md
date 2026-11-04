@@ -1,5 +1,12 @@
 # macOS demonstration readiness
 
+The [Hyperframes film](../video/README.md) is now rendered: 115.2 seconds, 1080p/30 fps,
+instrumental music, English motion graphics and real macOS terminal captures. Its package includes
+the editable project, raw terminal output, source evidence, licenses and executed delivery checks.
+The previously completed live Meta case is explicitly disclosed; the separate new failed model
+attempt is documented in the film's README. The preparation assessment below is retained as the
+earlier assessment; it is not a list of unfinished requirements for the delivered film.
+
 The hackathon demonstration targets the owner's Mac. Linux and Windows follow-up work is on
 hold. Existing test evidence and the automated regression matrix remain available, but additional
 platform work is not part of recording preparation.

@@ -1,0 +1,21 @@
+SENTINEL — From scattered events to defensible investigations.
+
+A terminal-native security investigation workspace powered by Meta models and real MCP tools.
+Import CSV/JSONL logs, investigate transparent alerts, inspect original evidence, distinguish
+facts from hypotheses, export a report and reopen the saved case.
+
+This edited macOS demonstration uses fictional logs. The Meta/MCP segment shows a previously
+completed live investigation, explicitly labeled on screen. Its saved activity is explored in
+the real application; it is not a new API response or a simulated model run.
+
+Music: “Cipher” Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+https://creativecommons.org/licenses/by/4.0/
+Music was trimmed, faded, mixed and normalized for this film.
+Track: https://incompetech.com/music/royalty-free/index.html?Search=Search&isrc=USUAN1100844
+
+Sound effects: Kenney Interface Sounds, CC0 — https://kenney.nl/assets/interface-sounds
+Motion graphics and editing: Hyperframes. No voiceover is used.
+
+An alert is a signal requiring investigation. A recorded download does not establish malicious
+intent, and a logged approval does not independently verify authorization.

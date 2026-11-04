@@ -1,5 +1,8 @@
 # SENTINEL narration — exactly 180 seconds
 
+This is the optional original narrated format. The current delivered presentation is the
+[115.2-second music-only Hyperframes film](../video/README.md), within the three-minute maximum.
+
 The intervals below total **180 seconds**: 18 + 17 + 15 + 70 + 20 + 20 + 20.
 Actions and quiet observation are part of each interval. Do not accelerate/fabricate model activity.
 The live-operation allocation reflects the measured 66.5-second validation. Rehearse with current

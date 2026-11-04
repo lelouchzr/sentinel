@@ -1,5 +1,9 @@
 # Three-minute demonstration guide
 
+The current delivered presentation is the [115.2-second Hyperframes film](../video/README.md),
+with no voiceover. Three minutes is the maximum, not a required duration. The manual narrated
+format below and its original 180-second script remain available as an alternative.
+
 The current recording target is the owner's Mac and macOS. Linux and Windows follow-up work
 is on hold; their historical test results are retained in [platform validation](platforms.md).
 See [demo readiness](demo-readiness.md) for completed capabilities and remaining preparation.

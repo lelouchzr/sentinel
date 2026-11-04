@@ -1,3 +1,4 @@
 # Imported example bytes are evidence; never normalize their line endings.
 *.csv -text whitespace=cr-at-eol
 *.jsonl -text
+video/licenses/*.txt -text -whitespace

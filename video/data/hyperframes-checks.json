@@ -1,0 +1,88 @@
+{
+  "full": {
+    "ok": true,
+    "strict": true,
+    "browser_skipped": false,
+    "sections": {
+      "lint": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "runtime": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "layout": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "motion": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "contrast": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "craft": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "audio": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      }
+    },
+    "optional_motion_pass_enabled": false
+  },
+  "refinement": {
+    "ok": true,
+    "strict": true,
+    "browser_skipped": false,
+    "sections": {
+      "lint": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "runtime": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "layout": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "motion": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "contrast": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "craft": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      },
+      "audio": {
+        "ok": true,
+        "errors": 0,
+        "warnings": 0
+      }
+    },
+    "optional_motion_pass_enabled": false
+  }
+}
