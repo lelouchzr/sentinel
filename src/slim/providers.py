@@ -25,7 +25,14 @@ class LlamaPlanner:
     def __init__(self, settings: Settings):
         self.settings = settings
 
-    def advise(self, query: str, symbols: list[Symbol], source_excerpt: str = "") -> Advice:
+    def advise(
+        self,
+        query: str,
+        symbols: list[Symbol],
+        source_excerpt: str = "",
+        *,
+        _refining: bool = False,
+    ) -> Advice:
         if not self.settings.model_enabled:
             raise SlimError("Enable SLIM_MODEL_ENABLED=1 to use Meta Llama", "model_disabled")
         if not symbols:
@@ -130,4 +137,27 @@ class LlamaPlanner:
                 "Llama suggested a boundary outside the inspected zero-argument calls",
                 "model_invalid_boundary",
             )
+        sections = re.split(r"(?m)^# ([\w.]+:\w+)\n", source_excerpt)
+        excerpts = dict(zip(sections[1::2], sections[2::2], strict=True))
+        chosen_source = excerpts.get(advice.entry_id)
+        if chosen_source:
+            chosen_calls = {
+                dotted_name(n.func)
+                for n in ast.walk(ast.parse(chosen_source))
+                if isinstance(n, ast.Call) and not n.args and not n.keywords
+            }
+            if any(boundary.call not in chosen_calls for boundary in advice.boundaries):
+                if _refining:
+                    raise SlimError(
+                        "Llama boundary was not found in the selected entry",
+                        "model_invalid_boundary",
+                    )
+                chosen = next(symbol for symbol in symbols if symbol.id == advice.entry_id)
+                refined = self.advise(
+                    query, [chosen], f"# {chosen.id}\n{chosen_source}", _refining=True
+                )
+                refined.warnings.append(
+                    "Boundary advice was refined against the selected function's actual calls."
+                )
+                return refined
         return advice

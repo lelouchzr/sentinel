@@ -27,6 +27,8 @@ def test_transitive_closure_and_boundary_removal(tmp_path):
     assert not (package / "src/shipping_core/commerce/db.py").exists()
     assert manifest["external_imports"] == []
     assert (package / "LICENSES/LICENSE").exists()
+    assert (package / "src/shipping_core/_slim/PROVENANCE.json").exists()
+    assert "commerce.db:load_shipping_rules" in manifest["removed_symbols"]
     compile(generated, "candidate.py", "exec")
 
 
