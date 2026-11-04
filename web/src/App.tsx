@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ArrowDown, ArrowRight, ArrowSquareOut, BookOpen, BracketsCurly, CaretRight, Check, CheckCircle, Circle, Clock, Code, Cube, Database, DownloadSimple, FilePy, Flask, GearSix, GitBranch, GithubLogo, Lightning, MagnifyingGlass, Package, Play, Plus, Scissors, Sparkle, Spinner, Stack, Terminal, Warning, X } from '@phosphor-icons/react'
+import { ArrowDown, ArrowRight, ArrowSquareOut, BookOpen, BracketsCurly, CaretRight, Check, CheckCircle, Clock, Code, Cube, Database, DownloadSimple, FilePy, Flask, GearSix, GitBranch, GithubLogo, Lightning, MagnifyingGlass, Package, Play, Plus, Scissors, Sparkle, Spinner, Stack, Terminal, Warning, X } from '@phosphor-icons/react'
 import { api } from './api'
 import { Graph } from './components/Graph'
 import { CodeViewer } from './components/CodeViewer'
@@ -95,7 +95,7 @@ export function App() {
     await act('Tracing the dependency closure', async () => {
       const scenarios = JSON.parse(scenarioText)
       if (!Array.isArray(scenarios)) throw new Error('Scenarios must be a JSON array')
-      const next = await api<Job>('/plans', { ...spec, scenarios })
+      const next = await api<Job>('/plans', { ...spec, source: sourceDraft, scenarios })
       currentId.current = next.id; setJob(next); setSpec(next.request); setDialog(null); setTab('plan'); await refreshJobs()
     })
   }
@@ -114,8 +114,9 @@ export function App() {
       const body = { source: sourceDraft, query }
       const result = await api<Analysis>('/analyze', body)
       setAnalysis(result)
-      setSpec(previous => ({ source: result.source, entry: result.symbols[0]?.id || '', package_name: previous?.package_name || 'slim_feature', boundaries: [], scenarios: [] }))
-      setScenarioText('[]')
+      const sameSource = spec?.source === result.source
+      setSpec(previous => ({ source: result.source, entry: result.symbols[0]?.id || '', package_name: previous?.package_name || 'slim_feature', boundaries: sameSource ? previous?.boundaries || [] : [], scenarios: sameSource ? previous?.scenarios || [] : [] }))
+      if (!sameSource) setScenarioText('[]')
       if (useLlama) {
         const resultAdvice = await api<Advice>('/advise', body)
         setAdvice(resultAdvice)
