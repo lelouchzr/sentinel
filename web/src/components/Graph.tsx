@@ -11,7 +11,7 @@ export function Graph({ plan }: { plan: Plan }) {
     <div className="graph-toolbar"><span className="micro">DEPENDENCY CLOSURE</span><span className="graph-legend"><i /> retained <i className="boundary-dot" /> boundary</span></div>
     <div className="graph-canvas">
       <div className="graph-flow">
-        <div className="graph-column"><div className="graph-node source-node"><FilePy size={22}/><div><span className="micro">SOURCE REPOSITORY</span><strong>{plan.source.split('/').at(-1)}</strong><small>{plan.source_files.toLocaleString()} Python files</small></div></div></div>
+        <div className="graph-column"><div className="graph-node source-node"><FilePy size={22}/><div><span className="micro">SOURCE REPOSITORY</span><strong>{plan.source_name || plan.source.split('/').at(-1)}</strong><small>{plan.source_files.toLocaleString()} Python files</small></div></div></div>
         <ArrowRight className="graph-arrow" size={24}/>
         <div className="graph-column graph-middle">
           <button className="graph-node entry-node" onClick={() => setSelected(entry)}><FunctionIcon size={22}/><div><span className="micro">ENTRY POINT</span><strong>{entry.name}</strong><small>{entry.module}</small></div></button>

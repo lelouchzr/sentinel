@@ -164,6 +164,7 @@ def build_package(codebase: Codebase, request: PlanRequest, plan: Plan, destinat
     manifest = {
         "schema_version": 1, "entry": request.entry, "package": request.package_name,
         "source_commit": plan.source_commit, "files": file_records,
+        "repository_url": plan.repository_url,
         "boundaries": [b.model_dump() for b in request.boundaries],
         "external_imports": dependencies,
         "dependency_resolution": "manual_required" if dependencies else "stdlib_only",

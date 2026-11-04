@@ -3,7 +3,7 @@ export interface Scenario { name: string; args: unknown[]; kwargs: Record<string
 export interface Spec { source: string; entry: string; package_name: string; boundaries: Boundary[]; scenarios: Scenario[]; advice_id?: string | null }
 export interface SymbolInfo { id: string; name: string; module: string; path: string; line: number; end_line: number; kind: string; signature: string; docstring: string; dependencies: string[] }
 export interface Diagnostic { level: 'info' | 'warning' | 'error'; code: string; message: string; symbol?: string }
-export interface Plan { source: string; entry: SymbolInfo; package_name: string; symbols: SymbolInfo[]; edges: [string, string][]; external_dependencies: string[]; diagnostics: Diagnostic[]; boundaries: Boundary[]; original_lines: number; selected_lines: number; source_files: number; source_commit: string | null; licenses: string[]; provider: string; advice: string }
+export interface Plan { source: string; entry: SymbolInfo; package_name: string; symbols: SymbolInfo[]; edges: [string, string][]; external_dependencies: string[]; diagnostics: Diagnostic[]; boundaries: Boundary[]; original_lines: number; selected_lines: number; source_files: number; source_commit: string | null; repository_url: string | null; source_name: string; licenses: string[]; provider: string; advice: string }
 export interface Outcome { status: string; value: unknown; exception: string | null; message: string; duration_ms: number }
 export interface CaseResult { name: string; status: 'matched' | 'diverged' | 'unverified'; original: Outcome; candidate: Outcome }
 export interface Report { status: string; matched: number; diverged: number; unverified: number; runner: string; scope: string; cases: CaseResult[] }

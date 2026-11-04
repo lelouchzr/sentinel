@@ -95,6 +95,8 @@ class Plan(Contract):
     selected_lines: int
     source_files: int
     source_commit: str | None = None
+    repository_url: str | None = None
+    source_name: str = ""
     licenses: list[str] = Field(default_factory=list)
     provider: str = "static"
     advice: str = ""

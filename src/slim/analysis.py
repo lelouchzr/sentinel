@@ -235,6 +235,12 @@ class Codebase:
         except (OSError, subprocess.TimeoutExpired):
             commit = None
         licenses = sorted(p.name for p in self.root.iterdir() if p.is_file() and p.name.upper().startswith(("LICENSE", "COPYING", "NOTICE")))
+        repository_url = None
+        if (self.root / ".git").exists():
+            try:
+                repository_url = subprocess.run(["git", "-C", str(self.root), "config", "--get", "remote.origin.url"], capture_output=True, text=True, timeout=3).stdout.strip() or None
+            except (OSError, subprocess.TimeoutExpired):
+                pass
         if not licenses:
             diagnostics.append(Diagnostic(level="warning", code="no_license", message="No root license found. Verify reuse rights before distributing."))
         return Plan(
@@ -244,4 +250,6 @@ class Codebase:
             original_lines=self.total_lines,
             selected_lines=sum((self.modules[m].tree.body[i].end_lineno or 0) - self.modules[m].tree.body[i].lineno + 1 for m, i in selected),
             source_files=len(self.modules), source_commit=commit, licenses=licenses,
+            repository_url=repository_url,
+            source_name=(repository_url.rsplit('/', 1)[-1].removesuffix('.git') if repository_url else self.root.name),
         )
