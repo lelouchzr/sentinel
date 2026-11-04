@@ -91,7 +91,13 @@ export function Notice({
     </div>
   );
 }
-export function SignIn({ what = "créer votre aventure" }: { what?: string }) {
+export function SignIn({
+  what = "créer votre aventure",
+  returnTo = "/atelier",
+}: {
+  what?: string;
+  returnTo?: string;
+}) {
   return (
     <div className="signin-panel">
       <div className="large-icon">
@@ -104,7 +110,7 @@ export function SignIn({ what = "créer votre aventure" }: { what?: string }) {
       </p>
       <a
         className="button primary"
-        href="/signin-with-chatgpt?return_to=/atelier"
+        href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo.startsWith("/") && !returnTo.startsWith("//") ? returnTo : "/atelier")}`}
         target="_top"
       >
         Se connecter avec ChatGPT <ArrowUpRight size={17} />

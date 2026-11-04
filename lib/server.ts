@@ -6,6 +6,7 @@ import {
   playerRoom,
   validateRoom,
   solution,
+  sceneSchema,
   type Room,
   type GameState,
 } from "./game";
@@ -68,7 +69,7 @@ async function ownedDraft(id: string, ownerId: string) {
   if (!row) throw new ApiError(404, "Ce brouillon est introuvable.");
   return row;
 }
-async function checkImage(room: Room, ownerId: string) {
+async function checkImage(room: Pick<Room, "image">, ownerId: string) {
   if (!room.image.startsWith("/api/assets/")) return;
   const asset = await db()
     .prepare("SELECT id FROM assets WHERE id=? AND owner_id=?")
@@ -112,7 +113,11 @@ function card(row: any) {
     builtin: false,
   };
 }
-async function imageInput(request: Request, room: Room, ownerId: string) {
+async function imageInput(
+  request: Request,
+  room: Pick<Room, "image">,
+  ownerId: string,
+) {
   await checkImage(room, ownerId);
   let data: ArrayBuffer;
   if (room.image.startsWith("/api/assets/")) {
@@ -489,9 +494,14 @@ export async function handle(request: Request): Promise<Response> {
           "Vous avez atteint les 30 appels Meta par heure pour cet atelier.",
         );
       const data = await body(request);
-      const room = validateRoom(data.room);
-      const source =
-        path[1] === "image" ? null : await imageInput(request, room, u.id);
+      const room = path[1] === "segment" ? validateRoom(data.room) : null;
+      const scene =
+        path[1] === "generate"
+          ? data.scene !== undefined
+            ? sceneSchema.parse(data.scene)
+            : validateRoom(data.room)
+          : room;
+      const source = scene ? await imageInput(request, scene, u.id) : null;
       const runId = crypto.randomUUID();
       const model =
         path[1] === "segment"
@@ -518,7 +528,11 @@ export async function handle(request: Request): Promise<Response> {
               400,
               "Décrivez votre aventure en 10 à 2 000 caractères.",
             );
-          const generated = await generateRoom(room, source!.image, data.brief);
+          const generated = await generateRoom(
+            scene!,
+            source!.image,
+            data.brief,
+          );
           result = {
             room: {
               ...generated,
@@ -526,7 +540,7 @@ export async function handle(request: Request): Promise<Response> {
             },
           };
         } else if (path[1] === "segment") {
-          const object = room.objects.find((o) => o.id === data.objectId);
+          const object = room!.objects.find((o) => o.id === data.objectId);
           if (!object)
             throw new ApiError(400, "Choisissez un objet à détourer.");
           const segmented = await segmentObject(

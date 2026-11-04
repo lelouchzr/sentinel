@@ -98,6 +98,53 @@ export const roomSchema = z
   })
   .strict();
 export type Room = z.infer<typeof roomSchema>;
+// An illustration is enough to begin authoring. New creators do not need a
+// complete puzzle definition (or the kitchen template) to request a scenario.
+export const sceneSchema = roomSchema
+  .pick({ title: true, image: true, credits: true, imageProvenance: true })
+  .extend({ title: line(80).default("Nouvelle aventure") });
+export type Scene = z.infer<typeof sceneSchema>;
+/** An editable manual starting point; its two zones must be placed by the author. */
+export function manualRoom(scene: Scene): Room {
+  return validateRoom({
+    ...sceneSchema.parse(scene),
+    description: "Une aventure à imaginer dans cette illustration.",
+    story: "Explorez cette pièce et découvrez comment en sortir.",
+    theme: "aventure",
+    difficulty: "facile",
+    duration: 5,
+    provenance: { method: "manual", model: null, generatedAt: null },
+    objects: [
+      {
+        id: "premier-indice",
+        name: "Premier indice",
+        prompt: "Objet à choisir",
+        action: "inspect",
+        region: { x: 0.15, y: 0.3, w: 0.15, h: 0.15 },
+        requires: [],
+        code: null,
+        itemName: null,
+        message:
+          "Vous découvrez un indice qui vous permet de trouver la sortie.",
+        lockedMessage: "Observez cet objet.",
+        hint: "Explorez la pièce.",
+      },
+      {
+        id: "sortie",
+        name: "Sortie",
+        prompt: "Sortie à placer",
+        action: "exit",
+        region: { x: 0.7, y: 0.25, w: 0.15, h: 0.5 },
+        requires: ["premier-indice"],
+        code: null,
+        itemName: null,
+        message: "Vous avez trouvé la sortie !",
+        lockedMessage: "Cherchez d’abord un indice.",
+        hint: "Observez les autres objets de la pièce.",
+      },
+    ],
+  });
+}
 export type GameObject = Room["objects"][number];
 export type GameState = {
   resolved: string[];

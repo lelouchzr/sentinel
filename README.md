@@ -3,7 +3,8 @@
 **Une image. Une aventure.**
 
 FRAME turns an illustration into a small browser escape game. The first room,
-*Le dernier service*, is playable immediately. Creators can import a PNG, edit
+_Le dernier service_, is playable from the gallery. The homepage starts with an
+image import (PNG, JPEG or WebP, up to 10 MB) or a prompt for Muse Image. Creators can edit
 objects and clues, ask Meta Muse Spark to propose a scenario, use SAM 3.1 to
 segment an interactive object, play-test the result and publish an immutable
 version to a shared gallery.
@@ -12,7 +13,12 @@ version to a shared gallery.
 
 Requires Node.js 22.13 or later. The supplied Vinext runtime uses React, TypeScript,
 Cloudflare D1 and R2. Application records are persisted on the server, not in the
-browser. Browser storage holds only the current player's session capability.
+browser. Browser storage holds the current player's session capability and a
+short-lived creation intent in IndexedDB. This preserves the file or prompt
+through navigation/sign-in. Ready scenes resume without repeating a model call;
+failed or interrupted image creation requires an explicit retry. Imported images
+are normalized to a bounded PNG before upload. A new scenario needs only a scene,
+never the kitchen's puzzle definition. The manual authoring option remains available.
 
 ```sh
 npm ci

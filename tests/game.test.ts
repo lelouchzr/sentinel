@@ -9,8 +9,51 @@ import {
   validateRoom,
   replaceIllustration,
   objectSchema,
+  sceneSchema,
 } from "../lib/game.ts";
 import { kitchen, japanese } from "../lib/rooms.ts";
+import { checkIllustration } from "../lib/creation.ts";
+
+test("a new scene needs no template puzzles, while preserving image ownership and provenance", () => {
+  const scene = sceneSchema.parse({
+    image: japanese.image,
+    credits: japanese.credits,
+  });
+  assert.equal(scene.title, "Nouvelle aventure");
+  assert.equal(scene.image, japanese.image);
+  assert.deepEqual(scene.credits, japanese.credits);
+  assert.equal("objects" in scene, false);
+  assert.throws(() =>
+    sceneSchema.parse({
+      ...scene,
+      image: "https://untrusted.example/image.png",
+    }),
+  );
+  assert.throws(() =>
+    sceneSchema.parse({ ...scene, objects: kitchen.objects }),
+  );
+  assert.throws(() => sceneSchema.parse({ ...scene, credits: [] }));
+});
+
+test("import refuses empty, unsupported and oversized files before upload", () => {
+  for (const type of ["image/png", "image/jpeg", "image/webp"])
+    assert.doesNotThrow(() => checkIllustration(new Blob(["test"], { type })));
+  assert.throws(
+    () => checkIllustration(new Blob([], { type: "image/png" })),
+    /vide/,
+  );
+  assert.throws(
+    () => checkIllustration(new Blob(["svg"], { type: "image/svg+xml" })),
+    /PNG/,
+  );
+  assert.throws(
+    () =>
+      checkIllustration(
+        new Blob([new Uint8Array(10_000_001)], { type: "image/png" }),
+      ),
+    /10 Mo/,
+  );
+});
 
 test("the kitchen can be completed, with wrong actions and codes rejected", () => {
   const room = validateRoom(kitchen);

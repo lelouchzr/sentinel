@@ -8,14 +8,13 @@ import {
   Sparkles,
   Search,
   Clock,
-  MousePointer2,
-  Play,
   RotateCcw,
 } from "lucide-react";
 import { api, errorText, themeName, difficultyName } from "@/lib/client";
-import { Loading, Notice, type Card } from "./shared";
+import { Loading, Notice, type Card, type Viewer } from "./shared";
+import CreationForm from "./CreationForm";
 
-export default function Gallery() {
+export default function Gallery({ viewer }: { viewer: Viewer | undefined }) {
   const [rooms, setRooms] = useState<Card[]>([]),
     [query, setQuery] = useState(""),
     [theme, setTheme] = useState(""),
@@ -41,60 +40,44 @@ export default function Gallery() {
   );
   return (
     <div className="gallery page-width">
-      <section className="gallery-hero">
+      <section className="creation-hero">
         <div className="hero-copy">
           <div className="eyebrow">
             <span className="tiny-frame" />
-            L’imagination a une porte d’entrée.
+            Votre imagination, le point de départ.
           </div>
           <h1>
-            Une image.
+            Votre image.
             <br />
-            <span>Une aventure.</span>
+            <span>Votre aventure.</span>
           </h1>
           <p>
-            Entrez dans une illustration. Cherchez les indices, assemblez les
-            idées et trouvez votre sortie.
+            Importez votre illustration ou décrivez le décor. Transformez-le en
+            escape game, avec vos objets, vos énigmes et votre histoire.
           </p>
-          <a
-            className="button primary hero-cta"
-            href="/jouer/le-dernier-service"
-          >
-            Jouer la première aventure <ArrowUpRight size={18} />
+          <div className="creation-promise">
+            <span>Importez ou imaginez.</span>
+            <span>Composez les énigmes.</span>
+            <span>Testez et partagez.</span>
+          </div>
+          <a href="#galerie" className="text-link hero-gallery-link">
+            Explorer les jeux <ArrowRight size={15} />
           </a>
-          <div className="hero-note">
-            <MousePointer2 size={15} />À explorer directement dans votre
-            navigateur.
-          </div>
         </div>
-        <a
-          href="/jouer/le-dernier-service"
-          className="featured-art"
-          aria-label="Jouer Le dernier service"
-        >
-          <img
-            src="/scenes/kitchen.png"
-            alt="Une cuisine illustrée avec une étagère d’assiettes, un tiroir et des fruits"
-            fetchPriority="high"
-          />
-          <div className="featured-shade" />
-          <div className="featured-bottom">
-            <div>
-              <span className="feature-label">LA PREMIÈRE ÉVASION</span>
-              <h2>Le dernier service</h2>
-              <p>La clé est quelque part. À vous de regarder.</p>
-            </div>
-            <span className="round-play">
-              <Play size={23} fill="currentColor" />
-            </span>
-          </div>
-        </a>
+        <CreationForm viewer={viewer} />
       </section>
-      <section className="explore-section" aria-labelledby="gallery-heading">
+      <section
+        id="galerie"
+        className="explore-section"
+        aria-labelledby="gallery-heading"
+      >
         <div className="section-heading">
           <div>
             <p className="section-kicker">La galerie</p>
-            <h2 id="gallery-heading">À vous de trouver la sortie.</h2>
+            <h2 id="gallery-heading">À vous de jouer.</h2>
+            <p className="gallery-intro">
+              Essayez une aventure avant d’imaginer la vôtre.
+            </p>
           </div>
           <span className="room-count">
             {rooms.length} aventure{rooms.length > 1 ? "s" : ""}

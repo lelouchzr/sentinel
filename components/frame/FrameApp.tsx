@@ -7,6 +7,7 @@ import { type Viewer, type Props } from "./shared";
 import Gallery from "./Gallery";
 import Player from "./Player";
 import Editor from "./Editor";
+import NewGame from "./NewGame";
 import MyCreations from "./MyCreations";
 
 export default function FrameApp({ view, slug, draftId }: Props) {
@@ -33,7 +34,7 @@ export default function FrameApp({ view, slug, draftId }: Props) {
         </a>
         <nav aria-label="Navigation principale">
           <a className={view === "gallery" ? "active" : ""} href="/">
-            Explorer
+            Créer
           </a>
           <a className={view === "editor" ? "active" : ""} href="/atelier">
             L’atelier
@@ -68,11 +69,15 @@ export default function FrameApp({ view, slug, draftId }: Props) {
       </header>
       <main>
         {view === "gallery" ? (
-          <Gallery />
+          <Gallery viewer={viewer} />
         ) : view === "player" ? (
           <Player slug={slug} />
         ) : view === "editor" ? (
-          <Editor viewer={viewer} draftId={draftId} />
+          draftId ? (
+            <Editor viewer={viewer} draftId={draftId} />
+          ) : (
+            <NewGame viewer={viewer} />
+          )
         ) : (
           <MyCreations viewer={viewer} />
         )}

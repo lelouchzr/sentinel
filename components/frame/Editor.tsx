@@ -51,7 +51,7 @@ export default function Editor({
     [notice, setNotice] = useState(""),
     [loading, setLoading] = useState(true),
     [brief, setBrief] = useState(
-      "Une cuisine cosy, une énigme d’observation et une clé à retrouver. Une aventure courte avec des indices cohérents.",
+      "Une aventure courte avec des énigmes d’observation adaptées aux objets de cette image, des indices cohérents et une sortie à déverrouiller.",
     ),
     [metaReady, setMetaReady] = useState(false),
     [proposal, setProposal] = useState<Room | null>(null),

@@ -5,7 +5,7 @@ import {
   recordsOfKind,
   decodeMaskToSVGPath,
 } from "@meta-sam/parser";
-import { validateRoom, type Room, type GameObject } from "./game";
+import { validateRoom, type Room, type GameObject, type Scene } from "./game";
 import { ApiError } from "./http";
 
 export function metaAvailable() {
@@ -146,7 +146,7 @@ const planSchema = {
 };
 
 export async function generateRoom(
-  base: Room,
+  base: Scene,
   image: string,
   brief: string,
 ): Promise<Room> {

@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "FRAME · Une image. Une aventure.",
   description:
-    "Explorez des escape games illustrés. Créez votre aventure avec les modèles Meta et partagez-la avec la communauté.",
+    "Importez votre illustration ou générez un décor avec un prompt. Créez votre escape game avec les modèles Meta, puis testez et partagez votre aventure.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

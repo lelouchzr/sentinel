@@ -62,7 +62,9 @@ export default function MyCreations({
         <div className="empty-state large">
           <Frame size={34} />
           <h2>Une page blanche. Toutes les possibilités.</h2>
-          <p>Commencez avec notre cuisine illustrée ou importez votre image.</p>
+          <p>
+            Importez votre illustration ou imaginez un décor avec un prompt.
+          </p>
           <a className="button primary" href="/atelier">
             Ouvrir mon atelier <ArrowRight size={17} />
           </a>
