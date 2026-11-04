@@ -32,7 +32,7 @@ class Diagnostic(Contract):
 
 
 class Boundary(Contract):
-    call: str = Field(min_length=1, max_length=200)
+    call: str = Field(min_length=1, max_length=200, description="Exact dotted call name WITHOUT parentheses or arguments, e.g. db.load_shipping_rules")
     parameter: str = Field(min_length=1, max_length=80)
     description: str = ""
 
