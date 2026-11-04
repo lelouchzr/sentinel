@@ -50,5 +50,16 @@ def test_bytes_and_async_results_are_normalized(tmp_path):
 
 
 def test_equal_errors_never_count_as_verified():
-    assert compare(Outcome(status="error", message="missing"), Outcome(status="error", message="missing")) == "unverified"
-    assert compare(Outcome(status="raised", exception="ValueError", message="x"), Outcome(status="raised", exception="ValueError", message="y")) == "diverged"
+    assert (
+        compare(
+            Outcome(status="error", message="missing"), Outcome(status="error", message="missing")
+        )
+        == "unverified"
+    )
+    assert (
+        compare(
+            Outcome(status="raised", exception="ValueError", message="x"),
+            Outcome(status="raised", exception="ValueError", message="y"),
+        )
+        == "diverged"
+    )

@@ -41,12 +41,23 @@ def encode(value):
     if isinstance(value, Decimal):
         return {"type": "Decimal", "value": str(value)}
     if isinstance(value, list | tuple):
-        return {"type": "tuple" if isinstance(value, tuple) else "list", "value": [encode(v) for v in value]}
+        return {
+            "type": "tuple" if isinstance(value, tuple) else "list",
+            "value": [encode(v) for v in value],
+        }
     if isinstance(value, dict):
         items = [[encode(k), encode(v)] for k, v in value.items()]
-        return {"type": "dict", "value": sorted(items, key=lambda pair: json.dumps(pair[0], sort_keys=True))}
+        return {
+            "type": "dict",
+            "value": sorted(items, key=lambda pair: json.dumps(pair[0], sort_keys=True)),
+        }
     if isinstance(value, set | frozenset):
-        return {"type": type(value).__name__, "value": sorted([encode(v) for v in value], key=lambda v: json.dumps(v, sort_keys=True))}
+        return {
+            "type": type(value).__name__,
+            "value": sorted(
+                [encode(v) for v in value], key=lambda v: json.dumps(v, sort_keys=True)
+            ),
+        }
     raise TypeError(f"Unsupported return type: {type(value).__name__}")
 
 
@@ -75,10 +86,15 @@ def main():
                 setattr(importlib.import_module(setup_module), attribute, decode(value))
             target = getattr(importlib.import_module(module_name), name)
         except BaseException as exc:
-            outcome = {"status": "error", "message": f"Import/setup failed: {type(exc).__name__}: {exc}"}
+            outcome = {
+                "status": "error",
+                "message": f"Import/setup failed: {type(exc).__name__}: {exc}",
+            }
         if outcome is None:
             try:
-                result = target(*decode(payload.get("args", [])), **decode(payload.get("kwargs", {})))
+                result = target(
+                    *decode(payload.get("args", [])), **decode(payload.get("kwargs", {}))
+                )
                 if inspect.isawaitable(result):
                     result = asyncio.run(result)
             except BaseException as exc:

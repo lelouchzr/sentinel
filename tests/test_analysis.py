@@ -31,7 +31,9 @@ def test_transitive_closure_and_boundary_removal(tmp_path):
 
 
 def test_analysis_does_not_execute_source(tmp_path):
-    (tmp_path / "danger.py").write_text('raise RuntimeError("must not execute")\ndef safe(x):\n return x + 1\n')
+    (tmp_path / "danger.py").write_text(
+        'raise RuntimeError("must not execute")\ndef safe(x):\n return x + 1\n'
+    )
     codebase = Codebase(tmp_path)
     assert codebase.search("safe")[0].name == "safe"
     assert codebase.plan(PlanRequest(source=str(tmp_path), entry="danger:safe")).selected_lines == 2
@@ -61,7 +63,7 @@ def test_bad_boundary_is_rejected(tmp_path):
 
 
 def test_dynamic_code_is_not_silently_extracted(tmp_path):
-    (tmp_path / "app.py").write_text('def f(x): return eval(x)\n')
+    (tmp_path / "app.py").write_text("def f(x): return eval(x)\n")
     request = PlanRequest(source=str(tmp_path), entry="app:f")
     codebase = Codebase(tmp_path)
     with pytest.raises(SlimError, match="Dynamic"):

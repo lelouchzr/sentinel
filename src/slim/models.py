@@ -32,7 +32,11 @@ class Diagnostic(Contract):
 
 
 class Boundary(Contract):
-    call: str = Field(min_length=1, max_length=200, description="Exact dotted call name WITHOUT parentheses or arguments, e.g. db.load_shipping_rules")
+    call: str = Field(
+        min_length=1,
+        max_length=200,
+        description="Exact dotted call name WITHOUT parentheses or arguments, e.g. db.load_shipping_rules",
+    )
     parameter: str = Field(min_length=1, max_length=80)
     description: str = ""
 
@@ -125,4 +129,6 @@ class ValidationReport(Contract):
     diverged: int
     unverified: int
     runner: str
-    scope: str = "Evidence applies only to the executed scenarios; it is not a proof of equivalence."
+    scope: str = (
+        "Evidence applies only to the executed scenarios; it is not a proof of equivalence."
+    )

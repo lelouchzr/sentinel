@@ -26,7 +26,17 @@ def demo_request(workspace: Path) -> PlanRequest:
     ]
     return PlanRequest(
         source=str(workspace / "examples" / "commerce-monolith"),
-        entry="commerce.shipping:calculate_shipping", package_name="shipping_core",
-        boundaries=[Boundary(call="db.load_shipping_rules", parameter="shipping_rules", description="Replace database lookup with explicit shipping rules")],
-        scenarios=[Scenario(name=name, args=args, candidate_kwargs={"shipping_rules": RULES}) for name, args in cases],
+        entry="commerce.shipping:calculate_shipping",
+        package_name="shipping_core",
+        boundaries=[
+            Boundary(
+                call="db.load_shipping_rules",
+                parameter="shipping_rules",
+                description="Replace database lookup with explicit shipping rules",
+            )
+        ],
+        scenarios=[
+            Scenario(name=name, args=args, candidate_kwargs={"shipping_rules": RULES})
+            for name, args in cases
+        ],
     )

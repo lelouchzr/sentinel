@@ -15,4 +15,5 @@ artifacts/
 playwright-report/
 test-results/
 .npm/
+*.tsbuildinfo
 

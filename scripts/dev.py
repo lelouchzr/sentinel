@@ -10,7 +10,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 processes = []
 try:
-    for command, cwd in [([sys.executable, "-m", "slim.cli", "serve"], ROOT), (["npm", "run", "dev"], ROOT / "web")]:
+    for command, cwd in [
+        ([sys.executable, "-m", "slim.cli", "serve"], ROOT),
+        (["npm", "run", "dev"], ROOT / "web"),
+    ]:
         processes.append(subprocess.Popen(command, cwd=cwd, start_new_session=True))
     while all(process.poll() is None for process in processes):
         time.sleep(0.5)

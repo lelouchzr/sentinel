@@ -18,7 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_source_drift_blocks_a_previously_reviewed_plan(tmp_path):
     shutil.copytree(ROOT / "examples/commerce-monolith", tmp_path / "source")
     request = demo_request(ROOT).model_copy(update={"source": str(tmp_path / "source")})
-    service = ExtractionService(Settings(workspace=tmp_path, data_dir=tmp_path / ".slim", allow_execution=True))
+    service = ExtractionService(
+        Settings(workspace=tmp_path, data_dir=tmp_path / ".slim", allow_execution=True)
+    )
     try:
         job = service.create_plan(request)
         with (tmp_path / "source/commerce/shipping.py").open("a") as handle:

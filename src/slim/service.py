@@ -44,7 +44,9 @@ class ExtractionService:
         self.capacity = threading.BoundedSemaphore(4)
 
     def codebase(self, source: str) -> Codebase:
-        return Codebase(self.repositories.resolve(source), self.settings.max_files, self.settings.max_file_bytes)
+        return Codebase(
+            self.repositories.resolve(source), self.settings.max_files, self.settings.max_file_bytes
+        )
 
     def create_plan(self, request: PlanRequest) -> dict:
         codebase = self.codebase(request.source)
@@ -98,38 +100,83 @@ class ExtractionService:
     def _begin(self, job_id: str, operation: str) -> None:
         job = self.store.get(job_id)
         if operation == "validate":
-            trusted = Path(job["request"]["source"]).resolve() == Path(demo_request(self.settings.workspace).source).resolve()
+            trusted = (
+                Path(job["request"]["source"]).resolve()
+                == Path(demo_request(self.settings.workspace).source).resolve()
+            )
             if self.settings.runner == "local" and not (self.settings.allow_execution or trusted):
-                raise SlimError("Local execution is disabled for this source. Set SLIM_ALLOW_EXECUTION=1 for trusted code, or use SLIM_RUNNER=docker.", "execution_disabled")
+                raise SlimError(
+                    "Local execution is disabled for this source. Set SLIM_ALLOW_EXECUTION=1 for trusted code, or use SLIM_RUNNER=docker.",
+                    "execution_disabled",
+                )
         allowed = {"planned"} if operation == "extract" else {"extracted", "completed"}
-        self.store.transition(job_id, allowed, "extracting" if operation == "extract" else "validating", "Building the dependency slice" if operation == "extract" else "Running original and candidate in fresh processes", owner_pid=os.getpid())
+        self.store.transition(
+            job_id,
+            allowed,
+            "extracting" if operation == "extract" else "validating",
+            "Building the dependency slice"
+            if operation == "extract"
+            else "Running original and candidate in fresh processes",
+            owner_pid=os.getpid(),
+        )
 
     def _perform(self, job_id: str, operation: str) -> None:
         job = self.store.get(job_id)
         request = PlanRequest.model_validate(job["request"])
         codebase = self.codebase(request.source)
         if source_hash(codebase) != job["source_hash"]:
-            raise SlimError("Source changed after review. Create a new plan before proceeding.", "source_changed")
+            raise SlimError(
+                "Source changed after review. Create a new plan before proceeding.",
+                "source_changed",
+            )
         destination = self.artifact(job_id)
         if operation == "extract":
             staging = destination.with_name(job_id + ".partial")
             shutil.rmtree(staging, ignore_errors=True)
             try:
-                manifest = build_package(codebase, request, Plan.model_validate(job["plan"]), staging)
+                manifest = build_package(
+                    codebase, request, Plan.model_validate(job["plan"]), staging
+                )
                 staging.rename(destination)
             finally:
                 shutil.rmtree(staging, ignore_errors=True)
-            self.store.transition(job_id, {"extracting"}, "extracted", "Package generated with provenance and upstream licenses", manifest=manifest, artifact_hash=artifact_hash(destination), owner_pid=None)
+            self.store.transition(
+                job_id,
+                {"extracting"},
+                "extracted",
+                "Package generated with provenance and upstream licenses",
+                manifest=manifest,
+                artifact_hash=artifact_hash(destination),
+                owner_pid=None,
+            )
         else:
             if artifact_hash(destination) != job["artifact_hash"]:
-                raise SlimError("Generated artifact changed. Build a new extraction before validation.", "artifact_changed")
-            report = validate(request, destination, Runner(self.settings.runner, self.settings.case_timeout))
+                raise SlimError(
+                    "Generated artifact changed. Build a new extraction before validation.",
+                    "artifact_changed",
+                )
+            report = validate(
+                request, destination, Runner(self.settings.runner, self.settings.case_timeout)
+            )
             (destination / "validation.json").write_text(report.model_dump_json(indent=2) + "\n")
-            self.store.transition(job_id, {"validating"}, "completed", f"{report.matched} matched, {report.diverged} diverged, {report.unverified} unverified", report=report.model_dump(), owner_pid=None)
+            self.store.transition(
+                job_id,
+                {"validating"},
+                "completed",
+                f"{report.matched} matched, {report.diverged} diverged, {report.unverified} unverified",
+                report=report.model_dump(),
+                owner_pid=None,
+            )
 
     def _fail(self, job_id: str, operation: str, exc: Exception) -> None:
-        message = str(exc) if isinstance(exc, SlimError) else f"Operation failed ({type(exc).__name__}). Check the server log."
-        self.store.transition(job_id, {"extracting", "validating"}, "failed", message, error=message, owner_pid=None)
+        message = (
+            str(exc)
+            if isinstance(exc, SlimError)
+            else f"Operation failed ({type(exc).__name__}). Check the server log."
+        )
+        self.store.transition(
+            job_id, {"extracting", "validating"}, "failed", message, error=message, owner_pid=None
+        )
 
     def advise(self, source: str, query: str) -> dict:
         codebase = self.codebase(source)
@@ -139,9 +186,15 @@ class ExtractionService:
         excerpts = []
         for symbol in symbols[:5]:
             module = codebase.modules[symbol.module]
-            excerpts.append(f"# {symbol.id}\n" + "\n".join(module.source.splitlines()[symbol.line - 1:symbol.end_line]))
+            excerpts.append(
+                f"# {symbol.id}\n"
+                + "\n".join(module.source.splitlines()[symbol.line - 1 : symbol.end_line])
+            )
         advice = LlamaPlanner(self.settings).advise(query, symbols, "\n\n".join(excerpts))
-        return self.store.save_advice(source_hash(codebase), {"provider": "Meta Llama", "model": self.settings.model, **advice.model_dump()})
+        return self.store.save_advice(
+            source_hash(codebase),
+            {"provider": "Meta Llama", "model": self.settings.model, **advice.model_dump()},
+        )
 
     def archive(self, job_id: str) -> Path:
         job = self.store.get(job_id)

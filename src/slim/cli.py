@@ -15,7 +15,9 @@ from slim.errors import SlimError
 from slim.models import PlanRequest
 from slim.service import ExtractionService
 
-app = typer.Typer(no_args_is_help=True, help="Move a Python feature, adapt its boundary, verify its behavior.")
+app = typer.Typer(
+    no_args_is_help=True, help="Move a Python feature, adapt its boundary, verify its behavior."
+)
 console = Console()
 
 
@@ -32,7 +34,9 @@ def serve(host: str = "127.0.0.1", port: int = 8000):
 
 
 @app.command()
-def analyze(source: str, query: str = "", json_output: Annotated[bool, typer.Option("--json")] = False):
+def analyze(
+    source: str, query: str = "", json_output: Annotated[bool, typer.Option("--json")] = False
+):
     """List candidate functions/classes without executing source code."""
     service = ExtractionService(Settings.from_env())
     try:
@@ -41,7 +45,9 @@ def analyze(source: str, query: str = "", json_output: Annotated[bool, typer.Opt
         if json_output:
             console.print_json(json.dumps([symbol.model_dump() for symbol in symbols]))
         else:
-            table = Table(title=f"{len(codebase.modules)} Python files · {codebase.total_lines:,} lines")
+            table = Table(
+                title=f"{len(codebase.modules)} Python files · {codebase.total_lines:,} lines"
+            )
             for column in ("Symbol", "Location", "Signature"):
                 table.add_column(column)
             for symbol in symbols:
@@ -60,12 +66,16 @@ def run_request(request: PlanRequest, output: Path, validate: bool) -> dict:
     service = ExtractionService(Settings.from_env())
     try:
         job = service.create_plan(request)
-        console.print(f"[bold]Plan[/bold] {job['id'][:8]} · {len(job['plan']['symbols'])} declarations")
+        console.print(
+            f"[bold]Plan[/bold] {job['id'][:8]} · {len(job['plan']['symbols'])} declarations"
+        )
         job = service.run_sync(job["id"], "extract")
         if validate:
             job = service.run_sync(job["id"], "validate")
             report = job["report"]
-            console.print(f"Evidence: {report['matched']} matched / {report['diverged']} diverged / {report['unverified']} unverified")
+            console.print(
+                f"Evidence: {report['matched']} matched / {report['diverged']} diverged / {report['unverified']} unverified"
+            )
         shutil.copytree(service.artifact(job["id"]), output)
         console.print(f"Package: {output.resolve()}")
         return job

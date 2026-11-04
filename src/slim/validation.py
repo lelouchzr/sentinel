@@ -31,27 +31,60 @@ class Runner:
         if self.mode == "docker":
             paths = ["/source/src", "/source"]
             command = [
-                "docker", "run", "--rm", "-i", "--network=none", "--read-only",
-                "--cap-drop=ALL", "--security-opt=no-new-privileges", "--pids-limit=32",
-                "--memory=512m", "--cpus=1", "--user=65534:65534",
-                "--tmpfs=/tmp:rw,noexec,nosuid,size=16m", "--ulimit", "fsize=1048576:1048576",
-                "-v", f"{root.resolve()}:/source:ro", "-v", f"{WORKER}:/worker.py:ro",
-                "python:3.12-slim", "python", "-I", "/worker.py",
+                "docker",
+                "run",
+                "--rm",
+                "-i",
+                "--network=none",
+                "--read-only",
+                "--cap-drop=ALL",
+                "--security-opt=no-new-privileges",
+                "--pids-limit=32",
+                "--memory=512m",
+                "--cpus=1",
+                "--user=65534:65534",
+                "--tmpfs=/tmp:rw,noexec,nosuid,size=16m",
+                "--ulimit",
+                "fsize=1048576:1048576",
+                "-v",
+                f"{root.resolve()}:/source:ro",
+                "-v",
+                f"{WORKER}:/worker.py:ro",
+                "python:3.12-slim",
+                "python",
+                "-I",
+                "/worker.py",
             ]
-        payload = json.dumps({"paths": paths, "entry": entry, "args": args, "kwargs": kwargs, "setup": setup}).encode()
+        payload = json.dumps(
+            {"paths": paths, "entry": entry, "args": args, "kwargs": kwargs, "setup": setup}
+        ).encode()
         # No inherited API keys, cloud credentials, or Python path configuration.
-        env = {key: os.environ[key] for key in ("PATH", "SYSTEMROOT", "DOCKER_HOST") if key in os.environ}
+        env = {
+            key: os.environ[key]
+            for key in ("PATH", "SYSTEMROOT", "DOCKER_HOST")
+            if key in os.environ
+        }
         env.update({"PYTHONHASHSEED": "0", "PYTHONDONTWRITEBYTECODE": "1", "LANG": "C.UTF-8"})
         started = time.monotonic()
         with tempfile.TemporaryFile() as stdout, tempfile.TemporaryFile() as stderr:
             try:
-                process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=stdout, stderr=stderr, cwd=tempfile.gettempdir(), env=env, start_new_session=True)
+                process = subprocess.Popen(
+                    command,
+                    stdin=subprocess.PIPE,
+                    stdout=stdout,
+                    stderr=stderr,
+                    cwd=tempfile.gettempdir(),
+                    env=env,
+                    start_new_session=True,
+                )
                 process.stdin.write(payload)
                 process.stdin.close()
                 while process.poll() is None:
                     if time.monotonic() - started > self.timeout:
                         self._kill(process)
-                        return Outcome(status="timeout", message=f"Exceeded {self.timeout:g}s deadline")
+                        return Outcome(
+                            status="timeout", message=f"Exceeded {self.timeout:g}s deadline"
+                        )
                     if stdout.tell() + stderr.tell() > OUTPUT_LIMIT:
                         self._kill(process)
                         return Outcome(status="error", message="Worker exceeded output limit")
@@ -63,7 +96,9 @@ class Runner:
             output = stdout.read(OUTPUT_LIMIT)
             error = stderr.read(2000).decode(errors="replace")
             if process.returncode:
-                return Outcome(status="error", message=f"Worker exited {process.returncode}: {error}")
+                return Outcome(
+                    status="error", message=f"Worker exited {process.returncode}: {error}"
+                )
             try:
                 return Outcome.model_validate_json(output)
             except ValueError:
@@ -84,19 +119,45 @@ def compare(original: Outcome, candidate: Outcome) -> str:
     if original.status != candidate.status:
         return "diverged"
     if original.status == "raised":
-        return "matched" if (original.exception, original.message) == (candidate.exception, candidate.message) else "diverged"
+        return (
+            "matched"
+            if (original.exception, original.message) == (candidate.exception, candidate.message)
+            else "diverged"
+        )
     return "matched" if original.value == candidate.value else "diverged"
 
 
 def validate(request: PlanRequest, artifact: Path, runner: Runner) -> ValidationReport:
     cases = []
     for scenario in request.scenarios:
-        original = runner.run(Path(request.source), request.entry, scenario.args, scenario.kwargs, scenario.setup)
+        original = runner.run(
+            Path(request.source), request.entry, scenario.args, scenario.kwargs, scenario.setup
+        )
         kwargs = {**scenario.kwargs, **scenario.candidate_kwargs}
-        candidate = runner.run(artifact, f"{request.package_name}:{request.entry.split(':')[1]}", scenario.args, kwargs, {})
-        cases.append(CaseResult(name=scenario.name, status=compare(original, candidate), original=original, candidate=candidate))
+        candidate = runner.run(
+            artifact,
+            f"{request.package_name}:{request.entry.split(':')[1]}",
+            scenario.args,
+            kwargs,
+            {},
+        )
+        cases.append(
+            CaseResult(
+                name=scenario.name,
+                status=compare(original, candidate),
+                original=original,
+                candidate=candidate,
+            )
+        )
     matched = sum(case.status == "matched" for case in cases)
     diverged = sum(case.status == "diverged" for case in cases)
     unverified = sum(case.status == "unverified" for case in cases)
     status = "diverged" if diverged else "unverified" if unverified or not cases else "matched"
-    return ValidationReport(status=status, cases=cases, matched=matched, diverged=diverged, unverified=unverified, runner=runner.mode)
+    return ValidationReport(
+        status=status,
+        cases=cases,
+        matched=matched,
+        diverged=diverged,
+        unverified=unverified,
+        runner=runner.mode,
+    )

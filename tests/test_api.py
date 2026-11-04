@@ -46,10 +46,17 @@ def test_full_http_workflow_and_download(client):
 
 def test_path_traversal_and_cross_origin_are_blocked(client):
     assert client.post("/api/analyze", json={"source": "/etc"}).status_code == 403
-    assert client.get("/api/health", headers={"Origin": "https://hostile.example"}).status_code == 403
+    assert (
+        client.get("/api/health", headers={"Origin": "https://hostile.example"}).status_code == 403
+    )
     spec = client.get("/api/demo").json()
     job_id = client.post("/api/plans", json=spec).json()["id"]
-    assert client.get(f"/api/jobs/{job_id}/file", params={"path": "../../pyproject.toml", "side": "source"}).status_code == 403
+    assert (
+        client.get(
+            f"/api/jobs/{job_id}/file", params={"path": "../../pyproject.toml", "side": "source"}
+        ).status_code
+        == 403
+    )
     assert client.post("/api/analyze", json={"source": "http://127.0.0.1"}).status_code >= 400
 
 
@@ -58,4 +65,9 @@ def test_invalid_spec_and_unknown_job_are_clear(client):
     spec["package_name"] = "../../outside"
     assert client.post("/api/plans", json=spec).status_code == 422
     assert client.get("/api/jobs/unknown").status_code == 404
-    assert client.post("/api/advise", json={"source": "examples/commerce-monolith", "query": "shipping"}).json()["error"] == "model_disabled"
+    assert (
+        client.post(
+            "/api/advise", json={"source": "examples/commerce-monolith", "query": "shipping"}
+        ).json()["error"]
+        == "model_disabled"
+    )

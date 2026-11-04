@@ -35,12 +35,18 @@ def rewrite_entry(codebase: Codebase, request: PlanRequest) -> dict[tuple[str, i
     node = copy.deepcopy(module.tree.body[index])
     if not isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
         raise SlimError("Boundary injection currently supports functions, not classes")
-    if any(isinstance(child, ast.FunctionDef | ast.AsyncFunctionDef | ast.Lambda) for statement in node.body for child in ast.walk(statement)):
+    if any(
+        isinstance(child, ast.FunctionDef | ast.AsyncFunctionDef | ast.Lambda)
+        for statement in node.body
+        for child in ast.walk(statement)
+    ):
         raise SlimError("Boundary injection into nested functions requires manual adaptation")
     used = {n.id for n in ast.walk(node) if isinstance(n, ast.Name)}
     used.update(arg.arg for arg in node.args.posonlyargs + node.args.args + node.args.kwonlyargs)
     calls = {boundary.call: boundary for boundary in request.boundaries}
-    if len(calls) != len(request.boundaries) or len({b.parameter for b in request.boundaries}) != len(calls):
+    if len(calls) != len(request.boundaries) or len(
+        {b.parameter for b in request.boundaries}
+    ) != len(calls):
         raise SlimError("Boundary calls and injected parameters must be unique")
     for boundary in request.boundaries:
         if boundary.parameter in used:
@@ -52,7 +58,9 @@ def rewrite_entry(codebase: Codebase, request: PlanRequest) -> dict[tuple[str, i
             key = dotted_name(call.func)
             if key in calls:
                 if call.args or call.keywords:
-                    raise SlimError(f"{key} takes arguments; use a manual adapter instead of value injection")
+                    raise SlimError(
+                        f"{key} takes arguments; use a manual adapter instead of value injection"
+                    )
                 counts[key] += 1
                 return ast.copy_location(ast.Name(id=calls[key].parameter, ctx=ast.Load()), call)
             return self.generic_visit(call)
@@ -83,12 +91,22 @@ class Relocate(ast.NodeTransformer):
             if alias.name not in self.modules:
                 statements.append(ast.Import(names=[alias]))
             elif alias.asname:
-                statements.append(ast.Import(names=[ast.alias(name=f"{self.package}.{alias.name}", asname=alias.asname)]))
+                statements.append(
+                    ast.Import(
+                        names=[ast.alias(name=f"{self.package}.{alias.name}", asname=alias.asname)]
+                    )
+                )
             else:
                 if "." in alias.name:
-                    statements.append(ast.Import(names=[ast.alias(name=f"{self.package}.{alias.name}")]))
+                    statements.append(
+                        ast.Import(names=[ast.alias(name=f"{self.package}.{alias.name}")])
+                    )
                 root = alias.name.split(".")[0]
-                statements.append(ast.ImportFrom(module=self.package, names=[ast.alias(name=root, asname=root)], level=0))
+                statements.append(
+                    ast.ImportFrom(
+                        module=self.package, names=[ast.alias(name=root, asname=root)], level=0
+                    )
+                )
         return statements
 
 
@@ -115,7 +133,12 @@ def build_package(codebase: Codebase, request: PlanRequest, plan: Plan, destinat
         for statement in module.tree.body:
             if isinstance(statement, ast.ImportFrom) and statement.module == "__future__":
                 body.append(copy.deepcopy(statement))
-        if module.tree.body and isinstance(module.tree.body[0], ast.Expr) and isinstance(module.tree.body[0].value, ast.Constant) and isinstance(module.tree.body[0].value.value, str):
+        if (
+            module.tree.body
+            and isinstance(module.tree.body[0], ast.Expr)
+            and isinstance(module.tree.body[0].value, ast.Constant)
+            and isinstance(module.tree.body[0].value.value, str)
+        ):
             body.insert(0, copy.deepcopy(module.tree.body[0]))
         for index in indices:
             statement = selected[(module_name, index)]
@@ -125,9 +148,17 @@ def build_package(codebase: Codebase, request: PlanRequest, plan: Plan, destinat
         tree = ast.Module(body=body, type_ignores=[])
         tree = Relocate(request.package_name, set(codebase.modules)).visit(tree)
         ast.fix_missing_locations(tree)
-        generated = f"# Extracted by Slim from {module.path.relative_to(codebase.root)}\n# See PROVENANCE.json and LICENSES/ for source attribution.\n\n" + ast.unparse(tree) + "\n"
+        generated = (
+            f"# Extracted by Slim from {module.path.relative_to(codebase.root)}\n# See PROVENANCE.json and LICENSES/ for source attribution.\n\n"
+            + ast.unparse(tree)
+            + "\n"
+        )
         relative = Path(*module_name.split("."))
-        relative = relative / "__init__.py" if module.path.name == "__init__.py" else relative.with_suffix(".py")
+        relative = (
+            relative / "__init__.py"
+            if module.path.name == "__init__.py"
+            else relative.with_suffix(".py")
+        )
         output = package_root / relative
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(generated)
@@ -135,15 +166,21 @@ def build_package(codebase: Codebase, request: PlanRequest, plan: Plan, destinat
         while parent != package_root:
             (parent / "__init__.py").touch(exist_ok=True)
             parent = parent.parent
-        file_records.append({
-            "source": str(module.path.relative_to(codebase.root)),
-            "source_sha256": hashlib.sha256(module.source.encode()).hexdigest(),
-            "generated": str(output.relative_to(destination)),
-            "generated_sha256": hashlib.sha256(generated.encode()).hexdigest(),
-            "source_ranges": [[module.tree.body[i].lineno, module.tree.body[i].end_lineno] for i in indices],
-        })
+        file_records.append(
+            {
+                "source": str(module.path.relative_to(codebase.root)),
+                "source_sha256": hashlib.sha256(module.source.encode()).hexdigest(),
+                "generated": str(output.relative_to(destination)),
+                "generated_sha256": hashlib.sha256(generated.encode()).hexdigest(),
+                "source_ranges": [
+                    [module.tree.body[i].lineno, module.tree.body[i].end_lineno] for i in indices
+                ],
+            }
+        )
     entry_module, entry_name = request.entry.split(":")
-    (package_root / "__init__.py").write_text(f'"""Extracted feature. See PROVENANCE.json for attribution."""\nfrom .{entry_module} import {entry_name} as {entry_name}\n\n__all__ = ["{entry_name}"]\n')
+    (package_root / "__init__.py").write_text(
+        f'"""Extracted feature. See PROVENANCE.json for attribution."""\nfrom .{entry_module} import {entry_name} as {entry_name}\n\n__all__ = ["{entry_name}"]\n'
+    )
     # Import names are not reliably distribution names. Require an explicit map
     # rather than silently publishing an incorrect dependency specification.
     dependencies = sorted(external)
@@ -162,19 +199,32 @@ def build_package(codebase: Codebase, request: PlanRequest, plan: Plan, destinat
         if source.is_file() and not source.is_symlink():
             shutil.copyfile(source, license_dir / name)
     manifest = {
-        "schema_version": 1, "entry": request.entry, "package": request.package_name,
-        "source_commit": plan.source_commit, "files": file_records,
+        "schema_version": 1,
+        "entry": request.entry,
+        "package": request.package_name,
+        "source_commit": plan.source_commit,
+        "files": file_records,
         "repository_url": plan.repository_url,
         "boundaries": [b.model_dump() for b in request.boundaries],
         "external_imports": dependencies,
         "dependency_resolution": "manual_required" if dependencies else "stdlib_only",
-        "licenses": plan.licenses, "planner": plan.provider,
-        "retained_symbols": sorted(f"{m}:{name}" for (m, _), node in selected.items() for name in bound_names(node)),
-        "removed_symbols": sorted({symbol.id for symbol in plan.symbols} - {f"{m}:{name}" for (m, _), node in selected.items() for name in bound_names(node)}),
-        "generated_lines": sum(len(path.read_text().splitlines()) for path in package_root.rglob("*.py")),
+        "licenses": plan.licenses,
+        "planner": plan.provider,
+        "retained_symbols": sorted(
+            f"{m}:{name}" for (m, _), node in selected.items() for name in bound_names(node)
+        ),
+        "removed_symbols": sorted(
+            {symbol.id for symbol in plan.symbols}
+            - {f"{m}:{name}" for (m, _), node in selected.items() for name in bound_names(node)}
+        ),
+        "generated_lines": sum(
+            len(path.read_text().splitlines()) for path in package_root.rglob("*.py")
+        ),
     }
     (destination / "PROVENANCE.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    (destination / "scenarios.json").write_text(json.dumps([s.model_dump() for s in request.scenarios], indent=2) + "\n")
+    (destination / "scenarios.json").write_text(
+        json.dumps([s.model_dump() for s in request.scenarios], indent=2) + "\n"
+    )
     metadata_dir = package_root / "_slim"
     metadata_dir.mkdir()
     for filename in ("PROVENANCE.json", "scenarios.json"):

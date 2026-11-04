@@ -35,7 +35,11 @@ def bound_names(node: ast.AST) -> set[str]:
         elif not isinstance(child, ast.expr):
             names.update(bound_names(child))
         elif isinstance(child, ast.Tuple | ast.List):
-            names.update(n.id for n in ast.walk(child) if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store))
+            names.update(
+                n.id
+                for n in ast.walk(child)
+                if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)
+            )
     return names
 
 
@@ -75,15 +79,30 @@ class Module:
 
     def symbol(self, name: str) -> Symbol:
         node = self.tree.body[self.bindings[name][0]]
-        kind = "function" if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef) else "class" if isinstance(node, ast.ClassDef) else "import" if isinstance(node, ast.Import | ast.ImportFrom) else "constant"
+        kind = (
+            "function"
+            if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef)
+            else "class"
+            if isinstance(node, ast.ClassDef)
+            else "import"
+            if isinstance(node, ast.Import | ast.ImportFrom)
+            else "constant"
+        )
         signature = ""
         if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
             signature = f"{node.name}({ast.unparse(node.args)})"
         return Symbol(
-            id=f"{self.name}:{name}", name=name, module=self.name,
-            path=str(self.path), line=node.lineno, end_line=node.end_lineno or node.lineno,
-            kind=kind, signature=signature,
-            docstring=(ast.get_docstring(node) or "") if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef) else "",
+            id=f"{self.name}:{name}",
+            name=name,
+            module=self.name,
+            path=str(self.path),
+            line=node.lineno,
+            end_line=node.end_lineno or node.lineno,
+            kind=kind,
+            signature=signature,
+            docstring=(ast.get_docstring(node) or "")
+            if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef)
+            else "",
         )
 
 
@@ -93,7 +112,11 @@ class Codebase:
         self.modules: dict[str, Module] = {}
         self.diagnostics: list[Diagnostic] = []
         self.total_lines = 0
-        paths = sorted(p for p in self.root.rglob("*.py") if not any(part in IGNORED for part in p.relative_to(self.root).parts))
+        paths = sorted(
+            p
+            for p in self.root.rglob("*.py")
+            if not any(part in IGNORED for part in p.relative_to(self.root).parts)
+        )
         if len(paths) > max_files:
             raise SlimError(f"Repository exceeds {max_files} Python files", "repository_too_large")
         source_root = self.root / "src" if (self.root / "src").is_dir() else self.root
@@ -101,16 +124,32 @@ class Codebase:
             if path.is_symlink() or not path.resolve().is_relative_to(self.root):
                 continue
             if path.stat().st_size > max_bytes:
-                self.diagnostics.append(Diagnostic(level="warning", code="file_too_large", message=f"Skipped {path.relative_to(self.root)}"))
+                self.diagnostics.append(
+                    Diagnostic(
+                        level="warning",
+                        code="file_too_large",
+                        message=f"Skipped {path.relative_to(self.root)}",
+                    )
+                )
                 continue
             try:
                 with tokenize.open(path) as handle:
                     source = handle.read()
                 tree = ast.parse(source, filename=str(path))
             except (SyntaxError, UnicodeError, OSError) as exc:
-                self.diagnostics.append(Diagnostic(level="warning", code="parse_error", message=f"{path.relative_to(self.root)}: {exc}"))
+                self.diagnostics.append(
+                    Diagnostic(
+                        level="warning",
+                        code="parse_error",
+                        message=f"{path.relative_to(self.root)}: {exc}",
+                    )
+                )
                 continue
-            relative = path.relative_to(source_root) if path.is_relative_to(source_root) else path.relative_to(self.root)
+            relative = (
+                path.relative_to(source_root)
+                if path.is_relative_to(source_root)
+                else path.relative_to(self.root)
+            )
             parts = list(relative.with_suffix("").parts)
             if parts[-1] == "__init__":
                 parts.pop()
@@ -131,7 +170,9 @@ class Codebase:
                 if symbol.kind not in {"function", "class"} or name.startswith("_"):
                     continue
                 text = f"{symbol.id} {symbol.docstring}".lower()
-                score = sum(1 + (4 if token in name.lower() else 0) for token in tokens if token in text)
+                score = sum(
+                    1 + (4 if token in name.lower() else 0) for token in tokens if token in text
+                )
                 if not tokens or score:
                     results.append((score, symbol))
         return [s for _, s in sorted(results, key=lambda item: (-item[0], item[1].id))[:limit]]
@@ -139,16 +180,26 @@ class Codebase:
     def resolve_from(self, module: Module, node: ast.ImportFrom) -> str:
         if not node.level:
             return node.module or ""
-        package = module.name if module.path.name == "__init__.py" else module.name.rpartition(".")[0]
+        package = (
+            module.name if module.path.name == "__init__.py" else module.name.rpartition(".")[0]
+        )
         try:
             return importlib.util.resolve_name("." * node.level + (node.module or ""), package)
         except (ImportError, ValueError):
             raise SlimError(f"Cannot resolve relative import in {module.name}") from None
 
-    def closure(self, entry: str, overrides: dict[tuple[str, int], ast.stmt] | None = None) -> tuple[dict[tuple[str, int], ast.stmt], set[str], list[tuple[str, str]], list[Diagnostic]]:
+    def closure(
+        self, entry: str, overrides: dict[tuple[str, int], ast.stmt] | None = None
+    ) -> tuple[dict[tuple[str, int], ast.stmt], set[str], list[tuple[str, str]], list[Diagnostic]]:
         module_name, separator, name = entry.partition(":")
-        if not separator or module_name not in self.modules or name not in self.modules[module_name].bindings:
-            raise SlimError(f"Unknown entry {entry}. Select module:function from analysis.", "unknown_symbol")
+        if (
+            not separator
+            or module_name not in self.modules
+            or name not in self.modules[module_name].bindings
+        ):
+            raise SlimError(
+                f"Unknown entry {entry}. Select module:function from analysis.", "unknown_symbol"
+            )
         selected: dict[tuple[str, int], ast.stmt] = {}
         visited: set[tuple[str, str]] = set()
         external: set[str] = set()
@@ -167,12 +218,28 @@ class Codebase:
                 node = overrides.get(key, module.tree.body[index])
                 if isinstance(node, ast.Import | ast.ImportFrom):
                     node = copy.deepcopy(node)
-                    node.names = [alias for alias in node.names if (alias.asname or (alias.name.split('.')[0] if isinstance(node, ast.Import) else alias.name)) == current_name]
+                    node.names = [
+                        alias
+                        for alias in node.names
+                        if (
+                            alias.asname
+                            or (
+                                alias.name.split(".")[0]
+                                if isinstance(node, ast.Import)
+                                else alias.name
+                            )
+                        )
+                        == current_name
+                    ]
                     previous = selected.get(key)
                     if isinstance(previous, ast.Import | ast.ImportFrom):
                         existing = {alias.asname or alias.name for alias in previous.names}
                         merged = copy.deepcopy(previous)
-                        merged.names.extend(alias for alias in node.names if (alias.asname or alias.name) not in existing)
+                        merged.names.extend(
+                            alias
+                            for alias in node.names
+                            if (alias.asname or alias.name) not in existing
+                        )
                         selected[key] = merged
                     else:
                         selected[key] = node
@@ -181,11 +248,29 @@ class Codebase:
                 else:
                     selected[key] = node
                 refs = global_references(node)
-                missing = refs - module.bindings.keys() - set(vars(builtins)) - {"__name__", "__file__", "__package__", "__doc__", "__annotations__"}
+                missing = (
+                    refs
+                    - module.bindings.keys()
+                    - set(vars(builtins))
+                    - {"__name__", "__file__", "__package__", "__doc__", "__annotations__"}
+                )
                 for ref in sorted(missing):
-                    diagnostics.append(Diagnostic(level="error", code="unresolved_global", message=f"Unresolved global {ref} in {current_module}:{current_name}", symbol=f"{current_module}:{current_name}"))
+                    diagnostics.append(
+                        Diagnostic(
+                            level="error",
+                            code="unresolved_global",
+                            message=f"Unresolved global {ref} in {current_module}:{current_name}",
+                            symbol=f"{current_module}:{current_name}",
+                        )
+                    )
                 if "__file__" in refs:
-                    diagnostics.append(Diagnostic(level="error", code="file_resource", message=f"{current_module}:{current_name} depends on its original file location; resource relocation requires manual adaptation"))
+                    diagnostics.append(
+                        Diagnostic(
+                            level="error",
+                            code="file_resource",
+                            message=f"{current_module}:{current_name} depends on its original file location; resource relocation requires manual adaptation",
+                        )
+                    )
                 for ref in sorted(refs & module.bindings.keys()):
                     if ref != current_name:
                         edges.add((f"{current_module}:{current_name}", f"{current_module}:{ref}"))
@@ -197,32 +282,97 @@ class Codebase:
                             continue
                         for alias in imported.names:
                             if alias.name == "*":
-                                diagnostics.append(Diagnostic(level="error", code="star_import", message=f"Wildcard import in {current_module} cannot be sliced safely"))
-                            elif target in self.modules and alias.name in self.modules[target].bindings:
+                                diagnostics.append(
+                                    Diagnostic(
+                                        level="error",
+                                        code="star_import",
+                                        message=f"Wildcard import in {current_module} cannot be sliced safely",
+                                    )
+                                )
+                            elif (
+                                target in self.modules
+                                and alias.name in self.modules[target].bindings
+                            ):
                                 pending.append((target, alias.name))
-                                edges.add((f"{current_module}:{current_name}", f"{target}:{alias.name}"))
+                                edges.add(
+                                    (f"{current_module}:{current_name}", f"{target}:{alias.name}")
+                                )
                             elif f"{target}.{alias.name}" in self.modules:
                                 self._include_module(f"{target}.{alias.name}", pending)
-                            elif target not in self.modules and target.split(".")[0] not in sys.stdlib_module_names:
+                            elif (
+                                target not in self.modules
+                                and target.split(".")[0] not in sys.stdlib_module_names
+                            ):
                                 external.add(target.split(".")[0])
                             elif target in self.modules:
-                                diagnostics.append(Diagnostic(level="error", code="unresolved_import", message=f"Cannot resolve {target}:{alias.name}"))
+                                diagnostics.append(
+                                    Diagnostic(
+                                        level="error",
+                                        code="unresolved_import",
+                                        message=f"Cannot resolve {target}:{alias.name}",
+                                    )
+                                )
                     elif isinstance(imported, ast.Import):
                         for alias in imported.names:
                             if alias.name in self.modules:
                                 self._include_module(alias.name, pending)
-                                diagnostics.append(Diagnostic(level="warning", code="module_import", message=f"Retained all declarations of imported module {alias.name}"))
+                                diagnostics.append(
+                                    Diagnostic(
+                                        level="warning",
+                                        code="module_import",
+                                        message=f"Retained all declarations of imported module {alias.name}",
+                                    )
+                                )
                             elif alias.name.split(".")[0] not in sys.stdlib_module_names:
                                 external.add(alias.name.split(".")[0])
-                if any(isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id in {"eval", "exec", "__import__", "globals"} for n in ast.walk(node)):
-                    diagnostics.append(Diagnostic(level="error", code="dynamic_code", message=f"Dynamic lookup or execution in {current_module}:{current_name} requires manual extraction"))
+                if any(
+                    isinstance(n, ast.Call)
+                    and isinstance(n.func, ast.Name)
+                    and n.func.id in {"eval", "exec", "__import__", "globals"}
+                    for n in ast.walk(node)
+                ):
+                    diagnostics.append(
+                        Diagnostic(
+                            level="error",
+                            code="dynamic_code",
+                            message=f"Dynamic lookup or execution in {current_module}:{current_name} requires manual extraction",
+                        )
+                    )
                 if isinstance(node, ast.If | ast.Try | ast.With | ast.For | ast.While):
-                    diagnostics.append(Diagnostic(level="warning", code="compound_statement", message=f"Retained complete conditional/compound declaration in {current_module}"))
+                    diagnostics.append(
+                        Diagnostic(
+                            level="warning",
+                            code="compound_statement",
+                            message=f"Retained complete conditional/compound declaration in {current_module}",
+                        )
+                    )
         for module_name in {m for m, _ in selected}:
             module = self.modules[module_name]
-            omitted = [statement.lineno for index, statement in enumerate(module.tree.body) if (module_name, index) not in selected and not isinstance(statement, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef | ast.Import | ast.ImportFrom) and not bound_names(statement) and not (isinstance(statement, ast.Expr) and isinstance(statement.value, ast.Constant))]
+            omitted = [
+                statement.lineno
+                for index, statement in enumerate(module.tree.body)
+                if (module_name, index) not in selected
+                and not isinstance(
+                    statement,
+                    ast.FunctionDef
+                    | ast.AsyncFunctionDef
+                    | ast.ClassDef
+                    | ast.Import
+                    | ast.ImportFrom,
+                )
+                and not bound_names(statement)
+                and not (
+                    isinstance(statement, ast.Expr) and isinstance(statement.value, ast.Constant)
+                )
+            ]
             if omitted:
-                diagnostics.append(Diagnostic(level="warning", code="omitted_initialization", message=f"Top-level effects at {module_name} lines {omitted[:10]} are omitted. Review initialization and supply representative scenarios."))
+                diagnostics.append(
+                    Diagnostic(
+                        level="warning",
+                        code="omitted_initialization",
+                        message=f"Top-level effects at {module_name} lines {omitted[:10]} are omitted. Review initialization and supply representative scenarios.",
+                    )
+                )
         return selected, external, sorted(edges), diagnostics
 
     def _include_module(self, name: str, pending: list[tuple[str, str]]) -> None:
@@ -244,25 +394,67 @@ class Codebase:
                 symbols[symbol.id] = symbol
         entry.path = str(self.modules[entry.module].path.relative_to(self.root))
         try:
-            commit = subprocess.run(["git", "-C", str(self.root), "rev-parse", "HEAD"], capture_output=True, text=True, timeout=3).stdout.strip() or None
+            commit = (
+                subprocess.run(
+                    ["git", "-C", str(self.root), "rev-parse", "HEAD"],
+                    capture_output=True,
+                    text=True,
+                    timeout=3,
+                ).stdout.strip()
+                or None
+            )
         except (OSError, subprocess.TimeoutExpired):
             commit = None
-        licenses = sorted(p.name for p in self.root.iterdir() if p.is_file() and p.name.upper().startswith(("LICENSE", "COPYING", "NOTICE")))
+        licenses = sorted(
+            p.name
+            for p in self.root.iterdir()
+            if p.is_file() and p.name.upper().startswith(("LICENSE", "COPYING", "NOTICE"))
+        )
         repository_url = None
         if (self.root / ".git").exists():
             try:
-                repository_url = subprocess.run(["git", "-C", str(self.root), "config", "--get", "remote.origin.url"], capture_output=True, text=True, timeout=3).stdout.strip() or None
+                repository_url = (
+                    subprocess.run(
+                        ["git", "-C", str(self.root), "config", "--get", "remote.origin.url"],
+                        capture_output=True,
+                        text=True,
+                        timeout=3,
+                    ).stdout.strip()
+                    or None
+                )
             except (OSError, subprocess.TimeoutExpired):
                 pass
         if not licenses:
-            diagnostics.append(Diagnostic(level="warning", code="no_license", message="No root license found. Verify reuse rights before distributing."))
+            diagnostics.append(
+                Diagnostic(
+                    level="warning",
+                    code="no_license",
+                    message="No root license found. Verify reuse rights before distributing.",
+                )
+            )
         return Plan(
-            source=str(self.root), entry=entry, package_name=request.package_name,
-            symbols=list(symbols.values()), edges=edges, external_dependencies=sorted(external),
-            diagnostics=diagnostics, boundaries=request.boundaries,
+            source=str(self.root),
+            entry=entry,
+            package_name=request.package_name,
+            symbols=list(symbols.values()),
+            edges=edges,
+            external_dependencies=sorted(external),
+            diagnostics=diagnostics,
+            boundaries=request.boundaries,
             original_lines=self.total_lines,
-            selected_lines=sum((self.modules[m].tree.body[i].end_lineno or 0) - self.modules[m].tree.body[i].lineno + 1 for m, i in selected),
-            source_files=len(self.modules), source_commit=commit, licenses=licenses,
+            selected_lines=sum(
+                (self.modules[m].tree.body[i].end_lineno or 0)
+                - self.modules[m].tree.body[i].lineno
+                + 1
+                for m, i in selected
+            ),
+            source_files=len(self.modules),
+            source_commit=commit,
+            licenses=licenses,
             repository_url=repository_url,
-            source_name=(repository_url.rsplit('/', 1)[-1].removesuffix('.git') if repository_url else self.root.name),
+            source_name=(
+                repository_url.rsplit("/", 1)[-1].removesuffix(".git")
+                if repository_url
+                else self.root.name
+            ),
         )
