@@ -1,0 +1,3 @@
+timestamp,source_type,host,account,source_ip,action,outcome,resource,session_id,bytes
+2026-10-20T09:00:00Z,auth,identity-01,fictional-analyst,203.0.113.12,login,failure,/sso,request-example,
+2026-10-20T09:00:30Z,auth,identity-01,fictional-analyst,203.0.113.12,login,success,/sso,session-example,

@@ -1,0 +1,1523 @@
+{
+  "product": "SENTINEL",
+  "case": {
+    "case_id": "C-c8e20de558ff",
+    "title": "AUTH-002 \u00b7 morgan",
+    "dataset_id": "D-5c9f98be2b243b47d24d0964",
+    "created_at": "2026-11-04T18:46:27.153955+00:00",
+    "updated_at": "2026-11-04T19:14:35.055037+00:00",
+    "status": "reviewed",
+    "alert_ids": [
+      "A-f312fe687a350032"
+    ],
+    "evidence_ids": [
+      "E-f418bfcc7b120c25fd1b8e47",
+      "E-4e2ba4636cd07963f949401d",
+      "E-b9eafc67a49da8c087b55f3b",
+      "E-62c6b144f1878191842a8c84",
+      "E-16c80416cddfb79edc212810",
+      "E-436cc24a70a37ebfd8b5ae9d",
+      "E-62a4f237b53a1f573937ae7c",
+      "E-8aa7d0044ce106992e4da0a6",
+      "E-8c6a4739902b99e02480fa30",
+      "E-e0c45b549ae9adf80906c0c4",
+      "E-7b9a9e0c2383336f6e7f46b1",
+      "E-70c3b3c17072e18e0bf7085e",
+      "E-c8f18c6c68399d87590eeec5",
+      "E-8db680f5d823ca31be2e34ce",
+      "E-2ecd7f93b91b9cdb609d1442",
+      "E-ec9d65428b2640cacdba5b13",
+      "E-a8355aae3ec3f3afbe5407f1",
+      "E-67fee14778eb8ca394014150",
+      "E-2421263eb257c73431298973",
+      "E-57927fb01f55a77edfbc5574",
+      "E-78ca5edcc12a06bd7cd336b1",
+      "E-cb9dc9a5b44fcd5c9b00199c",
+      "E-955a549f9e275b32ebbda981",
+      "E-afac4455b878ef2e465944c5",
+      "E-913c9796f1ace5dc29e5e5e5",
+      "E-df24520841597e17d622d586",
+      "E-17ff17e651d4d2cb0e47c3f4"
+    ],
+    "findings": [
+      {
+        "title": "Recorded events and computed query results",
+        "category": "observed_fact",
+        "event_ids": [
+          "E-f418bfcc7b120c25fd1b8e47",
+          "E-afac4455b878ef2e465944c5",
+          "E-913c9796f1ace5dc29e5e5e5"
+        ],
+        "explanation": "2026-10-20T09:00:00.000000+00:00: morgan | login | failure | /sso | source IP 203.0.113.74 | session request-701 [E-f418bfcc7b120c25fd1b8e47]\n2026-10-20T09:03:04.000000+00:00: morgan | login | failure | /sso | source IP 203.0.113.74 | session request-701 [E-afac4455b878ef2e465944c5]\n2026-10-20T09:03:20.000000+00:00: morgan | login | success | /sso | source IP 203.0.113.74 | session session-702 [E-913c9796f1ace5dc29e5e5e5]\nComputed query Q-10e242b0fbbbacbd9188: 27 matching events; 840,000,000 recorded bytes; action/outcome counts {\"access/success\": 1, \"download/success\": 1, \"login/failure\": 24, \"login/success\": 1} (truncated=False); range 2026-10-20T09:00:00.000000+00:00 to 2026-10-20T09:04:20.000000+00:00; filters {\"account\":\"morgan\",\"source_ip\":\"203.0.113.74\"}.",
+        "limitations": "These records establish logged activity only. They do not establish operator identity, authorization, compromise, or malicious intent. Counts describe the exact receipt filters; byte sums include only recorded byte fields.",
+        "receipt_ids": [
+          "Q-10e242b0fbbbacbd9188"
+        ],
+        "verification": "Canonical fields and quantitative results verified in code"
+      },
+      {
+        "title": "Recorded events and computed query results",
+        "category": "observed_fact",
+        "event_ids": [
+          "E-913c9796f1ace5dc29e5e5e5",
+          "E-df24520841597e17d622d586",
+          "E-17ff17e651d4d2cb0e47c3f4"
+        ],
+        "explanation": "2026-10-20T09:03:20.000000+00:00: morgan | login | success | /sso | source IP 203.0.113.74 | session session-702 [E-913c9796f1ace5dc29e5e5e5]\n2026-10-20T09:03:40.000000+00:00: morgan | access | success | /restricted/customer-export | source IP 203.0.113.74 | session session-702 [E-df24520841597e17d622d586]\n2026-10-20T09:04:20.000000+00:00: morgan | download | success | /restricted/customer-export/accounts.csv | source IP 203.0.113.74 | session session-702 [E-17ff17e651d4d2cb0e47c3f4]\nComputed query Q-31fbd3c8a3cc94641b3e: 3 matching events; 840,000,000 recorded bytes; action/outcome counts {\"access/success\": 1, \"download/success\": 1, \"login/success\": 1} (truncated=False); range 2026-10-20T09:03:20.000000+00:00 to 2026-10-20T09:04:20.000000+00:00; filters {\"session_id\":\"session-702\"}.",
+        "limitations": "These records establish logged activity only. They do not establish operator identity, authorization, compromise, or malicious intent. Counts describe the exact receipt filters; byte sums include only recorded byte fields.",
+        "receipt_ids": [
+          "Q-31fbd3c8a3cc94641b3e"
+        ],
+        "verification": "Canonical fields and quantitative results verified in code"
+      },
+      {
+        "title": "Recorded events and computed query results",
+        "category": "observed_fact",
+        "event_ids": [
+          "E-913c9796f1ace5dc29e5e5e5",
+          "E-df24520841597e17d622d586",
+          "E-17ff17e651d4d2cb0e47c3f4"
+        ],
+        "explanation": "2026-10-20T09:03:20.000000+00:00: morgan | login | success | /sso | source IP 203.0.113.74 | session session-702 [E-913c9796f1ace5dc29e5e5e5]\n2026-10-20T09:03:40.000000+00:00: morgan | access | success | /restricted/customer-export | source IP 203.0.113.74 | session session-702 [E-df24520841597e17d622d586]\n2026-10-20T09:04:20.000000+00:00: morgan | download | success | /restricted/customer-export/accounts.csv | source IP 203.0.113.74 | session session-702 [E-17ff17e651d4d2cb0e47c3f4]\nComputed query Q-10e242b0fbbbacbd9188: 27 matching events; 840,000,000 recorded bytes; action/outcome counts {\"access/success\": 1, \"download/success\": 1, \"login/failure\": 24, \"login/success\": 1} (truncated=False); range 2026-10-20T09:00:00.000000+00:00 to 2026-10-20T09:04:20.000000+00:00; filters {\"account\":\"morgan\",\"source_ip\":\"203.0.113.74\"}.\nComputed query Q-31fbd3c8a3cc94641b3e: 3 matching events; 840,000,000 recorded bytes; action/outcome counts {\"access/success\": 1, \"download/success\": 1, \"login/success\": 1} (truncated=False); range 2026-10-20T09:03:20.000000+00:00 to 2026-10-20T09:04:20.000000+00:00; filters {\"session_id\":\"session-702\"}.",
+        "limitations": "These records establish logged activity only. They do not establish operator identity, authorization, compromise, or malicious intent. Counts describe the exact receipt filters; byte sums include only recorded byte fields.",
+        "receipt_ids": [
+          "Q-10e242b0fbbbacbd9188",
+          "Q-31fbd3c8a3cc94641b3e"
+        ],
+        "verification": "Canonical fields and quantitative results verified in code"
+      },
+      {
+        "title": "Sequence consistent with guessing then use of authenticated session",
+        "category": "hypothesis",
+        "event_ids": [
+          "E-f418bfcc7b120c25fd1b8e47",
+          "E-913c9796f1ace5dc29e5e5e5",
+          "E-17ff17e651d4d2cb0e47c3f4"
+        ],
+        "explanation": "Repeated failures followed by success and restricted export is consistent with password attempts followed by use of authenticated session, but operator identity, intent and credential source are not recorded.",
+        "limitations": "Unproven; benign password retries by legitimate user not excluded.",
+        "receipt_ids": [],
+        "verification": "References valid; interpretation remains unproven"
+      },
+      {
+        "title": "Legitimate retry and authorized export not excluded",
+        "category": "hypothesis",
+        "event_ids": [
+          "E-df24520841597e17d622d586",
+          "E-17ff17e651d4d2cb0e47c3f4"
+        ],
+        "explanation": "Application permission check accepted access, which could reflect legitimate user retries then authorized export. No entitlement or approval record was retrieved to decide.",
+        "limitations": "No role, ticket or baseline reviewed.",
+        "receipt_ids": [],
+        "verification": "References valid; interpretation remains unproven"
+      },
+      {
+        "title": "Authorization and MFA status undetermined",
+        "category": "open_question",
+        "event_ids": [
+          "E-913c9796f1ace5dc29e5e5e5",
+          "E-17ff17e651d4d2cb0e47c3f4"
+        ],
+        "explanation": "The model proposed a quantitative interpretation that has not been accepted as a verified claim. Review the cited events and computed query receipts.",
+        "limitations": "Requires IAM, ticketing and device evidence not in current results.",
+        "receipt_ids": [],
+        "verification": "References valid; interpretation remains unproven"
+      }
+    ],
+    "open_questions": [
+      "What role/entitlement and explicit approval authorized E-17ff17e651d4d2cb0e47c3f4?",
+      "Was MFA completed for session-702 and tied to legitimate device?",
+      "What is normal baseline for morgan restricted exports?"
+    ],
+    "notes": [
+      "Model note (unverified interpretation): AUTH-002 morgan 203.0.113.74: 24 failures (request-701) then success (session-702) 09:03:20, then /restricted/customer-export access 09:03:40 and 840MB download 09:04:20 same session-702. Auth success does not prove compromise; authorization for restricted export not observed. Needs ticket/approval/role/MFA review."
+    ],
+    "activity": [
+      {
+        "timestamp": "2026-11-04T18:46:27.168683+00:00",
+        "role": "Investigator",
+        "action": "Investigation started",
+        "details": {
+          "question": "Investigate the successful authentication after failures. Retrieve the related session and export evidence. Separate recorded facts from hypotheses and explain what would establish authorization. Use a small number of focused searches, then conclude."
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:27.428577+00:00",
+        "role": "MCP",
+        "action": "Discovered tools through stdio",
+        "details": {
+          "tools": [
+            "get_dataset_summary",
+            "list_alerts",
+            "search_events",
+            "get_event",
+            "get_entity_activity",
+            "build_timeline",
+            "attach_evidence",
+            "save_case_notes"
+          ]
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:27.429723+00:00",
+        "role": "MCP",
+        "action": "Calling get_dataset_summary",
+        "details": {
+          "arguments": {},
+          "call": 1
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:27.443150+00:00",
+        "role": "MCP",
+        "action": "Completed get_dataset_summary",
+        "details": {
+          "returned": 0,
+          "total": null,
+          "artifact": "artifacts/C-c8e20de558ff-tool-01-8461a0c66894.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:27.443829+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 1
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:30.235119+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 1
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:30.236343+00:00",
+        "role": "MCP",
+        "action": "Calling list_alerts",
+        "details": {
+          "arguments": {
+            "limit": 30,
+            "offset": 0
+          },
+          "call": 2
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:30.246564+00:00",
+        "role": "MCP",
+        "action": "Completed list_alerts",
+        "details": {
+          "returned": 0,
+          "total": 15,
+          "artifact": "artifacts/C-c8e20de558ff-tool-02-555c878fbf59.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:30.247968+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 2
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:34.173043+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 2
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:34.177257+00:00",
+        "role": "MCP",
+        "action": "Calling get_entity_activity",
+        "details": {
+          "arguments": {
+            "entity_type": "session_id",
+            "limit": 30,
+            "offset": 0,
+            "value": "session-702"
+          },
+          "call": 3
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:34.237324+00:00",
+        "role": "MCP",
+        "action": "Completed get_entity_activity",
+        "details": {
+          "returned": 3,
+          "total": 3,
+          "artifact": "artifacts/C-c8e20de558ff-tool-03-ffc04a34e101.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:34.238415+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 3
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:39.940205+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 3
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:39.944303+00:00",
+        "role": "MCP",
+        "action": "Calling search_events",
+        "details": {
+          "arguments": {
+            "filters": "{\"account\": \"morgan\", \"source_ip\": \"203.0.113.74\"}",
+            "limit": 30,
+            "offset": 0
+          },
+          "call": 4
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:40.107266+00:00",
+        "role": "MCP",
+        "action": "Completed search_events",
+        "details": {
+          "returned": 27,
+          "total": 27,
+          "artifact": "artifacts/C-c8e20de558ff-tool-04-345f242e1083.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:40.109129+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 4
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:44.671560+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 4
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:44.675612+00:00",
+        "role": "MCP",
+        "action": "Calling get_event",
+        "details": {
+          "arguments": {
+            "event_id": "E-913c9796f1ace5dc29e5e5e5"
+          },
+          "call": 5
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:44.703872+00:00",
+        "role": "MCP",
+        "action": "Completed get_event",
+        "details": {
+          "returned": 1,
+          "total": null,
+          "artifact": "artifacts/C-c8e20de558ff-tool-05-01eff670700c.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:44.704764+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 5
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:49.109984+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 5
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:49.114100+00:00",
+        "role": "MCP",
+        "action": "Calling get_event",
+        "details": {
+          "arguments": {
+            "event_id": "E-17ff17e651d4d2cb0e47c3f4"
+          },
+          "call": 6
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:49.143124+00:00",
+        "role": "MCP",
+        "action": "Completed get_event",
+        "details": {
+          "returned": 1,
+          "total": null,
+          "artifact": "artifacts/C-c8e20de558ff-tool-06-de5dc0d41290.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:49.144362+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 6
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:53.033711+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 6
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:53.041072+00:00",
+        "role": "MCP",
+        "action": "Calling attach_evidence",
+        "details": {
+          "arguments": {
+            "event_ids": [
+              "E-913c9796f1ace5dc29e5e5e5",
+              "E-df24520841597e17d622d586",
+              "E-17ff17e651d4d2cb0e47c3f4"
+            ]
+          },
+          "call": 7
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:53.071245+00:00",
+        "role": "MCP",
+        "action": "Completed attach_evidence",
+        "details": {
+          "returned": 0,
+          "total": null,
+          "artifact": "artifacts/C-c8e20de558ff-tool-07-0ae4e76cd52d.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:53.072425+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 7
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:59.628951+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 7
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:59.630399+00:00",
+        "role": "MCP",
+        "action": "Calling save_case_notes",
+        "details": {
+          "arguments": {
+            "note": "AUTH-002 morgan 203.0.113.74: 24 failures (request-701) then success (session-702) 09:03:20, then /restricted/customer-export access 09:03:40 and 840MB download 09:04:20 same session-702. Auth success does not prove compromise; authorization for restricted export not observed. Needs ticket/approval/role/MFA review."
+          },
+          "call": 8
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:59.637897+00:00",
+        "role": "MCP",
+        "action": "Completed save_case_notes",
+        "details": {
+          "returned": 0,
+          "total": null,
+          "artifact": "artifacts/C-c8e20de558ff-tool-08-04c1c338b549.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:46:59.639309+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 8
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:47:08.880066+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 8
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:47:08.883266+00:00",
+        "role": "Evidence reviewer",
+        "action": "Checking support, gaps, and alternative explanations",
+        "details": {}
+      },
+      {
+        "timestamp": "2026-11-04T18:47:08.887269+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 9
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:47:20.400304+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 9
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:47:20.403246+00:00",
+        "role": "Evidence reviewer",
+        "action": "Review saved",
+        "details": {
+          "artifact": "artifacts/C-c8e20de558ff-review-8a369e9caca3.json"
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:47:20.404341+00:00",
+        "role": "Reporter",
+        "action": "Producing structured findings with source references",
+        "details": {}
+      },
+      {
+        "timestamp": "2026-11-04T18:47:20.407375+00:00",
+        "role": "Meta",
+        "action": "Model request started",
+        "details": {
+          "call": 10
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:47:33.278245+00:00",
+        "role": "Meta",
+        "action": "Model response received",
+        "details": {
+          "call": 10
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:47:33.377688+00:00",
+        "role": "Reporter",
+        "action": "Case summary saved",
+        "details": {
+          "findings": 6,
+          "model_calls": 10,
+          "tool_calls": 8,
+          "elapsed_seconds": 66.21
+        }
+      },
+      {
+        "timestamp": "2026-11-04T18:59:38.442193+00:00",
+        "role": "System",
+        "action": "Revalidated the saved live report with current deterministic checks",
+        "details": {
+          "live_model_rerun": false
+        }
+      }
+    ],
+    "summary": "Review contains 3 observed findings, 2 hypotheses, and 1 open question.\nHypothesis (unproven): Sequence consistent with guessing then use of authenticated session\nHypothesis (unproven): Legitimate retry and authorized export not excluded\nOpen question: Authorization and MFA status undetermined\nObserved findings below contain canonical event fields and exact computed query results. Reference validity does not prove the model's interpretation.",
+    "provider": "Meta Model API"
+  },
+  "manifest": {
+    "dataset_id": "D-5c9f98be2b243b47d24d0964",
+    "schema": 1,
+    "timezone_for_naive_timestamps": "UTC",
+    "files": [
+      {
+        "filename": "identity.csv",
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "size_bytes": 88623,
+        "accepted": 889,
+        "rejected": 0
+      },
+      {
+        "filename": "services.jsonl",
+        "sha256": "795f77fad564fff379e26fcfa384a0794080890d09b304736a5e68a3e2a8ddf4",
+        "size_bytes": 728542,
+        "accepted": 2653,
+        "rejected": 0
+      }
+    ],
+    "accepted": 3542,
+    "rejected": 0,
+    "skipped": 0,
+    "issues": []
+  },
+  "evidence": [
+    {
+      "event_id": "E-f418bfcc7b120c25fd1b8e47",
+      "timestamp": "2026-10-20T09:00:00.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 863,
+        "line": 864,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:00:00+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-4e2ba4636cd07963f949401d",
+      "timestamp": "2026-10-20T09:00:08.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 470,
+        "line": 471,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:00:08+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-b9eafc67a49da8c087b55f3b",
+      "timestamp": "2026-10-20T09:00:16.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 116,
+        "line": 117,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:00:16+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-62c6b144f1878191842a8c84",
+      "timestamp": "2026-10-20T09:00:24.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 752,
+        "line": 753,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:00:24+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-16c80416cddfb79edc212810",
+      "timestamp": "2026-10-20T09:00:32.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 510,
+        "line": 511,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:00:32+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-436cc24a70a37ebfd8b5ae9d",
+      "timestamp": "2026-10-20T09:00:40.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 342,
+        "line": 343,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:00:40+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-62a4f237b53a1f573937ae7c",
+      "timestamp": "2026-10-20T09:00:48.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 132,
+        "line": 133,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:00:48+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-8aa7d0044ce106992e4da0a6",
+      "timestamp": "2026-10-20T09:00:56.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 637,
+        "line": 638,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:00:56+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-8c6a4739902b99e02480fa30",
+      "timestamp": "2026-10-20T09:01:04.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 408,
+        "line": 409,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:01:04+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-e0c45b549ae9adf80906c0c4",
+      "timestamp": "2026-10-20T09:01:12.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 642,
+        "line": 643,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:01:12+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-7b9a9e0c2383336f6e7f46b1",
+      "timestamp": "2026-10-20T09:01:20.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 804,
+        "line": 805,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:01:20+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-70c3b3c17072e18e0bf7085e",
+      "timestamp": "2026-10-20T09:01:28.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 2,
+        "line": 3,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:01:28+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-c8f18c6c68399d87590eeec5",
+      "timestamp": "2026-10-20T09:01:36.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 495,
+        "line": 496,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:01:36+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-8db680f5d823ca31be2e34ce",
+      "timestamp": "2026-10-20T09:01:44.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 506,
+        "line": 507,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:01:44+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-2ecd7f93b91b9cdb609d1442",
+      "timestamp": "2026-10-20T09:01:52.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 730,
+        "line": 731,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:01:52+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-ec9d65428b2640cacdba5b13",
+      "timestamp": "2026-10-20T09:02:00.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 822,
+        "line": 823,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:02:00+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-a8355aae3ec3f3afbe5407f1",
+      "timestamp": "2026-10-20T09:02:08.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 182,
+        "line": 183,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:02:08+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-67fee14778eb8ca394014150",
+      "timestamp": "2026-10-20T09:02:16.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 54,
+        "line": 55,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:02:16+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-2421263eb257c73431298973",
+      "timestamp": "2026-10-20T09:02:24.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 869,
+        "line": 870,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:02:24+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-57927fb01f55a77edfbc5574",
+      "timestamp": "2026-10-20T09:02:32.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 104,
+        "line": 105,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:02:32+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-78ca5edcc12a06bd7cd336b1",
+      "timestamp": "2026-10-20T09:02:40.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 534,
+        "line": 535,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:02:40+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-cb9dc9a5b44fcd5c9b00199c",
+      "timestamp": "2026-10-20T09:02:48.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 776,
+        "line": 777,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:02:48+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-955a549f9e275b32ebbda981",
+      "timestamp": "2026-10-20T09:02:56.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 760,
+        "line": 761,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:02:56+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-afac4455b878ef2e465944c5",
+      "timestamp": "2026-10-20T09:03:04.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "failure",
+      "resource": "/sso",
+      "session_id": "request-701",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 278,
+        "line": 279,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:03:04+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "failure",
+          "resource": "/sso",
+          "session_id": "request-701",
+          "bytes": "",
+          "context": "Password authentication rejected"
+        }
+      }
+    },
+    {
+      "event_id": "E-913c9796f1ace5dc29e5e5e5",
+      "timestamp": "2026-10-20T09:03:20.000000+00:00",
+      "source_type": "auth",
+      "host": "identity-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "login",
+      "outcome": "success",
+      "resource": "/sso",
+      "session_id": "session-702",
+      "bytes": null,
+      "source": {
+        "filename": "identity.csv",
+        "record": 57,
+        "line": 58,
+        "sha256": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "original": {
+          "timestamp": "2026-10-20T09:03:20+00:00",
+          "source_type": "auth",
+          "host": "identity-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "login",
+          "outcome": "success",
+          "resource": "/sso",
+          "session_id": "session-702",
+          "bytes": "",
+          "context": "Password authentication accepted; MFA not recorded"
+        }
+      }
+    },
+    {
+      "event_id": "E-df24520841597e17d622d586",
+      "timestamp": "2026-10-20T09:03:40.000000+00:00",
+      "source_type": "application",
+      "host": "portal-02",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "access",
+      "outcome": "success",
+      "resource": "/restricted/customer-export",
+      "session_id": "session-702",
+      "bytes": null,
+      "source": {
+        "filename": "services.jsonl",
+        "record": 1579,
+        "line": 1579,
+        "sha256": "795f77fad564fff379e26fcfa384a0794080890d09b304736a5e68a3e2a8ddf4",
+        "original": {
+          "timestamp": "2026-10-20T09:03:40+00:00",
+          "source_type": "application",
+          "host": "portal-02",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "access",
+          "outcome": "success",
+          "resource": "/restricted/customer-export",
+          "session_id": "session-702",
+          "bytes": "",
+          "context": "Permission check accepted by application"
+        }
+      }
+    },
+    {
+      "event_id": "E-17ff17e651d4d2cb0e47c3f4",
+      "timestamp": "2026-10-20T09:04:20.000000+00:00",
+      "source_type": "file",
+      "host": "storage-01",
+      "account": "morgan",
+      "source_ip": "203.0.113.74",
+      "action": "download",
+      "outcome": "success",
+      "resource": "/restricted/customer-export/accounts.csv",
+      "session_id": "session-702",
+      "bytes": 840000000,
+      "source": {
+        "filename": "services.jsonl",
+        "record": 2379,
+        "line": 2379,
+        "sha256": "795f77fad564fff379e26fcfa384a0794080890d09b304736a5e68a3e2a8ddf4",
+        "original": {
+          "timestamp": "2026-10-20T09:04:20+00:00",
+          "source_type": "file",
+          "host": "storage-01",
+          "account": "morgan",
+          "source_ip": "203.0.113.74",
+          "action": "download",
+          "outcome": "success",
+          "resource": "/restricted/customer-export/accounts.csv",
+          "session_id": "session-702",
+          "bytes": 840000000,
+          "context": ""
+        }
+      }
+    }
+  ],
+  "computed_queries": [
+    {
+      "receipt_id": "Q-10e242b0fbbbacbd9188",
+      "dataset_id": "D-5c9f98be2b243b47d24d0964",
+      "filters": {
+        "account": "morgan",
+        "source_ip": "203.0.113.74",
+        "host": null,
+        "action": null,
+        "outcome": null,
+        "resource": null,
+        "session_id": null,
+        "start": null,
+        "end": null,
+        "min_bytes": null
+      },
+      "total_count": 27,
+      "total_bytes": 840000000,
+      "action_outcome_counts": {
+        "access/success": 1,
+        "download/success": 1,
+        "login/failure": 24,
+        "login/success": 1
+      },
+      "action_counts_truncated": false,
+      "first_timestamp": "2026-10-20T09:00:00.000000+00:00",
+      "last_timestamp": "2026-10-20T09:04:20.000000+00:00",
+      "returned_event_ids": [
+        "E-f418bfcc7b120c25fd1b8e47",
+        "E-4e2ba4636cd07963f949401d",
+        "E-b9eafc67a49da8c087b55f3b",
+        "E-62c6b144f1878191842a8c84",
+        "E-16c80416cddfb79edc212810",
+        "E-436cc24a70a37ebfd8b5ae9d",
+        "E-62a4f237b53a1f573937ae7c",
+        "E-8aa7d0044ce106992e4da0a6",
+        "E-8c6a4739902b99e02480fa30",
+        "E-e0c45b549ae9adf80906c0c4",
+        "E-7b9a9e0c2383336f6e7f46b1",
+        "E-70c3b3c17072e18e0bf7085e",
+        "E-c8f18c6c68399d87590eeec5",
+        "E-8db680f5d823ca31be2e34ce",
+        "E-2ecd7f93b91b9cdb609d1442",
+        "E-ec9d65428b2640cacdba5b13",
+        "E-a8355aae3ec3f3afbe5407f1",
+        "E-67fee14778eb8ca394014150",
+        "E-2421263eb257c73431298973",
+        "E-57927fb01f55a77edfbc5574",
+        "E-78ca5edcc12a06bd7cd336b1",
+        "E-cb9dc9a5b44fcd5c9b00199c",
+        "E-955a549f9e275b32ebbda981",
+        "E-afac4455b878ef2e465944c5",
+        "E-913c9796f1ace5dc29e5e5e5",
+        "E-df24520841597e17d622d586",
+        "E-17ff17e651d4d2cb0e47c3f4"
+      ],
+      "description": "Exact filtered count and byte sum, computed by DuckDB over all matching events."
+    },
+    {
+      "receipt_id": "Q-31fbd3c8a3cc94641b3e",
+      "dataset_id": "D-5c9f98be2b243b47d24d0964",
+      "filters": {
+        "account": null,
+        "source_ip": null,
+        "host": null,
+        "action": null,
+        "outcome": null,
+        "resource": null,
+        "session_id": "session-702",
+        "start": null,
+        "end": null,
+        "min_bytes": null
+      },
+      "total_count": 3,
+      "total_bytes": 840000000,
+      "action_outcome_counts": {
+        "access/success": 1,
+        "download/success": 1,
+        "login/success": 1
+      },
+      "action_counts_truncated": false,
+      "first_timestamp": "2026-10-20T09:03:20.000000+00:00",
+      "last_timestamp": "2026-10-20T09:04:20.000000+00:00",
+      "returned_event_ids": [
+        "E-913c9796f1ace5dc29e5e5e5",
+        "E-df24520841597e17d622d586",
+        "E-17ff17e651d4d2cb0e47c3f4"
+      ],
+      "description": "Exact filtered count and byte sum, computed by DuckDB over all matching events."
+    }
+  ],
+  "limitations": "Investigative aid, not a forensic certification. SHA-256 identifies imported bytes; it is not legal chain of custody. Live investigations send selected excerpts to the configured Meta API."
+}
