@@ -1,0 +1,26 @@
+{
+  "at": "2026-11-04T12:15:06.263Z",
+  "target": "loopback preview",
+  "passed": 19,
+  "checks": [
+    "anonymous visitors cannot read creator drafts",
+    "local proxy strips forged identity headers",
+    "cyclic model or manual input is rejected at the API boundary",
+    "private draft is not readable without an identity",
+    "untested games cannot be published",
+    "play sessions require their separate capability token",
+    "player payload omits answers and hidden dependencies",
+    "stale or concurrent actions cannot overwrite a newer state",
+    "completed game state survives a fresh request",
+    "unlisted games play by link and stay out of the public gallery",
+    "published games appear in the shared gallery and support anonymous play",
+    "published snapshots do not change when a draft is edited",
+    "a changed revision must be play-tested again",
+    "stale editor revisions are rejected",
+    "withdrawal also disables the direct public link",
+    "cross-origin mutations are rejected",
+    "uploaded R2 illustrations remain private before publication",
+    "publication exposes its image and withdrawal restores private access",
+    "non-image payloads cannot be uploaded as PNG illustrations"
+  ]
+}

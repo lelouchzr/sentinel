@@ -1,0 +1,127 @@
+{
+  "source": "Actual Muse Spark API generation, accepted and completed through the browser",
+  "capturedAt": "2026-11-04T11:59:30.477Z",
+  "tested": true,
+  "definition": {
+    "title": "La clé de la cuisine douce",
+    "description": "Une cuisine cosy et lumineuse où il faut observer assiettes et fruits pour ouvrir un tiroir codé, trouver une clé et sortir par la porte latérale.",
+    "story": "Après le dernier service, tu es resté seul dans la petite cuisine cosy. La porte latérale est coincée et le tiroir du chef s'est refermé sur la clé. En observant les assiettes rangées et les fruits de l'îlot, retrouve la combinaison, récupère la clé et sors doucement.",
+    "theme": "cosy",
+    "difficulty": "facile",
+    "duration": 10,
+    "image": "/scenes/kitchen.png",
+    "objects": [
+      {
+        "id": "etagere-assiettes",
+        "name": "Étagère aux assiettes",
+        "prompt": "Examiner les assiettes",
+        "action": "inspect",
+        "region": {
+          "x": 0.635,
+          "y": 0,
+          "w": 0.24,
+          "h": 0.23
+        },
+        "requires": [],
+        "code": null,
+        "itemName": null,
+        "message": "Sur l'étagère en bois à droite de la hotte, tu comptes 5 assiettes claires bien visibles : 2 sur l'étagère du haut et 3 sur celle du bas.",
+        "lockedMessage": "L'étagère est trop haute pour être vue de près sans s'approcher.",
+        "hint": "Compte les assiettes : 2 en haut, 3 en bas. Retiens le total."
+      },
+      {
+        "id": "ilot-fruits",
+        "name": "Fruits de l'îlot",
+        "prompt": "Observer les fruits",
+        "action": "inspect",
+        "region": {
+          "x": 0.47,
+          "y": 0.465,
+          "w": 0.16,
+          "h": 0.13
+        },
+        "requires": [],
+        "code": null,
+        "itemName": null,
+        "message": "Sur l'îlot central, tu observes bien 3 bananes jaunes, 1 grosse pastèque verte à rayures et 2 oranges dont une coupée en deux.",
+        "lockedMessage": "Tu es trop loin pour distinguer les fruits.",
+        "hint": "Compte chaque sorte de fruit posée sur l'îlot : bananes, pastèque, oranges."
+      },
+      {
+        "id": "tiroir-code",
+        "name": "Tiroir à code",
+        "prompt": "Composer le code à 3 chiffres",
+        "action": "code",
+        "region": {
+          "x": 0.645,
+          "y": 0.4,
+          "w": 0.12,
+          "h": 0.06
+        },
+        "requires": [
+          "etagere-assiettes",
+          "ilot-fruits"
+        ],
+        "code": "532",
+        "itemName": "petite-cle",
+        "message": "Tu composes 5-3-2 : 5 assiettes, 3 bananes, 2 oranges. Le tiroir s'ouvre ! À l'intérieur, une petite clé dorée.",
+        "lockedMessage": "Le tiroir est fermé par un cadenas à 3 chiffres. Observe d'abord les assiettes et les fruits pour deviner la combinaison.",
+        "hint": "Dans l'ordre : nombre d'assiettes, puis nombre de bananes, puis nombre d'oranges."
+      },
+      {
+        "id": "placard-ferme",
+        "name": "Placard verrouillé",
+        "prompt": "Ouvrir le placard avec la clé",
+        "action": "unlock",
+        "region": {
+          "x": 0.335,
+          "y": 0.375,
+          "w": 0.11,
+          "h": 0.13
+        },
+        "requires": [
+          "tiroir-code"
+        ],
+        "code": null,
+        "itemName": "poignee-de-porte",
+        "message": "Avec la petite clé, tu déverrouilles le placard bas près de la cuisinière. À l'intérieur est accrochée une poignée de porte amovible bien utile pour la suite.",
+        "lockedMessage": "Le placard bas est verrouillé. Il te faut la petite clé du tiroir.",
+        "hint": "La petite clé trouvée dans le tiroir à code ouvre ce placard bas."
+      },
+      {
+        "id": "sortie-cuisine",
+        "name": "Porte de sortie",
+        "prompt": "Sortir par la porte latérale",
+        "action": "exit",
+        "region": {
+          "x": 0.03,
+          "y": 0.25,
+          "w": 0.07,
+          "h": 0.46
+        },
+        "requires": [
+          "tiroir-code",
+          "placard-ferme"
+        ],
+        "code": null,
+        "itemName": null,
+        "message": "Tu fixes la poignée trouvée dans le placard sur la porte latérale sombre et tu sors de la cuisine cosy, le panier de fruits derrière toi. Fin du service !",
+        "lockedMessage": "La porte latérale sombre est entrebâillée mais sans poignée impossible de l'ouvrir en grand. Continue d'explorer la cuisine.",
+        "hint": "La porte latérale a besoin de sa poignée et que tu aies fouillé la cuisine avant de partir."
+      }
+    ],
+    "credits": [
+      {
+        "title": "Kitchen Background (4 styles)",
+        "author": "jcrown41",
+        "license": "CC0-1.0",
+        "url": "https://opengameart.org/content/kitchen-background-4-styles"
+      }
+    ],
+    "provenance": {
+      "method": "meta",
+      "model": "muse-spark-1.3",
+      "generatedAt": "2026-11-04T11:55:43.396Z"
+    }
+  }
+}

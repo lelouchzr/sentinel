@@ -1,0 +1,12 @@
+{
+  "source": "Actual Muse Image API generation, applied and saved through the browser",
+  "provenance": {
+    "model": "muse-image-1.0",
+    "runId": "901b109a-b9bf-41d9-804f-ac125e0ebaad",
+    "prompt": "Une petite bibliothèque mystérieuse au crépuscule, avec une horloge, un coffre, un bureau, une lampe et une porte. Illustration chaleureuse et détails bien lisibles.",
+    "generatedAt": "2026-11-04T12:13:39.928Z"
+  },
+  "sha256": "31615b728911a177de6d72c3533e8b573b99ef639d4b12de6532ae7074a7ad49",
+  "bytes": 3810556,
+  "notes": "The image was generated and saved; the old kitchen puzzle was not validated as an adventure on this different illustration."
+}
