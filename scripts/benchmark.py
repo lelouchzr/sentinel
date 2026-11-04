@@ -6,6 +6,7 @@ build/install local wheels. Run: uv sync --extra upstream && make benchmark.
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -51,7 +52,9 @@ def run():
             plan, report = job["plan"], job["report"]
             destination = service.artifact(job["id"])
             # Build only Slim's generated setuptools package, never an upstream build script.
-            subprocess.run(["uv", "build", "--wheel", "--out-dir", str(artifacts / "wheels"), str(destination)], check=True)
+            build_source = artifacts / "builds" / job["id"]
+            shutil.copytree(destination, build_source)
+            subprocess.run(["uv", "build", "--quiet", "--wheel", "--out-dir", str(artifacts / "wheels"), str(build_source)], check=True)
             result = {"repository": name, "url": url, "commit": plan["source_commit"], "entry": entry,
                       "source_files": plan["source_files"], "source_lines": plan["original_lines"],
                       "selected_lines": plan["selected_lines"], "job_id": job["id"], "report": report,

@@ -115,6 +115,8 @@ def build_package(codebase: Codebase, request: PlanRequest, plan: Plan, destinat
         for statement in module.tree.body:
             if isinstance(statement, ast.ImportFrom) and statement.module == "__future__":
                 body.append(copy.deepcopy(statement))
+        if module.tree.body and isinstance(module.tree.body[0], ast.Expr) and isinstance(module.tree.body[0].value, ast.Constant) and isinstance(module.tree.body[0].value.value, str):
+            body.insert(0, copy.deepcopy(module.tree.body[0]))
         for index in indices:
             statement = selected[(module_name, index)]
             if isinstance(statement, ast.ImportFrom) and statement.module == "__future__":
@@ -149,7 +151,9 @@ def build_package(codebase: Codebase, request: PlanRequest, plan: Plan, destinat
         '[build-system]\nrequires = ["setuptools>=75"]\nbuild-backend = "setuptools.build_meta"\n\n'
         f'[project]\nname = "{request.package_name.replace("_", "-")}"\nversion = "0.1.0"\nrequires-python = ">=3.12"\n'
         'description = "Python feature extracted with Slim"\n'
+        'readme = "README.md"\nlicense-files = ["LICENSES/*"]\n'
         'dependencies = []\n\n[tool.setuptools.packages.find]\nwhere = ["src"]\n'
+        f'\n[tool.setuptools.package-data]\n{request.package_name} = ["_slim/*.json"]\n'
     )
     license_dir = destination / "LICENSES"
     license_dir.mkdir()
@@ -167,6 +171,10 @@ def build_package(codebase: Codebase, request: PlanRequest, plan: Plan, destinat
     }
     (destination / "PROVENANCE.json").write_text(json.dumps(manifest, indent=2) + "\n")
     (destination / "scenarios.json").write_text(json.dumps([s.model_dump() for s in request.scenarios], indent=2) + "\n")
+    metadata_dir = package_root / "_slim"
+    metadata_dir.mkdir()
+    for filename in ("PROVENANCE.json", "scenarios.json"):
+        shutil.copyfile(destination / filename, metadata_dir / filename)
     (destination / "README.md").write_text(
         f"# {request.package_name}\n\nExtracted from `{request.entry}` with Slim.\n\n"
         f"```python\nfrom {request.package_name} import {entry_name}\n```\n\n"
