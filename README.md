@@ -9,12 +9,38 @@ a real local MCP subprocess, inspect original records, export a report, and resu
 No website, external database, Docker, cloud account for storage, or GPU is required.
 Live AI requires access to Meta Model API. Manual investigation works without an API key.
 
+## Why SENTINEL exists
+
+Administrators and small security teams often start an investigation with scattered logs:
+failed authentications in one file, application access in another, and an export elsewhere.
+SENTINEL brings those records into one terminal workspace so an analyst can reconstruct the
+sequence, follow accounts, hosts, IP addresses and sessions, and inspect the original evidence.
+
+Deterministic rules surface signals. Meta chooses focused searches through actual MCP tools,
+reviews gaps and alternatives, and returns structured findings. Code checks retrieved event
+references and supplies computed quantities. Cases retain evidence, notes and activity so another
+analyst can reopen the work and assess what is observed, what is a hypothesis, and what remains
+unknown. An alert is not a verdict of compromise, and a download alone does not prove exfiltration.
+
+## Watch the product demonstration
+
+[![Watch the 2 minute 24 second SENTINEL demonstration](docs/media/sentinel-demo-poster.png)](docs/media/sentinel-demo.mp4)
+
+[Watch or download the approved film](docs/media/sentinel-demo.mp4) — 2:24, 1080p, English,
+real terminal recordings and a verified live Meta investigation. The film explains ingestion,
+the local/API architecture, actual MCP searches, source inspection, review, export and reopening.
+The [editable Hyperframes project](video/README.md), [storyboard](video/STORYBOARD.md),
+[verification](video/data/delivery-verification.json) and [publication credits](video/PUBLICATION.txt)
+are included. Data and architecture graphics are explanatory illustrations, separate from actual UI.
+
 ## Install and launch
 
 Use macOS, Linux, or Windows with [uv](https://docs.astral.sh/uv/getting-started/installation/) installed.
-From a clean checkout of `projet/sentinel`:
+From a clean checkout of `main`:
 
 ```sh
+git clone git@github.com:lelouchzr/sentinel.git
+cd sentinel
 uv sync --locked --python 3.12
 uv run sentinel doctor
 uv run sentinel demo
@@ -32,8 +58,10 @@ cd /path/to/sentinel
 uv run sentinel demo
 ```
 
-The original project remains on `main` at `/path/to/original-project`.
-See [repository preservation](docs/preservation.md) before changing worktrees.
+The former Storyscape project is preserved on
+[`archive/storyscape-2026-11-05`](https://github.com/lelouchzr/sentinel/tree/archive/storyscape-2026-11-05).
+Its original local checkout remains intact at `/path/to/original-project`.
+See [repository preservation](docs/preservation.md) before changing or updating that checkout.
 
 ## Enable live Meta investigation
 
@@ -100,8 +128,9 @@ uv build
 uv run python scripts/platform_smoke.py
 ```
 
-The CI matrix uses native Ubuntu, Windows Server and macOS runners. It tests actual MCP children,
+CI currently validates macOS on `main` and `projet/sentinel`. It tests actual MCP children,
 Textual Pilot, clean wheel installation, provenance, reset and persistence without model credentials.
+Further Linux/Windows work is on hold; historical native results are documented separately.
 The optional bundled asciicast recorder remains POSIX-only; use an external recorder on Windows.
 
 ## Terminal controls

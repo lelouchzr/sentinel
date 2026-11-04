@@ -4,6 +4,8 @@ The revised product film is **144 seconds (2:24)**, 1920×1080, 30 fps, H.264/AA
 motion graphics, continuous object transitions, large animated type, an actual-event data plane, an expanded architecture diagram and real macOS terminal output, licensed instrumental music and CC0 effects.
 There is no voiceover, avatar, synthetic product UI or generated footage.
 
+[Watch the approved film in the repository](../docs/media/sentinel-demo.mp4).
+
 ## Deliverables
 
 - `renders/sentinel-demo-v3.mp4`: the versioned ready-to-upload film.
@@ -14,7 +16,8 @@ There is no voiceover, avatar, synthetic product UI or generated footage.
 - `PUBLICATION.txt`: ready-to-copy description with music attribution and recording disclosure.
 - `data/delivery-verification.json`: executed codec, frame, duration, sound and evidence checks.
 
-Large generated audio, MP4s, caches and renders stay out of Git. Small output-only terminal source
+The approved MP4 and poster are tracked separately in `../docs/media/`.
+Intermediate audio, MP4s, caches and renders stay out of Git. Small output-only terminal source
 recordings, their timestamps, the detached fictional case report, fonts and authoring code are
 committed so the film can be rebuilt. The complete ZIP also includes generated local media.
 It also contains the two original fictional CSV/JSONL source files, so source positions and

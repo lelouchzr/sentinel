@@ -1,8 +1,10 @@
 # Platform support and reproducible validation
 
 The core application targets macOS, Linux and Windows. Python 3.12 is the reference version.
-The native CI matrix is defined in `.github/workflows/sentinel-platforms.yml` and runs only on
-Sentinel code changes. No CI job has a Meta credential or makes a paid model request.
+CI is defined in `.github/workflows/sentinel-platforms.yml` and runs on Sentinel code changes
+on `main`, `projet/sentinel`, and pull requests. Its active runner is macOS; the earlier native
+Linux/Windows results below are historical evidence. No CI job has a Meta credential or makes
+a paid model request.
 
 ## Hackathon priority: macOS demonstration
 

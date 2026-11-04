@@ -1,8 +1,8 @@
-name: Sentinel platform validation
+name: Sentinel macOS validation
 
 on:
   push:
-    branches: [projet/sentinel]
+    branches: [main, projet/sentinel]
     paths:
       - "src/**"
       - "tests/**"
@@ -38,7 +38,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, windows-2025, macos-15]
+        # Further Linux/Windows work is paused; historical results remain documented.
+        os: [macos-15]
     env:
       PYTHONUTF8: "1"
       NO_COLOR: "1"

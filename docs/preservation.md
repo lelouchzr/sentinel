@@ -34,3 +34,14 @@ The two existing untracked .DS_Store files in the Sentinel checkout were left in
 The 144-second motion revision also preserved that baseline: main and its recorded SHA,
 all 210 tracked hashes, clean tracked/untracked status and all 19 ignored groups matched.
 Only the isolated Sentinel branch and generated film artifacts were changed.
+
+## Authorized promotion to main
+
+On November 5, 2026, the owner explicitly requested promoting Sentinel to remote main and
+renaming the repository. This supersedes the earlier restriction against merging into main;
+all earlier preservation statements above describe the stages before this authorization.
+The original remote main is preserved on `archive/storyscape-2026-11-05`, at the same recorded SHA.
+The original local checkout, its branch, tracked files, ignored state and services remain intact.
+Only the Sentinel copy of AGENTS.md is adapted to the Python application; the original remains
+in the old checkout and archive. See [main promotion](main-promotion.md) for access instructions
+and the distinction between the old local main and the new remote main.
