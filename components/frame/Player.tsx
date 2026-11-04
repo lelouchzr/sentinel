@@ -407,7 +407,7 @@ export default function Player({
               <div className="first-discovery">
                 <MousePointer2 size={24} />
                 <p>
-                  Une assiette, une poignée, un fruit…
+                  Un détail, une serrure, un objet…
                   <br />
                   L’exploration commence par un clic.
                 </p>
