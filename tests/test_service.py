@@ -1,4 +1,5 @@
 import shutil
+import os
 from pathlib import Path
 
 import pytest
@@ -59,6 +60,14 @@ def test_restart_marks_active_jobs_interrupted(tmp_path):
     store.transition(job["id"], {"planned"}, "extracting", "started")
     store.recover()
     assert store.get(job["id"])["status"] == "interrupted"
+
+
+def test_another_service_does_not_interrupt_a_live_worker(tmp_path):
+    store = Store(tmp_path)
+    job = store.create({}, {}, "hash")
+    store.transition(job["id"], {"planned"}, "validating", "started", owner_pid=os.getpid())
+    Store(tmp_path).recover()
+    assert store.get(job["id"])["status"] == "validating"
 
 
 def test_clone_url_cannot_address_local_network(tmp_path):

@@ -1,6 +1,7 @@
 """One orchestration layer shared by HTTP and CLI; durable, guarded transitions."""
 
 import hashlib
+import os
 import shutil
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -101,7 +102,7 @@ class ExtractionService:
             if self.settings.runner == "local" and not (self.settings.allow_execution or trusted):
                 raise SlimError("Local execution is disabled for this source. Set SLIM_ALLOW_EXECUTION=1 for trusted code, or use SLIM_RUNNER=docker.", "execution_disabled")
         allowed = {"planned"} if operation == "extract" else {"extracted", "completed"}
-        self.store.transition(job_id, allowed, "extracting" if operation == "extract" else "validating", "Building the dependency slice" if operation == "extract" else "Running original and candidate in fresh processes")
+        self.store.transition(job_id, allowed, "extracting" if operation == "extract" else "validating", "Building the dependency slice" if operation == "extract" else "Running original and candidate in fresh processes", owner_pid=os.getpid())
 
     def _perform(self, job_id: str, operation: str) -> None:
         job = self.store.get(job_id)
@@ -118,17 +119,17 @@ class ExtractionService:
                 staging.rename(destination)
             finally:
                 shutil.rmtree(staging, ignore_errors=True)
-            self.store.transition(job_id, {"extracting"}, "extracted", "Package generated with provenance and upstream licenses", manifest=manifest, artifact_hash=artifact_hash(destination))
+            self.store.transition(job_id, {"extracting"}, "extracted", "Package generated with provenance and upstream licenses", manifest=manifest, artifact_hash=artifact_hash(destination), owner_pid=None)
         else:
             if artifact_hash(destination) != job["artifact_hash"]:
                 raise SlimError("Generated artifact changed. Build a new extraction before validation.", "artifact_changed")
             report = validate(request, destination, Runner(self.settings.runner, self.settings.case_timeout))
             (destination / "validation.json").write_text(report.model_dump_json(indent=2) + "\n")
-            self.store.transition(job_id, {"validating"}, "completed", f"{report.matched} matched, {report.diverged} diverged, {report.unverified} unverified", report=report.model_dump())
+            self.store.transition(job_id, {"validating"}, "completed", f"{report.matched} matched, {report.diverged} diverged, {report.unverified} unverified", report=report.model_dump(), owner_pid=None)
 
     def _fail(self, job_id: str, operation: str, exc: Exception) -> None:
         message = str(exc) if isinstance(exc, SlimError) else f"Operation failed ({type(exc).__name__}). Check the server log."
-        self.store.transition(job_id, {"extracting", "validating"}, "failed", message, error=message)
+        self.store.transition(job_id, {"extracting", "validating"}, "failed", message, error=message, owner_pid=None)
 
     def advise(self, source: str, query: str) -> dict:
         codebase = self.codebase(source)

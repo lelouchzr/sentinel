@@ -1,6 +1,7 @@
 """Transactional local jobs and append-only progress events."""
 
 import json
+import os
 import sqlite3
 from contextlib import contextmanager
 from datetime import UTC, datetime
@@ -37,6 +38,9 @@ class Store:
                     id TEXT PRIMARY KEY, source_hash TEXT NOT NULL, payload TEXT NOT NULL
                 );
             """)
+            columns = {row[1] for row in db.execute("PRAGMA table_info(jobs)")}
+            if "owner_pid" not in columns:
+                db.execute("ALTER TABLE jobs ADD COLUMN owner_pid INTEGER")
 
     @contextmanager
     def connect(self):
@@ -87,7 +91,7 @@ class Store:
             return [dict(row) for row in db.execute("SELECT id,status,created_at,updated_at,json_extract(plan,'$.entry.name') AS name,json_extract(plan,'$.package_name') AS package_name FROM jobs ORDER BY created_at DESC LIMIT 50")]
 
     def transition(self, job_id: str, allowed: set[str], status: str, message: str, **values) -> None:
-        valid = {"manifest", "report", "error", "artifact_hash", "provider"}
+        valid = {"manifest", "report", "error", "artifact_hash", "provider", "owner_pid"}
         if not set(values) <= valid:
             raise ValueError("Unknown job fields")
         encoded = {key: json.dumps(value) if key in {"manifest", "report"} else value for key, value in values.items()}
@@ -105,6 +109,14 @@ class Store:
 
     def recover(self) -> None:
         with self.connect() as db:
-            ids = [row[0] for row in db.execute("SELECT id FROM jobs WHERE status IN ('extracting','validating')")]
-        for job_id in ids:
-            self.transition(job_id, {"extracting", "validating"}, "interrupted", "Previous process stopped before completing this operation", error="Interrupted by server restart")
+            rows = list(db.execute("SELECT id,owner_pid FROM jobs WHERE status IN ('extracting','validating')"))
+        for row in rows:
+            if row["owner_pid"]:
+                try:
+                    os.kill(row["owner_pid"], 0)
+                    continue
+                except ProcessLookupError:
+                    pass
+                except PermissionError:
+                    continue
+            self.transition(row["id"], {"extracting", "validating"}, "interrupted", "Previous process stopped before completing this operation", error="Interrupted by server restart", owner_pid=None)
