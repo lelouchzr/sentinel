@@ -46,4 +46,7 @@ async def capture():
 
 
 asyncio.run(capture())
+# Rich exports whitespace-only SVG lines; normalize presentation artifacts only.
+for image in output.glob("*.svg"):
+    image.write_text("\n".join(line.rstrip() for line in image.read_text().splitlines()) + "\n")
 print(f"Saved actual screens to {output}")
