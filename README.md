@@ -111,3 +111,6 @@ The original files are copied without pixel modifications. `public/scenes/manife
 records served filenames, source URLs and SHA-256 hashes. Credits follow each room
 into its published snapshot. The starter's vendored code retains its license notices;
 Meta's parser retains its own package license. FRAME's authored code uses MIT.
+
+The self-hosted Geist font retains its SIL OFL notice in `public/licenses/`.
+That directory also preserves the Meta SAM parser, Lucide, React and Zod notices.
