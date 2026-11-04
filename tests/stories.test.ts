@@ -18,7 +18,7 @@ import {
 for (const { slug, definition: room } of storyCatalog) {
   test(`${slug}: four illustrated chapters, valid narrative contracts and real artwork`, () => {
     assert.equal(room.chapters?.length, 4);
-    assert.equal(room.objects.length, 20);
+    assert.ok(room.objects.length >= 20);
     assert.equal(room.ending?.variants.length, 2);
     assert.equal(new Set(room.chapters!.map((c) => c.image)).size, 4);
     assert.doesNotThrow(() => validateRoom(room));
@@ -44,6 +44,14 @@ for (const { slug, definition: room } of storyCatalog) {
           object.code ?? undefined,
           false,
           object.action === "choose" ? variant.choiceId : undefined,
+          {
+            itemId: object.useItem,
+            ...(object.puzzle?.kind === "move"
+              ? { moved: object.puzzle.pieces.map((p) => p.id) }
+              : object.puzzle
+                ? { order: object.puzzle.solution }
+                : {}),
+          },
         );
         assert.ok(
           ["resolved", "complete"].includes(result.outcome),
@@ -52,7 +60,7 @@ for (const { slug, definition: room } of storyCatalog) {
         state = JSON.parse(JSON.stringify(result.state));
       }
       assert.equal(state.complete, true);
-      assert.equal(state.resolved.length, 20);
+      assert.equal(state.resolved.length, room.objects.length);
       assert.equal(state.visited?.length, 4);
       assert.ok(travelCount > 3, "story requires a return to an earlier place");
       assert.equal(

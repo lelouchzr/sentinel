@@ -151,6 +151,7 @@ Le pont est intact. Vous pouvez désormais l’installer dans le logement de la 
     },
     {
       id: "phare-malle",
+      animation: "lid",
       chapterId: "cartes",
       name: "La malle d’entretien",
       prompt: "Déverrouiller la malle",
@@ -171,6 +172,7 @@ Au fond se trouve une étiquette plus ancienne : « J. Arven, apprentie — mat�
     },
     {
       id: "phare-lampe",
+      animation: "light",
       chapterId: "cartes",
       name: "La lanterne de service",
       prompt: "Préparer la lanterne et prendre la clé",
@@ -336,6 +338,7 @@ Le nom manque sur cette fiche. Elle confirme pourtant qu’une personne a quitt�
     },
     {
       id: "phare-coffre",
+      animation: "lid",
       chapterId: "grotte",
       name: "Le coffre du débarcadère",
       prompt: "Ouvrir le coffre de courrier",
@@ -452,6 +455,7 @@ Pour le registre ancien, Nora et moi avons préparé deux possibilités : conser
     },
     {
       id: "phare-lentille",
+      animation: "light",
       chapterId: "lanterne",
       name: "La lentille et son logement conducteur",
       prompt: "Réparer la lumière et lancer le signal",
@@ -473,6 +477,7 @@ Vous inscrivez la réparation sur la fiche, avec les pièces remplacées. Le pha
     },
     {
       id: "phare-coffret",
+      animation: "lid",
       chapterId: "lanterne",
       name: "Le coffre bas de la relève",
       prompt: "Recueillir la lettre de Jeanne et le dossier",

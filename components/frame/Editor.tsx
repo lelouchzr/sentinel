@@ -915,6 +915,15 @@ export default function Editor({
                       patchObject({
                         action: e.target.value as GameObject["action"],
                         code: e.target.value === "code" ? "00" : null,
+                        puzzle: ["code", "choose", "exit"].includes(
+                          e.target.value,
+                        )
+                          ? undefined
+                          : object.puzzle,
+                        useItem:
+                          e.target.value === "code"
+                            ? undefined
+                            : object.useItem,
                         choices:
                           e.target.value === "choose"
                             ? [
@@ -941,6 +950,165 @@ export default function Editor({
                         {label}
                       </option>
                     ))}
+                  </select>
+                </label>
+                <label>
+                  Animation de l’objet
+                  <select
+                    value={object.animation ?? ""}
+                    onChange={(e) =>
+                      patchObject({
+                        animation: (e.target.value ||
+                          undefined) as GameObject["animation"],
+                      })
+                    }
+                  >
+                    <option value="">Aucune</option>
+                    {[
+                      ["drawer", "Tiroir qui s’ouvre"],
+                      ["fruits", "Fruits déplacés"],
+                      ["door", "Porte qui s’ouvre"],
+                      ["lid", "Couvercle soulevé"],
+                      ["page", "Page tournée"],
+                      ["lever", "Levier actionné"],
+                      ["light", "Lumière allumée"],
+                    ].map(([id, label]) => (
+                      <option key={id} value={id}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Manipulation
+                  <select
+                    value={object.puzzle?.kind ?? ""}
+                    disabled={
+                      ["code", "choose", "exit"].includes(object.action) ||
+                      !!object.useItem
+                    }
+                    onChange={(e) =>
+                      patchObject({
+                        puzzle: e.target.value
+                          ? {
+                              kind: e.target.value as "move" | "sequence",
+                              instruction:
+                                "Manipulez les éléments en vous aidant des indices.",
+                              pieces: [
+                                { id: "premier", label: "Premier élément" },
+                                { id: "deuxieme", label: "Deuxième élément" },
+                                { id: "troisieme", label: "Troisième élément" },
+                              ],
+                              ...(e.target.value === "sequence"
+                                ? {
+                                    solution: [
+                                      "premier",
+                                      "deuxieme",
+                                      "troisieme",
+                                    ],
+                                  }
+                                : {}),
+                            }
+                          : undefined,
+                      })
+                    }
+                  >
+                    <option value="">Aucune</option>
+                    <option value="move">Déplacer pour découvrir</option>
+                    <option value="sequence">Remettre dans l’ordre</option>
+                  </select>
+                </label>
+                {object.puzzle && (
+                  <div className="editor-puzzle">
+                    <label>
+                      Consigne
+                      <textarea
+                        rows={3}
+                        maxLength={300}
+                        value={object.puzzle.instruction}
+                        onChange={(e) =>
+                          patchObject({
+                            puzzle: {
+                              ...object.puzzle!,
+                              instruction: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </label>
+                    {object.puzzle.pieces.map((piece, i) => (
+                      <label key={piece.id}>
+                        Élément {i + 1}
+                        <input
+                          maxLength={80}
+                          value={piece.label}
+                          onChange={(e) =>
+                            patchObject({
+                              puzzle: {
+                                ...object.puzzle!,
+                                pieces: object.puzzle!.pieces.map((p, n) =>
+                                  n === i ? { ...p, label: e.target.value } : p,
+                                ),
+                              },
+                            })
+                          }
+                        />
+                      </label>
+                    ))}
+                    {object.puzzle.kind === "sequence" && (
+                      <div className="sequence-order-editor">
+                        <span>Ordre attendu</span>
+                        {object.puzzle.solution?.map((id, i) => (
+                          <label key={i}>
+                            Position {i + 1}
+                            <select
+                              value={id}
+                              onChange={(e) => {
+                                const solution = [...object.puzzle!.solution!],
+                                  other = solution.indexOf(e.target.value);
+                                [solution[i], solution[other]] = [
+                                  solution[other],
+                                  solution[i],
+                                ];
+                                patchObject({
+                                  puzzle: { ...object.puzzle!, solution },
+                                });
+                              }}
+                            >
+                              {object.puzzle!.pieces.map((p) => (
+                                <option key={p.id} value={p.id}>
+                                  {p.label}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                <label>
+                  Objet à utiliser ici
+                  <select
+                    value={object.useItem ?? ""}
+                    disabled={!!object.puzzle || object.action === "code"}
+                    onChange={(e) =>
+                      patchObject({
+                        useItem: e.target.value || undefined,
+                        requires: e.target.value
+                          ? [...new Set([...object.requires, e.target.value])]
+                          : object.requires,
+                      })
+                    }
+                  >
+                    <option value="">Aucun</option>
+                    {room.objects
+                      .filter((o) => o.id !== object.id && o.itemName)
+                      .map((o) => (
+                        <option key={o.id} value={o.id}>
+                          {o.itemName}
+                        </option>
+                      ))}
                   </select>
                 </label>
                 {object.action === "code" && (

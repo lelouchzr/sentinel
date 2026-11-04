@@ -5,7 +5,9 @@
 FRAME turns an illustration into a browser escape game. The gallery includes four
 curated long adventures: _Le dernier service_, _Le Secret de la serre_,
 _Le Phare des marées_ and _La Vigie de la Lune_. Each has four illustrated chapters,
-20 interactions and two choice-dependent conclusions (about 30 minutes, estimated). The homepage starts with an
+20 interactions and two choice-dependent conclusions (about 30 minutes, estimated).
+_Le dernier service_ now includes 28 interactions, three manipulation puzzles,
+explicit key use and about 45 minutes of play (estimated). The homepage starts with an
 image import (PNG, JPEG or WebP, up to 10 MB) or a prompt for Muse Image. Creators can edit
 objects and clues, ask Meta Muse Spark to propose a scenario, use SAM 3.1 to
 segment an interactive object, play-test the result and publish an immutable
@@ -51,7 +53,13 @@ needed to play the built-in room or manually author and publish a game.
 
 - `muse-spark-1.3` receives the illustration and the creator's brief, and returns
   a structured proposal. Zod and the deterministic rule validator reject invalid
-  output. Creators review proposals before applying them.
+  output. Creators review proposals before applying them. Long format is selected
+  by default: 3–4 acts in the supplied illustration, 18–24 objects, at least three
+  manipulation puzzles and two endings. These acts reuse the supplied image; they
+  do not imply that additional scenes were generated. Short format retains one
+  room with 4–8 objects. A long response can take several minutes; requests are
+  bounded to five minutes and never retried automatically. Truncated/invalid
+  replies are rejected without replacing the previous draft.
 - `sam-3.1` receives the illustration and a box identifying an object. The official
   `@meta-sam/parser` decodes the returned mask. Creators inspect the contour before
   keeping it. Saved masks include their model/run provenance.
@@ -103,7 +111,18 @@ The player adds chapter arrival cards, a map for revisiting unlocked places,
 scene transitions, subtle camera movement and scene-specific particles. Targets
 and artwork share the same transform. Animation respects reduced-motion settings
 and can be paused. A procedural soundscape is off by default and starts only
-after an explicit gesture. There is no generated video or voice-over.
+after an explicit gesture. There is no generated video or voice-over. Object interactions now open a
+close-up workbench. Drawer fronts, lids and fruits are separate layers made from
+the illustration's pixels; resolved actions persist after reload. SAM contours,
+when present, delimit the moving artwork. Move and sequence puzzles and explicit
+inventory-item use are checked on the server. Puzzle answers are redacted from
+player payloads. Keyboard buttons accompany pointer dragging. Animations pause
+under reduced-motion preferences.
+
+The kitchen uses an auxiliary empty-bowl background plate edited with OpenAI's
+built-in Imagegen, with original Meta image preserved. It is credited separately;
+`public/motion/provenance.json` records its source, SHA-256 and edit prompt. This
+asset is not labeled as a Meta generation.
 
 The editor preserves chapter/choice definitions, shows the selected chapter's
 objects and image, edits chapter prose/gates and ending variants, and sends that
@@ -123,6 +142,12 @@ backtracking, ending/journal persistence, redaction, target overlap and illustra
 hashes. `tests/story-api.integration.ts` exercises all eight routes through D1,
 including invalid travel, forged choices, revision conflicts and a published
 secondary chapter image whose access is revoked on withdrawal.
+
+`tests/manipulations.test.ts` checks duplicate/forged moves, hidden sequence
+answers, wrong keys, invalid interaction combinations and both endings of the
+actual Muse Spark long generation in `evidence/meta-long-interactive.json`. The
+API suite plays that recorded result through D1 as an owned draft, as well as
+the eight curated endings.
 
 `tests/game.test.ts` checks complete playthroughs, wrong codes, locked actions,
 invalid generated input, answer redaction and hint behavior. The API integration

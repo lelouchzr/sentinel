@@ -107,6 +107,7 @@ export const observatory: Room = {
     },
     {
       id: "v-coffre",
+      animation: "lid",
       chapterId: "vigie",
       name: "Le coffre de la vigie",
       prompt: "Composer le code des trois rubriques",
@@ -219,6 +220,7 @@ export const observatory: Room = {
     },
     {
       id: "v-bureau",
+      animation: "drawer",
       chapterId: "archives",
       name: "Le bureau des lettres",
       prompt: "Ouvrir le bureau avec le parcours du plan",
@@ -283,6 +285,7 @@ export const observatory: Room = {
     },
     {
       id: "v-mecanisme",
+      animation: "light",
       chapterId: "atelier-optique",
       name: "Le boîtier de cuivre",
       prompt: "Ouvrir le boîtier et prendre le cadre optique",
@@ -331,6 +334,7 @@ export const observatory: Room = {
     },
     {
       id: "v-petite-lunette",
+      animation: "light",
       chapterId: "terrasse",
       name: "Le petit télescope de terrasse",
       prompt: "Regarder le ciel indiqué sur le dessin",
@@ -347,6 +351,7 @@ export const observatory: Room = {
     },
     {
       id: "v-coffret",
+      animation: "lid",
       chapterId: "terrasse",
       name: "La dernière lettre d’Aline",
       prompt: "Soulever le couvercle du coffret",

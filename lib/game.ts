@@ -47,6 +47,25 @@ export const regionSchema = z
     (r) => r.x + r.w <= 1.001 && r.y + r.h <= 1.001,
     "La zone dépasse l’image.",
   );
+export const manipulationSchema = z
+  .object({
+    kind: z.enum(["move", "sequence"]),
+    instruction: line(300),
+    pieces: z
+      .array(z.object({ id, label: line(80) }).strict())
+      .min(3)
+      .max(6),
+    solution: z.array(id).min(3).max(6).optional(),
+  })
+  .strict();
+export const attemptSchema = z
+  .object({
+    moved: z.array(id).max(6).optional(),
+    order: z.array(id).max(6).optional(),
+    itemId: id.optional(),
+  })
+  .strict();
+export type ManipulationAttempt = z.infer<typeof attemptSchema>;
 export const objectSchema = z
   .object({
     id,
@@ -62,6 +81,11 @@ export const objectSchema = z
     hint: line(300),
     chapterId: id.optional(),
     speaker: line(60).optional(),
+    animation: z
+      .enum(["drawer", "fruits", "door", "lid", "page", "lever", "light"])
+      .optional(),
+    puzzle: manipulationSchema.optional(),
+    useItem: id.optional(),
     choices: z
       .array(z.object({ id, label: line(120), reply: line(1800) }).strict())
       .min(2)
@@ -350,6 +374,41 @@ export function validateRoom(input: unknown): Room {
       throw new GameRuleError("Dépendance dupliquée.");
     if ((object.action === "code") !== (object.code !== null))
       throw new GameRuleError(`Code incohérent pour ${object.name}.`);
+    if (
+      object.useItem &&
+      (!object.requires.includes(object.useItem) ||
+        !room.objects.find((o) => o.id === object.useItem)?.itemName)
+    )
+      throw new GameRuleError(
+        `L’objet à utiliser doit être un objet d’inventaire préalable : ${object.name}.`,
+      );
+    if (object.useItem && (object.puzzle || object.action === "code"))
+      throw new GameRuleError(
+        "Séparez l’utilisation d’un objet, le cadenas et la manipulation en étapes distinctes.",
+      );
+    if (object.puzzle) {
+      const pieces = object.puzzle.pieces.map((p) => p.id);
+      if (new Set(pieces).size !== pieces.length)
+        throw new GameRuleError(
+          "Les éléments à manipuler doivent être uniques.",
+        );
+      if (["choose", "exit", "code"].includes(object.action))
+        throw new GameRuleError(
+          "Une manipulation doit précéder le choix ou la sortie.",
+        );
+      const answer = object.puzzle.solution;
+      if (
+        object.puzzle.kind === "sequence"
+          ? !answer ||
+            answer.length !== pieces.length ||
+            new Set(answer).size !== pieces.length ||
+            answer.some((id) => !pieces.includes(id))
+          : answer !== undefined
+      )
+        throw new GameRuleError(
+          "La solution de manipulation doit correspondre exactement à ses éléments.",
+        );
+    }
     if (object.action === "exit" && object.itemName)
       throw new GameRuleError(
         "Une sortie ne peut pas être un objet d’inventaire.",
@@ -434,6 +493,7 @@ export function act(
   code?: string,
   hint = false,
   choiceId?: string,
+  attempt?: ManipulationAttempt,
 ) {
   const object = room.objects.find((o) => o.id === objectId);
   if (!object) throw new GameRuleError("Cet objet n’existe pas.");
@@ -459,6 +519,42 @@ export function act(
   state.moves++;
   if (!object.requires.every((r) => state.resolved.includes(r)))
     return { state, message: object.lockedMessage, outcome: "locked" as const };
+  if (
+    !state.resolved.includes(object.id) &&
+    object.useItem &&
+    attempt?.itemId !== object.useItem
+  )
+    return {
+      state,
+      message: "Choisissez dans votre inventaire l’objet à utiliser ici.",
+      outcome: "needs_item" as const,
+    };
+  if (!state.resolved.includes(object.id) && object.puzzle) {
+    const puzzle = object.puzzle;
+    const proposed = puzzle.kind === "move" ? attempt?.moved : attempt?.order;
+    if (!proposed)
+      return {
+        state,
+        message: puzzle.instruction,
+        outcome: "needs_manipulation" as const,
+      };
+    const ids = puzzle.pieces.map((p) => p.id);
+    const valid =
+      proposed.length === ids.length &&
+      new Set(proposed).size === ids.length &&
+      proposed.every((id) => ids.includes(id));
+    const solved =
+      valid &&
+      (puzzle.kind === "move" ||
+        proposed.every((id, i) => id === puzzle.solution![i]));
+    if (!solved)
+      return {
+        state,
+        message:
+          "Ce n’est pas encore la bonne disposition. Relisez les indices et essayez une autre combinaison.",
+        outcome: "wrong_manipulation" as const,
+      };
+  }
   if (
     object.action === "code" &&
     !state.resolved.includes(object.id) &&
@@ -511,18 +607,46 @@ export function playerRoom(room: Room, state: GameState = initialState(room)) {
     credits: chapter?.credits ?? room.credits,
     objects: room.objects
       .filter((o) => !room.chapters || o.chapterId === chapter?.id)
-      .map(({ id, name, region, action, mask, speaker, choices }) => ({
-        id,
-        name,
-        region,
-        action,
-        mask,
-        speaker,
-        ...(choices
-          ? { choices: choices.map(({ id, label }) => ({ id, label })) }
-          : {}),
-      })),
+      .map(
+        ({
+          id,
+          name,
+          region,
+          action,
+          mask,
+          speaker,
+          choices,
+          animation,
+          puzzle,
+          useItem,
+          code,
+        }) => ({
+          id,
+          name,
+          region,
+          action,
+          mask,
+          speaker,
+          animation,
+          numericCodeLength:
+            code && /^\d{3,6}$/.test(code) ? code.length : undefined,
+          ...(puzzle
+            ? {
+                puzzle: {
+                  kind: puzzle.kind,
+                  instruction: puzzle.instruction,
+                  pieces: puzzle.pieces,
+                },
+              }
+            : {}),
+          ...(useItem ? { needsItem: true } : {}),
+          ...(choices
+            ? { choices: choices.map(({ id, label }) => ({ id, label })) }
+            : {}),
+        }),
+      ),
     totalObjects: room.objects.length,
+    interactive: room.objects.some((o) => o.animation || o.puzzle || o.useItem),
     chapterId: chapter?.id,
     ambience: chapter?.ambience,
     objective: chapter?.objective,

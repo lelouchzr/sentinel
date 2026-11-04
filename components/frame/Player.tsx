@@ -24,6 +24,7 @@ import {
   VolumeX,
   Pause,
   Sparkles,
+  Hand,
 } from "lucide-react";
 import {
   api,
@@ -45,6 +46,9 @@ import HowToPlay from "./HowToPlay";
 import SceneStage from "./SceneStage";
 import StoryArrival from "./StoryArrival";
 import { useSoundscape } from "./useSoundscape";
+import type { ManipulationAttempt } from "@/lib/game";
+import ObjectMotion from "./ObjectMotion";
+import ManipulationBench from "./ManipulationBench";
 
 export default function Player({
   slug,
@@ -74,7 +78,8 @@ export default function Player({
     [notes, setNotes] = useState<string[]>([]),
     [arrival, setArrival] = useState(false),
     [motion, setMotion] = useState(false),
-    [longEdition, setLongEdition] = useState<string>();
+    [longEdition, setLongEdition] = useState<string>(),
+    [bench, setBench] = useState<string>();
   const sound = useSoundscape(room?.ambience);
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -93,7 +98,7 @@ export default function Player({
     return () => media.removeEventListener("change", update);
   }, []);
   useEffect(() => {
-    if (!message || busy || session?.state.complete) return;
+    if (!message || busy || bench || arrival || session?.state.complete) return;
     const target = discoveryRef.current;
     if (!target) return;
     (target.querySelector<HTMLInputElement>("input") ?? target).focus({
@@ -106,7 +111,7 @@ export default function Player({
           ? "instant"
           : "smooth",
       });
-  }, [message, busy, compact]);
+  }, [message, busy, compact, bench, arrival]);
   useEffect(() => {
     let alive = true;
     async function init() {
@@ -151,7 +156,11 @@ export default function Player({
                   window.location.replace(`/jouer/${r.longEdition}`);
                   return;
                 }
-                if (!restored.room.chapters && r.room.chapters)
+                if (
+                  (!restored.room.chapters && r.room.chapters) ||
+                  restored.room.totalObjects !== r.room.totalObjects ||
+                  (!restored.room.interactive && r.room.interactive)
+                )
                   setLongEdition(slug);
                 setNotes(restored.journal ?? []);
                 if (restored.state.complete)
@@ -182,6 +191,7 @@ export default function Player({
       setSession(r);
       setRoom(r.room);
       setSelected(undefined);
+      setBench(undefined);
       setMessage("");
       setNotes([]);
       setResumed(false);
@@ -212,6 +222,7 @@ export default function Player({
     answer?: string,
     hint = false,
     choiceId?: string,
+    attempt?: ManipulationAttempt,
   ) {
     if (!session || busy || session.state.complete) return;
     setSelected(id);
@@ -231,6 +242,7 @@ export default function Player({
           code: answer,
           hint,
           choiceId,
+          attempt,
           revision: session.revision,
         }),
       });
@@ -242,6 +254,16 @@ export default function Player({
       setRoom(result.room);
       setMessage(result.message);
       setOutcome(result.outcome);
+      if (
+        [
+          "needs_code",
+          "wrong_code",
+          "needs_manipulation",
+          "wrong_manipulation",
+          "needs_item",
+        ].includes(result.outcome)
+      )
+        setBench(id);
       setNotes(result.journal ?? []);
       if (result.state.complete) onComplete?.();
     } catch (e) {
@@ -284,6 +306,7 @@ export default function Player({
       });
       setRoom(result.room);
       setSelected(undefined);
+      setBench(undefined);
       setMessage("");
       setOutcome("");
       setCode("");
@@ -402,6 +425,23 @@ export default function Player({
               </div>
             </form>
           )}
+          {session &&
+            (object.puzzle ||
+              object.animation ||
+              object.needsItem ||
+              object.action === "code") && (
+              <button
+                className="button secondary bench-reopen"
+                disabled={busy}
+                onClick={() => {
+                  if (session.state.resolved.includes(object.id))
+                    setBench(object.id);
+                  else void interact(object.id);
+                }}
+              >
+                Manipuler cet objet <Hand size={16} />
+              </button>
+            )}
           {!session?.state.complete && (
             <button
               className="text-link hint-link"
@@ -476,14 +516,14 @@ export default function Player({
         <div className="edition-note">
           <BookOpen size={18} />
           <p>
-            Cette partie appartient à l’édition courte. Une nouvelle version en
-            quatre chapitres vous attend.
+            Une version plus complète et animée de cette histoire est
+            disponible. Votre partie actuelle est conservée.
           </p>
           <a
             className="button secondary"
             href={`/jouer/${longEdition}?nouvelle=1`}
           >
-            Découvrir l’histoire longue <ArrowRight size={16} />
+            Découvrir la nouvelle version <ArrowRight size={16} />
           </a>
         </div>
       )}
@@ -610,6 +650,13 @@ export default function Player({
               </>
             }
           >
+            {session && (
+              <ObjectMotion
+                room={room}
+                resolved={session.state.resolved}
+                motion={motion}
+              />
+            )}
             {session && !session.state.complete && (
               <Hotspots
                 room={room}
@@ -727,13 +774,22 @@ export default function Player({
                 ))
               ) : (
                 <p>
-                  Les objets trouvés sont utilisés automatiquement au bon
-                  endroit.
+                  Choisissez un objet dans votre inventaire lorsqu’une serrure
+                  ou une manipulation vous le demande.
                 </p>
               )}
             </div>
           </div>
           <div className="art-credit">
+            {room.image === "/stories/kitchen-base.png" && (
+              <span>
+                Calque de la coupe vide :{" "}
+                <a href="https://openai.com" target="_blank" rel="noreferrer">
+                  OpenAI Imagegen
+                </a>{" "}
+                ·{" "}
+              </span>
+            )}
             Illustration :{" "}
             {room.credits.map((c, i) => (
               <span key={i}>
@@ -794,6 +850,22 @@ export default function Player({
           )}
         </aside>
       </div>
+      {bench && session && room.objects.find((o) => o.id === bench) && (
+        <ManipulationBench
+          key={bench}
+          room={room}
+          object={room.objects.find((o) => o.id === bench)!}
+          state={session.state}
+          busy={busy}
+          outcome={outcome}
+          message={message}
+          motion={motion}
+          onClose={() => setBench(undefined)}
+          onSubmit={(answer, attempt) =>
+            interact(bench, answer, false, undefined, attempt)
+          }
+        />
+      )}
       {arrival && session && room.chapters && (
         <StoryArrival room={room} onContinue={() => setArrival(false)} />
       )}

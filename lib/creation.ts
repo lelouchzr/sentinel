@@ -10,6 +10,7 @@ export type CreationIntent = {
   prompt?: string;
   scene?: Scene;
   brief?: string;
+  format?: "long" | "short";
   proposal?: Room;
 };
 

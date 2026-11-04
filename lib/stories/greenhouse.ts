@@ -104,6 +104,7 @@ export const greenhouse: Room = {
     },
     {
       id: "serre-meuble",
+      animation: "drawer",
       chapterId: "serre",
       name: "Le meuble vert",
       prompt: "Régler les trois chiffres du meuble",
@@ -121,6 +122,7 @@ export const greenhouse: Room = {
     },
     {
       id: "serre-coffre",
+      animation: "lid",
       chapterId: "serre",
       name: "Le coffre central",
       prompt: "Ouvrir le coffre avec la petite clé",
@@ -171,6 +173,7 @@ export const greenhouse: Room = {
     },
     {
       id: "atelier-tiroir",
+      animation: "drawer",
       chapterId: "atelier",
       name: "Le tiroir entrouvert",
       prompt: "Lire la carte dans le tiroir du bureau",
@@ -203,6 +206,7 @@ export const greenhouse: Room = {
     },
     {
       id: "atelier-boite",
+      animation: "lid",
       chapterId: "atelier",
       name: "La boîte métallique",
       prompt: "Entrer les numéros dans l’ordre du circuit",
@@ -237,6 +241,7 @@ export const greenhouse: Room = {
     },
     {
       id: "passage-lampe",
+      animation: "light",
       chapterId: "passage",
       name: "La lampe du passage",
       prompt: "Examiner la lettre près de la lampe",

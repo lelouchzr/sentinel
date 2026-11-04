@@ -25,9 +25,10 @@ export default function HowToPlay() {
           <div>
             <h3>Reliez les indices</h3>
             <p>
-              Relisez vos découvertes et saisissez les codes demandés. Les
-              objets de l’inventaire sont utilisés automatiquement au bon
-              endroit.
+              Relisez vos découvertes et saisissez les codes demandés. Certains
+              objets se manipulent en gros plan : déplacez leurs éléments ou
+              remettez-les dans l’ordre. Pour une serrure, choisissez la clé
+              dans votre inventaire lorsque le jeu vous le demande.
             </p>
           </div>
         </li>

@@ -32,9 +32,10 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
     [intent, setIntent] = useState<CreationIntent | null>(null),
     [proposal, setProposal] = useState<Room | null>(null),
     [brief, setBrief] = useState(
-      "Une aventure courte, avec des énigmes d’observation adaptées aux objets de l’image, des indices clairs et une sortie à déverrouiller.",
+      "Une histoire en plusieurs actes avec des personnages, des secrets à éclaircir, des objets à manipuler et à utiliser, des indices à recouper et un choix final qui donne deux conclusions différentes.",
     ),
-    [returnTo, setReturnTo] = useState("/atelier");
+    [returnTo, setReturnTo] = useState("/atelier"),
+    [format, setFormat] = useState<"long" | "short">("long");
   const started = useRef<string | null>(null);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -57,6 +58,7 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
         if (record.phase === "ready" && record.scene) {
           setScene(record.scene);
           if (record.brief) setBrief(record.brief);
+          if (record.format) setFormat(record.format);
           if (record.proposal) setProposal(record.proposal);
           setLoading(false);
         } else if (record.phase === "working" || record.phase === "failed") {
@@ -83,11 +85,12 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
       void putCreation({
         ...intent,
         brief,
+        format,
         proposal: proposal ?? undefined,
       }).catch(() => {});
     }, 300);
     return () => window.clearTimeout(timeout);
-  }, [brief, proposal, intent, scene]);
+  }, [brief, format, proposal, intent, scene]);
 
   async function prepare(record: CreationIntent) {
     setLoading(false);
@@ -153,7 +156,7 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
     setBusy("scenario");
     setError("");
     try {
-      const result = await post("meta/generate", { scene, brief });
+      const result = await post("meta/generate", { scene, brief, format });
       setProposal(result.room);
     } catch (e) {
       setError(errorText(e));
@@ -268,6 +271,14 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                     : "Base de création manuelle"}
                 </div>
                 <h2>{proposal.title}</h2>
+                <p className="proposal-scope">
+                  {proposal.chapters
+                    ? `${proposal.chapters.length} actes · `
+                    : ""}
+                  {proposal.objects.length} objets ·{" "}
+                  {proposal.objects.filter((o) => o.puzzle).length}{" "}
+                  manipulations · {proposal.duration} min estimées
+                </p>
                 <p className="scenario-story">{proposal.story}</p>
                 <ol className="proposal-objects">
                   {proposal.objects.map((o) => (
@@ -314,6 +325,40 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                   Décrivez l’ambiance et les énigmes. Muse Spark s’appuie sur
                   votre illustration pour proposer le jeu.
                 </p>
+                <fieldset className="story-format">
+                  <legend>La taille de votre aventure</legend>
+                  <label>
+                    <input
+                      type="radio"
+                      name="story-format"
+                      value="long"
+                      checked={format === "long"}
+                      disabled={!!busy}
+                      onChange={() => setFormat("long")}
+                    />
+                    <span>
+                      <strong>Histoire longue et interactive</strong>
+                      <small>
+                        3 à 4 actes dans votre illustration · manipulations · 2
+                        conclusions
+                      </small>
+                    </span>
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="story-format"
+                      value="short"
+                      checked={format === "short"}
+                      disabled={!!busy}
+                      onChange={() => setFormat("short")}
+                    />
+                    <span>
+                      <strong>Une courte échappée</strong>
+                      <small>Une pièce · 4 à 8 objets · une sortie</small>
+                    </span>
+                  </label>
+                </fieldset>
                 <label htmlFor="new-game-brief">
                   L’aventure que vous imaginez
                   <textarea
@@ -336,10 +381,17 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
                     <Sparkles size={16} />
                   )}{" "}
                   {busy === "scenario"
-                    ? "Muse Spark imagine les énigmes…"
+                    ? "Muse Spark écrit et relie les actes…"
                     : "Imaginer mon jeu"}
                   <ArrowRight size={16} />
                 </button>
+                {busy === "scenario" && (
+                  <p className="generation-patience" role="status">
+                    Meta écrit les actes, relie les indices et prépare les
+                    manipulations. Une histoire longue peut prendre plusieurs
+                    minutes. Gardez cette page ouverte.
+                  </p>
+                )}
                 <p className="scenario-review-note">
                   Vous relisez la proposition avant de créer le brouillon. Votre
                   image et ses crédits sont conservés.

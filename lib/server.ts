@@ -5,6 +5,7 @@ import {
   initialState,
   playerRoom,
   validateRoom,
+  attemptSchema,
   GameRuleError,
   solution,
   sceneSchema,
@@ -458,7 +459,8 @@ export async function handle(request: Request): Promise<Response> {
             (data.objectId !== undefined ||
               data.hint !== undefined ||
               data.choiceId !== undefined ||
-              data.code !== undefined)
+              data.code !== undefined ||
+              data.attempt !== undefined)
           )
             throw new ApiError(
               400,
@@ -477,6 +479,9 @@ export async function handle(request: Request): Promise<Response> {
                   data.code as string | undefined,
                   data.hint === true,
                   data.choiceId as string | undefined,
+                  data.attempt === undefined
+                    ? undefined
+                    : attemptSchema.parse(data.attempt),
                 );
           const updated = await db()
             .prepare(
@@ -608,10 +613,17 @@ export async function handle(request: Request): Promise<Response> {
               400,
               "Décrivez votre aventure en 10 à 2 000 caractères.",
             );
+          if (
+            data.format !== undefined &&
+            (typeof data.format !== "string" ||
+              !["long", "short"].includes(data.format))
+          )
+            throw new ApiError(400, "Format d’histoire invalide.");
           const generated = await generateRoom(
             scene!,
             source!.image,
             data.brief,
+            data.format === "short" ? "short" : "long",
           );
           result = {
             room: {

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
 import { storyCatalog } from "../lib/stories/index.ts";
-import { solution, discoveredMessages } from "../lib/game.ts";
+import { solution, discoveredMessages, validateRoom } from "../lib/game.ts";
 const origin = process.env.FRAME_TEST_URL ?? "http://127.0.0.1:5180";
 assert.equal(new URL(origin).hostname, "127.0.0.1");
 const checks: string[] = [];
@@ -23,18 +23,49 @@ async function request(
   });
   return { status: response.status, data: (await response.json()) as any };
 }
-for (const { slug, definition: room } of storyCatalog) {
-  const advertised = (await request(`rooms/${slug}`)).data.room;
-  assert.equal(advertised.chapters.length, 4);
-  assert.equal(advertised.totalObjects, 20);
+const generated = validateRoom(
+  JSON.parse(await readFile("evidence/meta-long-interactive.json", "utf8"))
+    .room,
+);
+const generatedDraft = await request(
+  "drafts",
+  { room: generated },
+  undefined,
+  true,
+);
+assert.equal(generatedDraft.status, 201);
+const candidates = [
+  ...storyCatalog.map((s) => ({
+    ...s,
+    draftId: undefined as string | undefined,
+  })),
+  {
+    slug: "captured-meta-long",
+    definition: generated,
+    draftId: generatedDraft.data.id,
+  },
+];
+for (const { slug, definition: room, draftId } of candidates) {
+  const advertised = draftId
+    ? (await request("play", { draftId }, undefined, true)).data.room
+    : (await request(`rooms/${slug}`)).data.room;
+  assert.equal(advertised.chapters.length, room.chapters!.length);
+  assert.equal(advertised.totalObjects, room.objects.length);
   assert.ok(
     advertised.chapters
       .slice(1)
       .every((c: any) => !("image" in c) && !("story" in c)),
   );
-  assert.equal((await request(`templates/${slug}`)).status, 401);
+  if (!draftId) assert.equal((await request(`templates/${slug}`)).status, 401);
   for (const variant of room.ending!.variants) {
-    let session = (await request("play", { slug })).data;
+    let session = (
+      await request(
+        "play",
+        draftId ? { draftId } : { slug },
+        undefined,
+        !!draftId,
+      )
+    ).data;
     const mutate = (body: unknown) =>
       request(
         `play/${session.id}`,
@@ -73,11 +104,42 @@ for (const { slug, definition: room } of storyCatalog) {
         const bad = await mutate({ objectId: id, choiceId: "forged-choice" });
         assert.equal(bad.status, 422);
       }
+      if (object.puzzle) {
+        const prompt = await mutate({ objectId: id });
+        assert.equal(prompt.data.outcome, "needs_manipulation");
+        session = { ...session, ...prompt.data };
+        const invalid = await mutate({
+          objectId: id,
+          attempt:
+            object.puzzle.kind === "move" ? { moved: [] } : { order: [] },
+        });
+        assert.equal(invalid.data.outcome, "wrong_manipulation");
+        assert.ok(!invalid.data.state.resolved.includes(id));
+        session = { ...session, ...invalid.data };
+        const redacted = session.room.objects.find((o: any) => o.id === id);
+        assert.equal("solution" in redacted.puzzle, false);
+      }
+      if (object.useItem) {
+        const prompt = await mutate({
+          objectId: id,
+          attempt: { itemId: "forged-key" },
+        });
+        assert.equal(prompt.data.outcome, "needs_item");
+        session = { ...session, ...prompt.data };
+      }
       const previous = session.revision;
       const step = await mutate({
         objectId: id,
         code: object.code ?? undefined,
         choiceId: object.action === "choose" ? variant.choiceId : undefined,
+        attempt: {
+          itemId: object.useItem,
+          ...(object.puzzle?.kind === "move"
+            ? { moved: object.puzzle.pieces.map((p) => p.id) }
+            : object.puzzle
+              ? { order: object.puzzle.solution }
+              : {}),
+        },
       });
       assert.equal(step.status, 200);
       assert.ok(["resolved", "complete"].includes(step.data.outcome));
@@ -97,7 +159,7 @@ for (const { slug, definition: room } of storyCatalog) {
       await request(`play/${session.id}`, undefined, session.token)
     ).data;
     assert.equal(restored.state.complete, true);
-    assert.equal(restored.state.visited.length, 4);
+    assert.equal(restored.state.visited.length, room.chapters!.length);
     assert.equal(
       restored.state.choices[room.ending!.sourceObjectId],
       variant.choiceId,
@@ -153,6 +215,14 @@ for (const id of solution(fixture)) {
           objectId: id,
           code: o.code ?? undefined,
           choiceId: o.choices?.[0]?.id,
+          attempt: {
+            itemId: o.useItem,
+            ...(o.puzzle?.kind === "move"
+              ? { moved: o.puzzle.pieces.map((p) => p.id) }
+              : o.puzzle
+                ? { order: o.puzzle.solution }
+                : {}),
+          },
           revision: session.revision,
         },
         session.token,
