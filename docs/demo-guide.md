@@ -1,5 +1,9 @@
 # Three-minute demonstration guide
 
+The current recording target is the owner's Mac and macOS. Linux and Windows follow-up work
+is on hold; their historical test results are retained in [platform validation](platforms.md).
+See [demo readiness](demo-readiness.md) for completed capabilities and remaining preparation.
+
 Recommended terminal: **140×42**, dark theme, a readable 16–18 pt monospace font. Minimum tested:
 100×30. Keep system notifications and unrelated applications out of the recording. Only fictional
 example data should be visible. Do not record key entry or shell history containing credentials.

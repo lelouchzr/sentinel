@@ -207,6 +207,8 @@ uv run python scripts/validate_live.py --prompt-key
 Live Meta investigation was exercised against the included data; see [verification](docs/verification.md).
 The [demo guide](docs/demo-guide.md), [180-second narration](docs/demo-script.md) and
 [recording checklist](docs/recording-checklist.md) include exact launch, keys and honest API fallback.
+The recording target is macOS; Linux and Windows follow-up work is on hold.
+See [macOS demo readiness](docs/demo-readiness.md) for the remaining rehearsal and capture steps.
 Actual Textual captures are in [screenshots](docs/screenshots/).
 
 ## Further documentation

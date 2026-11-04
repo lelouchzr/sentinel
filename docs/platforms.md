@@ -4,6 +4,15 @@ The core application targets macOS, Linux and Windows. Python 3.12 is the refere
 The native CI matrix is defined in `.github/workflows/sentinel-platforms.yml` and runs only on
 Sentinel code changes. No CI job has a Meta credential or makes a paid model request.
 
+## Hackathon priority: macOS demonstration
+
+Linux and Windows follow-up work is on hold at the owner's request. The hackathon recording
+targets the owner's Mac and macOS only. Additional platform implementation, performance tuning
+and a manual Windows Terminal session are deferred; they are not prerequisites for recording.
+Completed validation below remains historical evidence. The existing automated CI matrix is
+retained unchanged as regression coverage; no new cross-platform work is planned for the demo.
+See [macOS demo readiness](demo-readiness.md) for the remaining recording preparation.
+
 ## Executed results
 
 The [completed native matrix](https://github.com/lelouchzr/storyscape/actions/runs/41907686724)

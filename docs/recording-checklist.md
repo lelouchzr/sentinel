@@ -2,6 +2,7 @@
 
 ## Before recording
 
+- [ ] Use macOS as the recording target. Linux and Windows follow-up is on hold.
 - [ ] Use the `projet/sentinel` worktree; leave the original project on main.
 - [ ] Run `uv sync --locked --python 3.12` and `make check`.
 - [ ] Set terminal to 140×42 and a readable dark theme. Test function keys (Fn on some Macs).
@@ -11,6 +12,9 @@
 - [ ] Reset only `.sentinel-record` generated demo state with the documented command.
 - [ ] Keep the focused question ready to paste. Do not paste credentials into the question box.
 - [ ] Read the 180-second script; its intervals total 180 seconds.
+- [ ] Complete one uninterrupted timed rehearsal of the entire script, including evidence and export.
+- [ ] Check that the current live investigation fits the script; the historical run left only about
+      3.5 seconds of margin in its 70-second interval. Do not assume that latency is repeatable.
 - [ ] Prepare the honest manual fallback if current API latency is unsuitable.
 - [ ] Optional: start `scripts/record_terminal.py`; output goes under ignored `recordings/`.
 
