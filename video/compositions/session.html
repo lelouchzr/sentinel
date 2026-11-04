@@ -1,0 +1,51 @@
+<template><style>
+@font-face{font-family:Manrope;src:url('assets/fonts/Manrope.ttf') format('truetype');font-weight:200 800}
+@font-face{font-family:JetBrains;src:url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype')}
+#root{position:absolute;inset:0;overflow:hidden;background:#f6faf9;color:#0e1724;font-family:Manrope,sans-serif}
+*{box-sizing:border-box}h1,h2,p,pre{margin:0}b,strong{font-weight:760}.mono{font-family:JetBrains,monospace}
+.clip{position:absolute}.film{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}.window{position:absolute;overflow:hidden;background:#0a1119;border-radius:22px;box-shadow:0 34px 80px #00152840}
+.title{position:absolute;font-size:104px;line-height:1.05;font-weight:760;letter-spacing:-5px}.copy{position:absolute;font-size:36px;line-height:1.4;letter-spacing:-.7px}
+.label{position:absolute;font:30px/1.45 JetBrains,monospace}.foot{position:absolute;left:120px;bottom:53px;font-size:29px;line-height:1.4;color:#526976}
+.word{display:inline-block}.mask-text{overflow:hidden}.teal{color:#41ead1}.blue{color:#164ae9}.orange{color:#ff8a50}
+.stage{position:absolute;inset:0;background:radial-gradient(ellipse at 12% 100%,#15efd0 0%,transparent 56%),radial-gradient(ellipse at 88% 0%,#1674ff 0%,transparent 65%),#1545d8}
+.plate{position:absolute;border:1px solid #ffffff65;border-radius:24px;background:linear-gradient(145deg,#ffffffeb,#ffffffd6);box-shadow:0 22px 0 #041c7540,0 45px 85px #061b6340}
+.route{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.packet{position:absolute;width:24px;height:24px;border-radius:6px;background:#41ead1;box-shadow:0 0 0 6px #41ead122}
+.tag{display:inline-block;padding:12px 23px;border:1px solid #789ba6;border-radius:12px;font:30px JetBrains;background:#fff}
+
+
+#root{color:#fff}#s-title{left:120px;top:85px;font-size:105px}#s-title span{color:#bcfff0}#s-window{left:120px;top:335px;width:1680px;height:620px}#s-camera{left:0;top:0}
+#s-track{position:absolute;left:120px;top:355px;width:1680px;height:520px;perspective:1600px}.s-node{position:absolute;width:410px;height:260px;top:0;padding:36px;background:#f4ffff;color:#14344a;border:1px solid #a9e3e5;border-radius:22px;box-shadow:0 22px 0 #00285e55;z-index:2}
+.s-node>span{font-size:29px;color:#42728c}.s-node strong{font-size:63px;line-height:1.3;letter-spacing:-3px;display:block;margin-top:20px}.s-node p{font-size:32px;margin-top:8px}#s-node0{left:10px}#s-node1{left:635px}#s-node2{left:1260px}
+#s-bar1,#s-bar2{position:absolute;top:122px;left:415px;width:225px;height:6px;background:#baffef;transform-origin:0 0}#s-bar2{left:1040px}#s-bracket{position:absolute;left:210px;top:270px;width:1260px;height:95px;border:3px solid #baffef;border-top:0;border-radius:0 0 20px 20px}#s-session{position:absolute;left:1200px;top:220px;font-size:38px;color:#123b55;background:#baffef;border-radius:12px;padding:15px 28px}
+#s-account{left:125px;top:235px;font-size:32px;color:#d6fffa}#s-before{left:125px;top:855px;font-size:33px}.foot{color:#f2ffff;background:#08275ef2;padding:9px 16px;border-radius:8px;font-size:28px}
+</style>
+<div id="root" data-composition-id="session" data-width="1920" data-height="1080" data-motion-blur="on" data-motion-blur-shutter="180">
+<div id="s-stage" class="stage"></div><h2 id="s-title" class="title">The session is the <span>link.</span></h2>
+<div id="s-window" class="window" data-layout-allow-overflow><div id="s-camera" class="camera"><video id="s-film" class="clip film" data-start="0" data-duration="5.0" data-media-start="78.4297" data-hf-media-start-basis="local" data-playback-rate="0.5000000" data-track-index="0" src="assets/captures/workflow.mp4" muted playsinline data-motion-blur="off"></video></div></div>
+<div id="s-track"><div id="s-node0" class="s-node" data-layout-allow-overflow><span class="mono">09:03:20 UTC</span><strong>Login</strong><p>identity-01</p></div><div id="s-node1" class="s-node" data-layout-allow-overflow><span class="mono">09:03:40 UTC</span><strong>Access</strong><p>portal-02</p></div><div id="s-node2" class="s-node" data-layout-allow-overflow><span class="mono">09:04:20 UTC</span><strong>Download</strong><p>840 MB · storage-01</p></div><div id="s-bar1"></div><div id="s-bar2"></div><div id="s-bracket"></div></div><span id="s-session" class="mono">session-702</span>
+<div id="s-account" class="label">morgan · 203.0.113.74</div>
+<p id="s-before" class="copy">24 earlier failures · Same account and source IP</p>
+<p id="s-foot" class="foot">Explicit identifiers connect records. Time adjacency alone does not.</p>
+</div>
+<script>const tl=gsap.timeline({paused:true});
+
+tl.fromTo('#s-title',{x:-100,opacity:0},{x:0,opacity:1,duration:.65,ease:'expo.out'},0);
+tl.fromTo('#s-window',{scale:.9,opacity:0},{scale:1,opacity:1,duration:.7,ease:'power4.out'},0);tl.set('#s-camera',{scale:1.2,x:-60,y:-120},0);
+tl.to('#s-window',{scale:.5,y:190,opacity:0,duration:.65,ease:'power3.inOut'},3.5);
+tl.fromTo('#s-account',{opacity:0},{opacity:1,duration:.3},3.8);
+tl.fromTo('#s-node0',{x:-300,opacity:0},{x:0,opacity:1,duration:.65,ease:'back.out(1.3)'},4.0);
+tl.fromTo('#s-node1',{y:100,opacity:0},{y:0,opacity:1,duration:.65,ease:'back.out(1.3)'},4.65);
+tl.fromTo('#s-bar1',{scaleX:0},{scaleX:1,duration:.5,ease:'power2.inOut'},5.25);
+tl.fromTo('#s-node2',{y:100,opacity:0},{y:0,opacity:1,duration:.65,ease:'back.out(1.3)'},5.3);
+tl.fromTo('#s-bar2',{scaleX:0},{scaleX:1,duration:.5,ease:'power2.inOut'},5.95);
+tl.fromTo('#s-bracket',{scaleX:.2,opacity:0},{scaleX:1,opacity:1,duration:.7,ease:'power3.out'},6.5);
+tl.fromTo('#s-session',{scale:.6,opacity:0},{scale:1,opacity:1,duration:.7,ease:'elastic.out(1,.65)'},.5);
+tl.fromTo('#s-before',{opacity:0},{opacity:1,duration:.3},8.7);
+tl.to('#s-account',{opacity:0,duration:.25},11.4);
+tl.to('#s-node2',{x:-625,y:55,scaleX:4.7,scaleY:4.2,borderRadius:0,duration:.7,ease:'power3.inOut'},12.0);
+tl.to('#s-title,#s-account,#s-before,#s-foot,#s-session,#s-bracket,#s-node0,#s-node1,#s-bar1,#s-bar2',{opacity:0,duration:.25},12.0);
+tl.to('#s-node2>*',{opacity:0,duration:.2},12.0);
+
+window.__timelines=window.__timelines||{};window.__timelines['session']=tl;</script></template>

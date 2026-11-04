@@ -1,0 +1,44 @@
+{
+  "source_assets": {
+    "assets/fonts/JetBrainsMono-Regular.ttf": {
+      "sha256": "e6fd0d7e91550b3ed2b735d4312474362c4716edc4fc0577a0f61ed782d5aed1",
+      "bytes": 270224
+    },
+    "assets/fonts/Manrope.ttf": {
+      "sha256": "3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6",
+      "bytes": 164700
+    },
+    "assets/audio/cipher-original.mp3": {
+      "sha256": "d3d0614535a61d748e2fd8d5117fc4d781022a7624794802a2462d8af3fdd522",
+      "bytes": 9252699
+    },
+    "assets/audio/switch_003.ogg": {
+      "sha256": "ca12dd32103f401481d5aff56d5e9831174e99bb577139c09b07d046eb8b837e",
+      "bytes": 9653
+    },
+    "assets/vendor/gsap.min.js": {
+      "sha256": "c174bfce53a729418d57a8ad8625e7247c793a22fef8e2851e3cfa3de9cd8280",
+      "bytes": 72779
+    },
+    "source-captures/reopen.marks.json": {
+      "sha256": "f1d2aaa4cee45527cd8141c6bed60b410082bff7a788d7562ddc286348f63360",
+      "bytes": 111
+    },
+    "source-captures/workflow.marks.json": {
+      "sha256": "a5b5efc624fa3f7bed0442bee87befee086ed87108ec82d7cec724bac53a5b42",
+      "bytes": 649
+    },
+    "source-captures/reopen.cast": {
+      "sha256": "98e708ce13261e5e271d7546051ca25af8a0e09ac9506717699b7d7e74c0631f",
+      "bytes": 216179
+    },
+    "source-captures/capture.json": {
+      "sha256": "5b001e25aaefe6e37fbae66bc14f61836f2f4c078bfe08ccc5321aa035f16fc3",
+      "bytes": 682
+    },
+    "source-captures/workflow.cast": {
+      "sha256": "9a13610c2f87c083b6a806b1d1ba529080f928686cba6841b795669e8935c7c7",
+      "bytes": 1874554
+    }
+  }
+}

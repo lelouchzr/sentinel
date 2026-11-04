@@ -1,0 +1,51 @@
+<template><style>
+@font-face{font-family:Manrope;src:url('assets/fonts/Manrope.ttf') format('truetype');font-weight:200 800}
+@font-face{font-family:JetBrains;src:url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype')}
+#root{position:absolute;inset:0;overflow:hidden;background:#f6faf9;color:#0e1724;font-family:Manrope,sans-serif}
+*{box-sizing:border-box}h1,h2,p,pre{margin:0}b,strong{font-weight:760}.mono{font-family:JetBrains,monospace}
+.clip{position:absolute}.film{position:absolute;inset:0;width:1680px;height:1008px;object-fit:contain}
+.camera{position:absolute;width:1680px;height:1008px;transform-origin:0 0}.window{position:absolute;overflow:hidden;background:#0a1119;border-radius:22px;box-shadow:0 34px 80px #00152840}
+.title{position:absolute;font-size:104px;line-height:1.05;font-weight:760;letter-spacing:-5px}.copy{position:absolute;font-size:36px;line-height:1.4;letter-spacing:-.7px}
+.label{position:absolute;font:30px/1.45 JetBrains,monospace}.foot{position:absolute;left:120px;bottom:53px;font-size:29px;line-height:1.4;color:#526976}
+.word{display:inline-block}.mask-text{overflow:hidden}.teal{color:#41ead1}.blue{color:#164ae9}.orange{color:#ff8a50}
+.stage{position:absolute;inset:0;background:radial-gradient(ellipse at 12% 100%,#15efd0 0%,transparent 56%),radial-gradient(ellipse at 88% 0%,#1674ff 0%,transparent 65%),#1545d8}
+.plate{position:absolute;border:1px solid #ffffff65;border-radius:24px;background:linear-gradient(145deg,#ffffffeb,#ffffffd6);box-shadow:0 22px 0 #041c7540,0 45px 85px #061b6340}
+.route{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.packet{position:absolute;width:24px;height:24px;border-radius:6px;background:#41ead1;box-shadow:0 0 0 6px #41ead122}
+.tag{display:inline-block;padding:12px 23px;border:1px solid #789ba6;border-radius:12px;font:30px JetBrains;background:#fff}
+
+
+#root{color:#fff}#w-title{left:120px;top:60px;width:1200px;height:150px;font-size:128px;letter-spacing:-6px}#w-sub{left:125px;top:222px;font-size:39px;color:#d1f9ff}
+#w-window{left:120px;top:320px;width:1680px;height:645px}#w-camera{left:0;top:0}
+#w-total,#w-alerts{position:absolute;top:375px;left:1120px;width:590px;color:#fff;z-index:3;background:#0a1119ed;padding:28px 36px;border-left:4px solid #41ead1}
+#w-total strong,#w-alerts strong{font-size:90px;letter-spacing:-5px;display:block;line-height:1.1}#w-total span,#w-alerts span{font-size:32px;display:block;margin-top:12px}
+#w-alerts{top:660px}#w-alerts strong{font-size:74px}#w-signal{left:980px;top:575px;width:750px;padding:34px 40px;color:#102352}
+#w-signal span{font-size:31px;color:#2d56c8}#w-signal b{font-size:42px;letter-spacing:-1.8px;display:block;margin-top:16px}#w-signal p{font-size:32px;margin-top:20px}.foot{color:#d3f6ff}
+</style>
+<div id="root" data-composition-id="workspace" data-width="1920" data-height="1080" data-motion-blur="on" data-motion-blur-shutter="180">
+<div class="stage"></div>
+<div id="w-title" class="title mask-text" data-layout-allow-overflow data-layout-allow-occlusion><span><span id="wn-0" class="word" data-layout-allow-occlusion>SENTINEL</span></span></div>
+<p id="w-sub" class="copy">Rules surface signals. Meta investigates.</p>
+<div id="w-window" class="window" data-layout-allow-overflow><div id="w-camera" class="camera"><video id="w-film" class="clip film" data-start="0" data-duration="12.8" data-media-start="5.4590" data-hf-media-start-basis="local" data-playback-rate="0.6500000" data-track-index="0" src="assets/captures/workflow.mp4" muted playsinline data-motion-blur="off"></video></div></div>
+<div id="w-total"><strong>3,542</strong><span>imported events</span></div>
+<div id="w-alerts"><strong>15</strong><span>signals · 3 rules</span></div>
+<div id="w-signal" class="plate"><span class="mono">AUTH-002</span><b>Failures → successful login</b><p>Open the signal as a case</p></div>
+<p id="w-foot" class="foot">Actual terminal capture · Alert severity is not certainty</p>
+</div>
+<script>const tl=gsap.timeline({paused:true});
+
+tl.fromTo('#w-title .word',{y:180},{y:0,duration:.7,ease:'expo.out'},0);
+tl.fromTo('#w-sub',{opacity:0},{opacity:1,duration:.3},.65);
+tl.fromTo('#w-window',{scale:.28,y:200,opacity:0},{scale:1,y:0,opacity:1,duration:.9,ease:'power4.out'},.15);
+tl.set('#w-camera',{scale:1},0);
+tl.fromTo('#w-total',{x:100,opacity:0},{x:0,opacity:1,duration:.6,ease:'expo.out'},1.5);
+tl.fromTo('#w-alerts',{x:100,opacity:0},{x:0,opacity:1,duration:.6,ease:'expo.out'},2.4);
+tl.to('#w-total,#w-alerts',{x:180,opacity:0,duration:.35,ease:'power2.in'},4.7);
+tl.to('#w-camera',{scale:1.65,x:-14,y:-190,duration:.65,ease:'power3.inOut'},4.8);
+tl.fromTo('#w-signal',{y:120,opacity:0},{y:0,opacity:1,duration:.7,ease:'back.out(1.2)'},5.5);
+tl.to('#w-signal',{y:-75,opacity:0,duration:.35,ease:'power2.in'},9.4);
+tl.to('#w-camera',{scale:1.08,x:-260,y:-80,duration:.65,ease:'power3.inOut'},9.5);
+tl.to('#w-title,#w-sub,#w-foot',{opacity:0,duration:.3},11.7);
+tl.to('#w-window',{scale:.3,x:-590,y:-65,opacity:0,duration:.7,ease:'power3.inOut'},12.0);
+
+window.__timelines=window.__timelines||{};window.__timelines['workspace']=tl;</script></template>

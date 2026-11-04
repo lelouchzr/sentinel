@@ -1,0 +1,21 @@
+{
+  "name": "sentinel-demo-film",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Editable Hyperframes film built from real SENTINEL terminal recordings.",
+  "scripts": {
+    "preview": "hyperframes preview --port 3015",
+    "check": "hyperframes check --json",
+    "render": "hyperframes render --fps 30 --quality delivery --workers 2 --output renders/sentinel-demo.mp4",
+    "snapshots": "hyperframes snapshot --review"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "gsap": "3.14.2",
+    "hyperframes": "0.9.13"
+  },
+  "overrides": {"undici": "7.30.1"}
+}

@@ -1,215 +1,260 @@
-# Storyscape
+# SENTINEL
 
-**Images that come to life.**
+**From scattered events to defensible investigations.**
 
-Source repository: [lelouchzr/storyscape](https://github.com/lelouchzr/storyscape).
-The application lives at the repository root. Its original FRAME development
-history is retained. The former Slim project is preserved on
-[`archive/slim-2026-11-04`](https://github.com/lelouchzr/storyscape/tree/archive/slim-2026-11-04).
+An interactive terminal workspace for investigating authentication, application and file activity.
+Import CSV/JSONL, detect transparent signals, open a case, let Meta choose evidence searches through
+a real local MCP subprocess, inspect original records, export a report, and resume later.
 
-The deployed Site remains owner-private. The existing Site URL and project ID
-continue to serve the same D1/R2 data and existing creator drafts.
+No website, external database, Docker, cloud account for storage, or GPU is required.
+Live AI requires access to Meta Model API. Manual investigation works without an API key.
 
-Storyscape turns an illustration into a browser escape game. The gallery includes four
-curated long adventures: _The Last Service_, _The Greenhouse Secret_,
-_The Tidal Lighthouse_ and _Moonwatch_. Each has four illustrated chapters,
-20 interactions and two choice-dependent conclusions (about 30 minutes, estimated).
-_The Last Service_ now includes 28 interactions, three manipulation puzzles,
-explicit key use and about 45 minutes of play (estimated). The homepage starts with an
-image import (PNG, JPEG or WebP, up to 10 MB) or a prompt for Muse Image. Creators can edit
-objects and clues, ask Meta Muse Spark to propose a scenario, use SAM 3.1 to
-segment an interactive object, play-test the result and publish an immutable
-version to a shared gallery.
+## Why SENTINEL exists
 
-All application copy, curated adventures and generation instructions use English.
-Known saved French stories have an English presentation layer; the original
-snapshots, puzzle codes, session capabilities and generation provenance are preserved.
-English routes are `/studio`, `/my-creations` and `/play/<slug>`. Existing French
-routes and story links remain valid for saved bookmarks and play sessions.
+Administrators and small security teams often start an investigation with scattered logs:
+failed authentications in one file, application access in another, and an export elsewhere.
+SENTINEL brings those records into one terminal workspace so an analyst can reconstruct the
+sequence, follow accounts, hosts, IP addresses and sessions, and inspect the original evidence.
 
-## Run locally
+Deterministic rules surface signals. Meta chooses focused searches through actual MCP tools,
+reviews gaps and alternatives, and returns structured findings. Code checks retrieved event
+references and supplies computed quantities. Cases retain evidence, notes and activity so another
+analyst can reopen the work and assess what is observed, what is a hypothesis, and what remains
+unknown. An alert is not a verdict of compromise, and a download alone does not prove exfiltration.
 
-Requires Node.js 22.13 or later. The supplied Vinext runtime uses React, TypeScript,
-Cloudflare D1 and R2. Application records are persisted on the server, not in the
-browser. Browser storage holds the current player's session capability and a
-short-lived creation intent in IndexedDB. This preserves the file or prompt
-through navigation/sign-in. Ready scenes resume without repeating a model call;
-failed or interrupted image creation requires an explicit retry. Imported images
-are normalized to a bounded PNG before upload. A new scenario needs only a scene,
-never the kitchen's puzzle definition. The manual authoring option remains available.
+## Watch the product demonstration
 
-The gallery and navigation expose a dedicated play entry and a short how-to-play
-guide. Interactive regions are visible by default. On small screens discoveries
-and code inputs sit immediately below the scene; focus follows the returned
-interaction. The server restores only already-earned discovery messages with a
-saved session, including the ending. Restarting an unfinished game requires a
-confirmation. Creators can use **Play privately** in their library to test an
-owned draft without publishing it; draft authorization still applies.
+[![Watch the 2 minute 24 second SENTINEL demonstration](docs/media/sentinel-demo-poster.png)](docs/media/sentinel-demo.mp4)
+
+[Watch or download the approved film](docs/media/sentinel-demo.mp4) — 2:24, 1080p, English,
+real terminal recordings and a verified live Meta investigation. The film explains ingestion,
+the local/API architecture, actual MCP searches, source inspection, review, export and reopening.
+The [editable Hyperframes project](video/README.md), [storyboard](video/STORYBOARD.md),
+[verification](video/data/delivery-verification.json) and [publication credits](video/PUBLICATION.txt)
+are included. Data and architecture graphics are explanatory illustrations, separate from actual UI.
+
+## Install and launch
+
+Use macOS, Linux, or Windows with [uv](https://docs.astral.sh/uv/getting-started/installation/) installed.
+From a clean checkout of `main`:
 
 ```sh
-npm ci
-npm run build
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_fair_pete_wisdom.sql
-npm run dev -- --port 5180 --hostname 127.0.0.1
+git clone git@github.com:lelouchzr/sentinel.git
+cd sentinel
+uv sync --locked --python 3.12
+uv run sentinel doctor
+uv run sentinel demo
 ```
 
-Open http://127.0.0.1:5180. The portable starter simulates a single creator
-identity only for loopback development; use the sign-in link in the interface.
-The production Site uses platform-managed Sign in with ChatGPT. No production
-authentication cookies or test identities are implemented by Storyscape.
+`demo` is the single demonstration command. It generates 3,542 deterministic fictional records in
+`.sentinel-sources`, imports them into `.sentinel`, runs three rules, and opens the Textual workspace.
+A repeated launch preserves cases and does not duplicate unchanged events. Allow a few seconds for
+first ingestion. The default dataset produces 15 alerts; every displayed value comes from storage.
 
-Export `MODEL_API_KEY` in the environment before starting local development to
-use Meta. Hosted secrets are configured in Sites and injected at runtime. The
-key is never returned by the health endpoint or sent to the browser. No key is
-needed to play the built-in room or manually author and publish a game.
+In the checkout created for this task:
 
-## Meta integration
+```sh
+cd /path/to/sentinel
+uv run sentinel demo
+```
 
-- `muse-spark-1.3` receives the illustration and the creator's brief, and returns
-  a structured proposal. Zod and the deterministic rule validator reject invalid
-  output. Creators review proposals before applying them. Long format is selected
-  by default: 3–4 acts in the supplied illustration, 18–24 objects, at least three
-  manipulation puzzles and two endings. These acts reuse the supplied image; they
-  do not imply that additional scenes were generated. Short format retains one
-  room with 4–8 objects. A long response can take several minutes; requests are
-  bounded to five minutes and never retried automatically. Truncated/invalid
-  replies are rejected without replacing the previous draft.
-- `sam-3.1` receives the illustration and a box identifying an object. The official
-  `@meta-sam/parser` decodes the returned mask. Creators inspect the contour before
-  keeping it. Saved masks include their model/run provenance.
-- `muse-image-1.0` creates an optional original interior illustration, stored in R2
-  with its generation provenance. The creator previews it before replacing a scene.
-- There is no fine-tuning, synthetic claim of model execution or fallback that
-  labels a manual result as AI-generated. Provider failures preserve the existing
-  draft. An audit table records each actual model request and its outcome.
+The former Storyscape project is preserved on
+[`archive/storyscape-2026-11-05`](https://github.com/lelouchzr/sentinel/tree/archive/storyscape-2026-11-05).
+Its original local checkout remains intact at `/path/to/original-project`.
+See [repository preservation](docs/preservation.md) before changing or updating that checkout.
 
-The code uses Meta Model API directly over HTTPS. Signed-in creators have a
-30-request hourly allowance. See `lib/meta.ts` for the versioned model IDs,
-structured-output schema, timeout and response validation.
+## Enable live Meta investigation
 
-## Game and publication contracts
+Set a key in the terminal that launches Sentinel. To avoid entering it into shell history:
 
-`lib/game.ts` defines a bounded ruleset. An object can be inspected, collected,
-opened with a code, unlocked, used to make a narrative choice or used as the exit. Actions can require previously
-resolved objects. Items are not consumed and actions do not undo progress.
-Chapter gates and object dependencies share the same deterministic validation.
-Travel only exposes the current scene; hints cannot be requested in another scene.
-Inventories, visited places, choices and earned journal entries persist across travel
-and reload. Later chapter images and introductions are withheld until unlocked.
-A fixed-point search checks reachability and rejects missing dependencies,
-duplicate IDs, cycles and invalid regions. This proves reachability within this
-ruleset; it does not establish that an illustration or clue is understandable.
-Creators must complete a test of the current draft revision before publishing.
+```sh
+read -rs META_API_KEY
+export META_API_KEY
+export META_BASE_URL=https://api.meta.ai/v1
+export META_MODEL=muse-spark-1.3
+uv run sentinel demo
+```
 
-Answers, hidden requirements and discovery messages stay on the server. Player
-sessions use random capability tokens and compare-and-swap revisions to prevent
-concurrent writes from losing progress. Draft access and publication changes are
-authorized against the platform's stable user ID.
+Type the key after the first command, then press Enter. In shells where `read -s` is unavailable,
+use your preferred environment/secret manager. Sentinel does not automatically load `.env` files.
+`META_API_KEY` takes precedence over the documented alias `MODEL_API_KEY`. `.env.example` contains
+configuration names only. Never put keys in source, reports or recorded terminal input.
 
-Publications are immutable snapshots. Editing a draft does not change a published
-game. Public versions appear in the gallery; unlisted versions play by link.
-Withdrawing a version also disables its direct public game URL. Uploaded images
-stay private until they are used by an active publication. Playing requires no
-account when the Site's audience is public; creating and publishing require
-sign-in. New Sites are owner-private until their audience is explicitly changed.
+**Selected log excerpts and case context are sent to the configured Meta API during live runs.**
+Event storage, deterministic rules and manual browsing run locally; AI processing is remote.
+The application never silently switches providers or selects an offline fixture.
 
-## Illustrated long editions
+In the TUI, select the first `AUTH-002` alert with Enter, press F2 and ask:
 
-`lib/stories/` contains the authored narrative definitions. The canonical gallery
-URLs omit the suffixes of the three earlier short publications. Those original
-snapshots and existing sessions remain intact; their reader offers a link to the
-long edition. A restored kitchen session also retains its original definition.
-New kitchen games start the long edition. No publication or D1 migration is needed.
+> Investigate the successful login after failures and the linked session activity. What is
+> recorded, what remains uncertain, and which evidence would establish authorization?
 
-The player adds chapter arrival cards, a map for revisiting unlocked places,
-scene transitions, subtle camera movement and scene-specific particles. Targets
-and artwork share the same transform. Animation respects reduced-motion settings
-and can be paused. A procedural soundscape is off by default and starts only
-after an explicit gesture. There is no generated video or voice-over. Object interactions now open a
-close-up workbench. Drawer fronts, lids and fruits are separate layers made from
-the illustration's pixels; resolved actions persist after reload. SAM contours,
-when present, delimit the moving artwork. Move and sequence puzzles and explicit
-inventory-item use are checked on the server. Puzzle answers are redacted from
-player payloads. Keyboard buttons accompany pointer dragging. Animations pause
-under reduced-motion preferences.
+The investigator selects MCP tools from actual results. The evidence reviewer checks support,
+gaps and alternatives. The reporter produces structured findings. Code rejects invalid references,
+renders observed facts from canonical records, and uses computed receipts for quantitative facts.
+Model hypotheses and model-authored notes remain explicitly unverified interpretations.
 
-The kitchen uses an auxiliary empty-bowl background plate edited with OpenAI's
-built-in Imagegen, with original Meta image preserved. It is credited separately;
-`public/motion/provenance.json` records its source, SHA-256 and edit prompt. This
-asset is not labeled as a Meta generation.
+Provider states distinguish missing configuration, unverified configuration, successful connection
+and failure. `doctor` checks local readiness only; it does not spend API credit.
+Default bounds: 10 model requests, 18 tool calls, 160 distinct retrieved event records, 45 seconds per request, 180 seconds overall.
+Override with `SENTINEL_MAX_MODEL_CALLS`, `SENTINEL_MAX_TOOL_CALLS`,
+`SENTINEL_REQUEST_TIMEOUT` and `SENTINEL_DEADLINE`. Paid request retries are disabled.
+Private model reasoning is neither requested for display nor persisted.
 
-The editor preserves chapter/choice definitions, shows the selected chapter's
-objects and image, edits chapter prose/gates and ending variants, and sends that
-chapter's image to SAM. Replacing one scene clears only its contours. Whole-room
-scenario replacement is disabled for chaptered stories to avoid discarding them.
+## Windows and platform checks
 
-## Checks
+The core CLI, DuckDB storage, MCP subprocess client/server and Textual UI use portable APIs.
+Native file locks use filelock (Unix flock or Windows LockFileEx); tzdata supplies IANA zones on
+systems without a timezone database. Generated CSV/JSONL bytes remain identical across platforms.
+See [platform validation](docs/platforms.md) for executed results and remaining terminal limits.
+
+In PowerShell, installation and startup use the same uv commands:
+
+```powershell
+uv sync --locked --python 3.12
+$env:META_API_KEY = [System.Net.NetworkCredential]::new("", (Read-Host "Meta API key" -AsSecureString)).Password
+uv run sentinel demo
+```
+
+The key prompt is optional for manual browsing. `META_BASE_URL` and `META_MODEL` use the documented
+defaults; PowerShell overrides use `$env:META_BASE_URL` and `$env:META_MODEL`.
+GNU Make is optional. On Windows, run its checks directly:
+
+```powershell
+uv run ruff format --check .
+uv run ruff check .
+uv run pytest -q
+uv build
+uv run python scripts/platform_smoke.py
+```
+
+CI currently validates macOS on `main` and `projet/sentinel`. It tests actual MCP children,
+Textual Pilot, clean wheel installation, provenance, reset and persistence without model credentials.
+Further Linux/Windows work is on hold; historical native results are documented separately.
+The optional bundled asciicast recorder remains POSIX-only; use an external recorder on Windows.
+
+## Terminal controls
+
+Recommended: **140 columns × 42 rows**. The workspace is also tested at **100 × 30**.
+
+| Key/action | Result |
+| --- | --- |
+| Tab / Shift+Tab, arrows | Move focus and navigate |
+| Enter on an alert | Create a case, or reopen the existing case for that alert |
+| Enter on a case | Reopen its original dataset and case timeline |
+| Enter on an event | Inspect canonical fields, original record, position and file hash |
+| F1 | Help and filter examples |
+| F2 | Focus the investigation question |
+| F3 | Focus exact search filters |
+| F4 | Show attached case evidence chronologically |
+| F5 | Export selected case as Markdown and JSON |
+| Ctrl+G | Cancel the investigation; keep completed work |
+| Ctrl+Q | Shut down cleanly |
+
+Evidence supports exact `account`, `ip`, `host`, `action`, `outcome`, `resource`, `session`, `start`,
+`end` and `min_bytes` filters combined with AND. Example:
+
+```text
+account=morgan ip=203.0.113.74 start=2026-10-20T09:00:00Z end=2026-10-20T09:10:00Z
+```
+
+Submit an empty filter to return to the dataset. Pages contain at most 100 records; counts cover all
+matches. Tables scroll vertically and horizontally; open an event for all fields on narrow terminals.
+The Case review tab accepts analyst notes. Activity shows actual operations, arguments, result counts
+and artifact paths. Function keys keep normal text-entry editing shortcuts available.
+On macOS keyboards you may need Fn for function keys. `NO_COLOR` is respected.
+
+## CLI workflow
+
+Global `--workspace` must appear **before** the command. State defaults to `SENTINEL_WORKSPACE` or
+`.sentinel`. `--json` emits machine-readable output without ANSI where shown in command help.
+
+```sh
+uv run sentinel ingest ./examples/company-logs --json
+uv run sentinel investigate ./examples/company-logs
+uv run sentinel tui
+uv run sentinel alerts --json
+uv run sentinel cases create --alert ALERT_ID --json
+uv run sentinel cases list
+uv run sentinel cases open CASE_ID
+uv run sentinel cases open CASE_ID --json
+uv run sentinel cases note CASE_ID "Check the identity-provider MFA audit trail."
+uv run sentinel run CASE_ID --question "Which session links authentication and resource access?" --json
+uv run sentinel search --account svc-backup --limit 10 --json
+uv run sentinel event EVENT_ID --json
+uv run sentinel export CASE_ID --format markdown
+uv run sentinel export CASE_ID --format json
+uv run sentinel cases status CASE_ID closed
+uv run sentinel --workspace .sentinel mcp --case CASE_ID
+```
+
+`ingest` and `investigate` run detection. Rerun explicit thresholds with:
+
+```sh
+uv run sentinel detect-rules --failures 8 --window 300 --transfer-bytes 100000000 --json
+```
+
+Exit codes: 0 success; 2 invalid input/configuration or an incomplete investigation; 3 local I/O/state
+failure; 130 interrupted CLI investigation. Typer also uses 2 for invalid command syntax.
+A TUI requires a terminal; use `demo --no-tui`, `investigate --no-tui`, or JSON commands in scripts.
+
+## Reproducible data and reset
+
+The generator uses seed **20261104**; it writes into a new or empty directory and never overwrites it.
+`examples/company-logs` is the committed reproducible dataset. Source files are opened read-only.
+The demo's generated sources remain separate from its mutable workspace.
+
+```sh
+uv run sentinel generate-data /tmp/sentinel-variant --seed 17
+uv run sentinel --workspace .sentinel-variant ingest /tmp/sentinel-variant --json
+uv run sentinel demo --reset
+```
+
+`demo --reset` **archives** a recognized generated demo workspace beside its previous path. It never
+recursively deletes a directory, never touches source datasets, and refuses a manually imported
+workspace. It preserves old cases in the archive. Close other sessions before resetting.
+See [schema and provenance](docs/input-schema.md) and [evaluation material](tests/evaluation.md).
+The evaluation key is outside the model-visible source directory and is never sent to the agent.
+
+## Tests and recording
+
+The completed [144-second Hyperframes film](video/README.md) is the current hackathon
+presentation. It uses real macOS terminal captures, English motion graphics and licensed
+instrumental music, with animated explanatory diagrams and the verified live Meta recording,
+labeled at its actual playback speed. The expanded 2:24 cut explains the architecture through
+continuous motion, animated type and a real-event data plane.
+The editable source, source recordings, publication credits and verification are in `video/`.
 
 ```sh
 make check
-# With the local development server running:
 make integration
+uv build
 ```
 
-`tests/stories.test.ts` checks all eight narrative routes, chapter gates,
-backtracking, ending/journal persistence, redaction, target overlap and illustration
-hashes. `tests/story-api.integration.ts` exercises all eight routes through D1,
-including invalid travel, forged choices, revision conflicts and a published
-secondary chapter image whose access is revoked on withdrawal.
+`make check` runs Ruff formatting/lint and pytest. `make integration` runs actual disposable local
+MCP subprocesses; it opens no network listener and never targets production. Offline model fixtures
+are clearly labeled and exist only in tests. Neither command calls Meta or reads a live API key.
+An explicit paid validation is available with:
 
-`tests/manipulations.test.ts` checks duplicate/forged moves, hidden sequence
-answers, wrong keys, invalid interaction combinations and both endings of the
-actual Muse Spark long generation in `evidence/meta-long-interactive.json`. The
-API suite plays that recorded result through D1 as an owned draft, as well as
-the eight curated endings.
+```sh
+uv run python scripts/validate_live.py --prompt-key
+```
 
-`tests/game.test.ts` checks complete playthroughs, wrong codes, locked actions,
-invalid generated input, answer redaction and hint behavior. The API integration
-suite checks private drafts, forged development identity headers, session tokens,
-revision conflicts, play-test requirements, public and unlisted publication,
-immutable snapshots, withdrawal and cross-origin rejection. It uses disposable
-loopback fixtures and never calls Meta.
+Live Meta investigation was exercised against the included data; see [verification](docs/verification.md).
+The [demo guide](docs/demo-guide.md), [180-second narration](docs/demo-script.md) and
+[recording checklist](docs/recording-checklist.md) include exact launch, keys and honest API fallback.
+The recording target is macOS; Linux and Windows follow-up work is on hold.
+See [macOS demo readiness](docs/demo-readiness.md) for the remaining rehearsal and capture steps.
+Actual Textual captures are in [screenshots](docs/screenshots/).
 
-`evidence/meta-kitchen.json` contains an actual Muse Spark scenario accepted and
-completed through the browser. Additional execution evidence records the exact
-scope of verified behavior. These results are examples, not a claim that all
-images or all model generations work.
+## Further documentation
 
-## Code map
+- [Architecture and trust boundaries](docs/architecture.md)
+- [Canonical input schema and provenance](docs/input-schema.md)
+- [MCP tools and client connection](docs/mcp.md)
+- [Known limitations](docs/limitations.md)
+- [Official references](docs/references.md)
 
-- `components/storyscape/`: gallery, player, editor, creator library and shared UI.
-- `lib/game.ts`: schema, deterministic transitions and reachability checks.
-- `lib/language.ts`, `lib/legacy-english.json`: English presentation of known saved prose, without changing rules or original snapshots.
-- `lib/story-links.ts`: English story slugs and compatibility with existing save keys.
-- `lib/server.ts`: authenticated API, D1 persistence, R2 assets and publications.
-- `lib/meta.ts`: Muse Spark and SAM API adapters.
-- `db/schema.ts`, `drizzle/`: schema and versioned migrations.
-- `public/scenes/`: original illustrations and their provenance.
-
-## Artwork and licenses
-
-The original classic kitchen artwork is by jcrown41, CC0-1.0, from
-https://opengameart.org/content/kitchen-background-4-styles.
-The Japanese room is by HachiStudio, CC0-1.0, from
-https://opengameart.org/content/japanese-room.
-
-The original files are copied without pixel modifications. `public/scenes/manifest.json`
-records served filenames, source URLs and SHA-256 hashes. Credits follow each room
-into its published snapshot. The starter's vendored code retains its license notices;
-Meta's parser retains its own package license. Storyscape’s authored code uses MIT.
-
-The self-hosted Geist font retains its SIL OFL notice in `public/licenses/`.
-That directory also preserves the Meta SAM parser, Lucide, React and Zod notices.
-
-The long editions use 16 Muse Image illustrations. Thirteen were generated for
-these chapters using real `muse-image-1.0` calls; three starting scenes were copied
-byte-for-byte from the previously approved FRAME publications (before the Storyscape rename).
-`public/stories/manifest.json` and `base-manifest.json` retain original PNG hashes,
-credits, prompts and available generation provenance. The narratives were originally authored manually. Their English localization uses
-Meta Muse Spark and was reviewed against the puzzle contracts.
-`evidence/english-translation.json` records the translation runs; original
-generation prompts and historical evidence remain unchanged.
-`node scripts/author-illustrations.mjs <prompt-list.json>` accepts hidden TTY
-stdin authorization, reuses completed assets and never automatically retries a
-paid failed call. `scripts/collect-story-art.mjs` similarly accepts hidden private
-Site authorization for read-only collection of the three original scenes.
+This is an investigative aid with three focused rules. It does not claim complete Sigma support,
+production SIEM coverage, legal chain of custody or forensic certification. An alert is a signal,
+and a recorded download does not establish malicious exfiltration.

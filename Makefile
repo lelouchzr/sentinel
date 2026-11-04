@@ -1,11 +1,10 @@
-.PHONY: check integration dev
+.PHONY: check integration demo
 check:
-	npx tsc --noEmit
-	node --experimental-strip-types --test tests/game.test.ts tests/stories.test.ts tests/manipulations.test.ts tests/language.test.ts
-	npm run build
+	uv run ruff format --check .
+	uv run ruff check .
+	uv run pytest -q
 integration:
-	mkdir -p outputs
-	node tests/api.integration.mjs
-	node --experimental-strip-types tests/story-api.integration.ts
-dev:
-	npm run dev -- --port 5180 --hostname 127.0.0.1
+	uv run pytest -q -m integration
+# No network listener: the integration transport is a disposable local stdio child.
+demo:
+	uv run sentinel demo

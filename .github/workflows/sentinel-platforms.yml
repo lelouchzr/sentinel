@@ -1,0 +1,78 @@
+name: Sentinel macOS validation
+
+on:
+  push:
+    branches: [main, projet/sentinel]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "scripts/**"
+      - "examples/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "Makefile"
+      - ".python-version"
+      - ".gitattributes"
+      - ".github/workflows/sentinel-platforms.yml"
+  pull_request:
+    paths:
+      - "src/sentinel/**"
+      - "tests/**"
+      - "scripts/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/sentinel-platforms.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sentinel-platforms-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: ${{ matrix.os }} / Python 3.12
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        # Further Linux/Windows work is paused; historical results remain documented.
+        os: [macos-15]
+    env:
+      PYTHONUTF8: "1"
+      NO_COLOR: "1"
+      META_API_KEY: ""
+      MODEL_API_KEY: ""
+      OPENAI_API_KEY: ""
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.13.6"
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install the locked environment
+        run: uv sync --locked
+      - name: Validate formatting
+        run: uv run ruff format --check .
+      - name: Validate lint
+        run: uv run ruff check .
+      - name: Validate lockfile
+        run: uv lock --check
+      - name: Build the installable package
+        run: uv build
+      - name: Validate a clean runtime-only wheel installation
+        timeout-minutes: 6
+        run: uv run python scripts/platform_smoke.py --output artifacts/platform-smoke.json
+      - name: Run unit, Textual and actual MCP subprocess tests
+        run: uv run pytest -vv --durations=10 --junitxml=artifacts/pytest.xml
+      - name: Preserve platform evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sentinel-${{ matrix.os }}
+          path: artifacts/
+          retention-days: 14
+          if-no-files-found: warn

@@ -1,0 +1,24 @@
+{
+  "workspace": ".sentinel-video-live-v2",
+  "case_id": "C-6648e4baf12a",
+  "platform": "darwin",
+  "dimensions": [
+    140,
+    42
+  ],
+  "real_terminal": true,
+  "model": "Meta Model API",
+  "manual_rehearsal": false,
+  "saved_live_case": false,
+  "question": "Trace this login and its session activity. Retrieve specific original events. Separate recorded facts from hypotheses and explain what would establish authorization. Use a small number of focused MCP searches and then conclude.",
+  "recordings": [
+    "workflow.cast",
+    "reopen.cast"
+  ],
+  "application_exit_codes": [
+    0,
+    0
+  ],
+  "new_model_calls_during_capture": 10,
+  "new_mcp_calls_during_capture": 9
+}

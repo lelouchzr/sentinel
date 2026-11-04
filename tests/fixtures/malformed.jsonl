@@ -1,0 +1,5 @@
+{"timestamp":"2026-10-20T09:00:00Z","source_type":"auth","account":"fictional-analyst","source_ip":"203.0.113.12","action":"login","outcome":"failure"}
+{"timestamp":"not-a-timestamp","source_type":"auth","action":"login","outcome":"failure"}
+{"timestamp":"2026-10-20T09:00:00Z","source_type":"file","action":"export","outcome":"success","bytes":-100}
+{invalid JSON}
+[]

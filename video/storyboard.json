@@ -1,0 +1,80 @@
+{
+  "duration": 144.0,
+  "fps": 30,
+  "frames": 4320,
+  "scenes": [
+    {
+      "id": "hook",
+      "start": 0,
+      "duration": 9.6
+    },
+    {
+      "id": "workspace",
+      "start": 9.6,
+      "duration": 12.8
+    },
+    {
+      "id": "ingestion",
+      "start": 22.4,
+      "duration": 12.8
+    },
+    {
+      "id": "architecture",
+      "start": 35.2,
+      "duration": 16
+    },
+    {
+      "id": "question",
+      "start": 51.2,
+      "duration": 6.4
+    },
+    {
+      "id": "live",
+      "start": 57.6,
+      "duration": 25.6
+    },
+    {
+      "id": "session",
+      "start": 83.2,
+      "duration": 12.8
+    },
+    {
+      "id": "source",
+      "start": 96,
+      "duration": 12.8
+    },
+    {
+      "id": "alternative",
+      "start": 108.8,
+      "duration": 9.6
+    },
+    {
+      "id": "verification",
+      "start": 118.4,
+      "duration": 12.8
+    },
+    {
+      "id": "persistence",
+      "start": 131.2,
+      "duration": 6.4
+    },
+    {
+      "id": "end",
+      "start": 137.6,
+      "duration": 6.4
+    }
+  ],
+  "case_id": "C-6648e4baf12a",
+  "agent_playback_rate": 2.0318477,
+  "review_handoff_seconds": 13.3969,
+  "report_handoff_seconds": 19.4916,
+  "actual_event_points": 3542,
+  "overlays": [
+    {
+      "id": "evidence-carrier",
+      "start": 95.0,
+      "duration": 3.6
+    }
+  ],
+  "new_model_calls_for_edit": 0
+}
