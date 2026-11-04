@@ -2,6 +2,7 @@
 
 import json
 import sqlite3
+from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
@@ -32,13 +33,35 @@ class Store:
                     FOREIGN KEY(job_id) REFERENCES jobs(id)
                 );
                 CREATE INDEX IF NOT EXISTS events_job ON events(job_id, seq);
+                CREATE TABLE IF NOT EXISTS advice (
+                    id TEXT PRIMARY KEY, source_hash TEXT NOT NULL, payload TEXT NOT NULL
+                );
             """)
 
+    @contextmanager
     def connect(self):
         db = sqlite3.connect(self.path, timeout=10)
         db.row_factory = sqlite3.Row
         db.execute("PRAGMA foreign_keys=ON")
-        return db
+        try:
+            with db:
+                yield db
+        finally:
+            db.close()
+
+    def save_advice(self, source_hash: str, payload: dict) -> dict:
+        advice_id = uuid4().hex
+        payload = {**payload, "id": advice_id}
+        with self.connect() as db:
+            db.execute("INSERT INTO advice(id,source_hash,payload) VALUES(?,?,?)", (advice_id, source_hash, json.dumps(payload)))
+        return payload
+
+    def get_advice(self, advice_id: str, expected_source_hash: str) -> dict:
+        with self.connect() as db:
+            row = db.execute("SELECT source_hash,payload FROM advice WHERE id=?", (advice_id,)).fetchone()
+            if row is None or row["source_hash"] != expected_source_hash:
+                raise SlimError("Model advice is missing or belongs to a different source revision")
+            return json.loads(row["payload"])
 
     def create(self, request: dict, plan: dict, source_hash: str) -> dict:
         job_id, timestamp = uuid4().hex, now()

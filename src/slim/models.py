@@ -71,6 +71,7 @@ class PlanRequest(Contract):
     package_name: str = "slim_feature"
     boundaries: list[Boundary] = Field(default_factory=list, max_length=10)
     scenarios: list[Scenario] = Field(default_factory=list, max_length=100)
+    advice_id: str | None = Field(default=None, max_length=32)
 
     @field_validator("package_name")
     @classmethod

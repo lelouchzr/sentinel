@@ -51,7 +51,14 @@ class ExtractionService:
         # Persist the resolved source so a moving URL cannot silently change inputs.
         request = request.model_copy(update={"source": str(codebase.root)})
         plan = codebase.plan(request)
-        return self.store.create(request.model_dump(), plan.model_dump(), source_hash(codebase))
+        fingerprint = source_hash(codebase)
+        if request.advice_id:
+            advice = self.store.get_advice(request.advice_id, fingerprint)
+            if advice["entry_id"] != request.entry:
+                raise SlimError("Model advice belongs to another entry point")
+            plan.provider = f"Meta Llama / {advice['model']}"
+            plan.advice = advice["explanation"]
+        return self.store.create(request.model_dump(), plan.model_dump(), fingerprint)
 
     def artifact(self, job_id: str) -> Path:
         self.store.get(job_id)
@@ -129,8 +136,12 @@ class ExtractionService:
         symbols = codebase.search(query, limit=20)
         if not symbols:
             symbols = codebase.search(limit=20)
-        advice = LlamaPlanner(self.settings).advise(query, symbols)
-        return {"provider": "Meta Llama", "model": self.settings.model, **advice.model_dump()}
+        excerpts = []
+        for symbol in symbols[:5]:
+            module = codebase.modules[symbol.module]
+            excerpts.append(f"# {symbol.id}\n" + "\n".join(module.source.splitlines()[symbol.line - 1:symbol.end_line]))
+        advice = LlamaPlanner(self.settings).advise(query, symbols, "\n\n".join(excerpts))
+        return self.store.save_advice(source_hash(codebase), {"provider": "Meta Llama", "model": self.settings.model, **advice.model_dump()})
 
     def archive(self, job_id: str) -> Path:
         job = self.store.get(job_id)
