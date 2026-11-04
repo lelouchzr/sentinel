@@ -2082,3 +2082,27 @@ h1 > span {
   line-height: 1.7;
   margin-top: 7px;
 }
+@media (max-width: 500px) {
+  .stage-track {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 5px;
+  }
+  .stage {
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .stage-connector {
+    display: none;
+  }
+  .breadcrumbs {
+    min-width: 0;
+    overflow: hidden;
+  }
+  .extraction-heading > div:nth-child(2) {
+    min-width: 0;
+  }
+  .feature-path {
+    flex-wrap: wrap;
+  }
+}
