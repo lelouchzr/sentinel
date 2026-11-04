@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import stat
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -36,14 +37,19 @@ def no_symlinks(path: Path) -> Path:
     path = path.expanduser().absolute()
     # macOS aliases /tmp and /var are allowed as OS-owned ancestors only.
     for part in [path, *path.parents]:
-        if part.is_symlink() and str(part) not in ("/tmp", "/var"):
-            raise SentinelError("Symlink paths are not allowed")
+        try:
+            attributes = getattr(part.lstat(), "st_file_attributes", 0)
+        except FileNotFoundError:
+            attributes = 0
+        reparse_point = attributes & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
+        if (part.is_symlink() or reparse_point) and str(part) not in ("/tmp", "/var"):
+            raise SentinelError("Symlink paths and Windows reparse points are not allowed")
     return path.resolve()
 
 
 def inside(root: Path, relative: str) -> Path:
     candidate = Path(relative)
-    if candidate.is_absolute() or ".." in candidate.parts:
+    if candidate.is_absolute() or candidate.drive or candidate.root or ".." in candidate.parts:
         raise SentinelError("Path must remain inside the Sentinel workspace")
     target = no_symlinks(root / candidate)
     if not target.is_relative_to(root.resolve()):

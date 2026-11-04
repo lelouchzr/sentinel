@@ -1,14 +1,16 @@
-"""Workspace ownership, atomic metadata and short process locks (macOS/Linux)."""
+"""Workspace ownership, atomic metadata and native cross-platform process locks."""
 
 from __future__ import annotations
 
-import fcntl
 import json
-import os
 from contextlib import contextmanager
 from pathlib import Path
 
+from filelock import FileLock, Timeout
+
 from .security import SentinelError, atomic_json, inside, no_symlinks
+
+LOCK_TIMEOUT_SECONDS = 30
 
 
 class Workspace:
@@ -53,16 +55,28 @@ class Workspace:
     @contextmanager
     def lock(self, name: str, *, blocking: bool = True):
         path = self.path(f"locks/{name}.lock")
-        fd = os.open(path, os.O_CREAT | os.O_RDWR | getattr(os, "O_NOFOLLOW", 0), 0o600)
+        # Each acquisition owns a separate instance: an independent run in the
+        # same thread must conflict rather than reenter another run's lock.
+        lock = FileLock(
+            path,
+            timeout=LOCK_TIMEOUT_SECONDS if blocking else 0,
+            mode=0o600,
+            fallback_to_soft=False,
+            preserve_lock_file=True,
+        )
         try:
-            try:
-                fcntl.flock(fd, fcntl.LOCK_EX | (0 if blocking else fcntl.LOCK_NB))
-            except BlockingIOError as exc:
-                raise SentinelError("This case already has an active investigation") from exc
+            lock.acquire(blocking=blocking)
+        except Timeout as exc:
+            message = (
+                "This case already has an active investigation"
+                if not blocking
+                else "Workspace is busy; another Sentinel operation holds its lock"
+            )
+            raise SentinelError(message) from exc
+        try:
             yield
         finally:
-            fcntl.flock(fd, fcntl.LOCK_UN)
-            os.close(fd)
+            lock.release()
 
     def activate(self, dataset_id: str) -> None:
         with self.lock("metadata"):

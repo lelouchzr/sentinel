@@ -2,19 +2,21 @@
 
 import argparse
 import codecs
-import fcntl
 import json
 import os
-import pty
 import select
 import struct
 import sys
-import termios
 import time
-import tty
 from pathlib import Path
 
 from sentinel.security import no_symlinks
+
+if os.name == "posix":
+    import fcntl
+    import pty
+    import termios
+    import tty
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--workspace", default=".sentinel-record")
@@ -22,6 +24,8 @@ parser.add_argument("--output", default="recordings/sentinel.cast")
 parser.add_argument("--columns", type=int, default=140)
 parser.add_argument("--rows", type=int, default=42)
 args = parser.parse_args()
+if os.name != "posix":
+    parser.error("The bundled recorder requires macOS or Linux; use a Windows Terminal recorder")
 if not sys.stdin.isatty():
     parser.error("Run the recorder in an interactive terminal")
 if args.columns < 80 or args.rows < 24:

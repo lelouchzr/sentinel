@@ -225,6 +225,8 @@ def generate(directory: Path, seed: int = SEED) -> dict:
         writer.writeheader()
         writer.writerows(auth)
     (directory / "services.jsonl").write_text(
-        "".join(json.dumps(r, ensure_ascii=True) + "\n" for r in other), encoding="utf-8"
+        "".join(json.dumps(r, ensure_ascii=True) + "\n" for r in other),
+        encoding="utf-8",
+        newline="\n",
     )
     return {"seed": seed, "events": len(rows), "files": ["identity.csv", "services.jsonl"]}

@@ -11,7 +11,7 @@ Live AI requires access to Meta Model API. Manual investigation works without an
 
 ## Install and launch
 
-Use macOS or Linux with [uv](https://docs.astral.sh/uv/getting-started/installation/) installed.
+Use macOS, Linux, or Windows with [uv](https://docs.astral.sh/uv/getting-started/installation/) installed.
 From a clean checkout of `projet/sentinel`:
 
 ```sh
@@ -72,6 +72,37 @@ Default bounds: 10 model requests, 18 tool calls, 160 distinct retrieved event r
 Override with `SENTINEL_MAX_MODEL_CALLS`, `SENTINEL_MAX_TOOL_CALLS`,
 `SENTINEL_REQUEST_TIMEOUT` and `SENTINEL_DEADLINE`. Paid request retries are disabled.
 Private model reasoning is neither requested for display nor persisted.
+
+## Windows and platform checks
+
+The core CLI, DuckDB storage, MCP subprocess client/server and Textual UI use portable APIs.
+Native file locks use filelock (Unix flock or Windows LockFileEx); tzdata supplies IANA zones on
+systems without a timezone database. Generated CSV/JSONL bytes remain identical across platforms.
+See [platform validation](docs/platforms.md) for executed results and remaining terminal limits.
+
+In PowerShell, installation and startup use the same uv commands:
+
+```powershell
+uv sync --locked --python 3.12
+$env:META_API_KEY = [System.Net.NetworkCredential]::new("", (Read-Host "Meta API key" -AsSecureString)).Password
+uv run sentinel demo
+```
+
+The key prompt is optional for manual browsing. `META_BASE_URL` and `META_MODEL` use the documented
+defaults; PowerShell overrides use `$env:META_BASE_URL` and `$env:META_MODEL`.
+GNU Make is optional. On Windows, run its checks directly:
+
+```powershell
+uv run ruff format --check .
+uv run ruff check .
+uv run pytest -q
+uv build
+uv run python scripts/platform_smoke.py
+```
+
+The CI matrix uses native Ubuntu, Windows Server and macOS runners. It tests actual MCP children,
+Textual Pilot, clean wheel installation, provenance, reset and persistence without model credentials.
+The optional bundled asciicast recorder remains POSIX-only; use an external recorder on Windows.
 
 ## Terminal controls
 

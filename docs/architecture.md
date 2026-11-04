@@ -39,9 +39,9 @@ new dataset identity; old records remain available to cases bound to the old ide
 rows at different positions have different stable event IDs. Inputs are not edited or copied from
 another project. The manifest has no absolute source path and every event stores its original record.
 
-DuckDB access uses a short `flock` critical section and closes each connection before releasing it.
+DuckDB access uses a short native filelock critical section (Unix flock or Windows LockFileEx) and closes each connection before releasing it.
 This avoids sharing a live database handle across the CLI/TUI and the MCP child. Cases use separate
-mutation locks and atomic JSON replacement. A nonblocking per-case run lock prevents concurrent
+mutation locks and atomic JSON replacement. Stable lock files remain inside the workspace; blocking acquisition is bounded to 30 seconds and a duplicate agent uses a nonblocking lock. A nonblocking per-case run lock prevents concurrent
 agents while permitting analyst notes and MCP evidence attachment. Completed tool results are saved
 before another model call. Cancellation/failure marks the case interrupted and retains its evidence,
 notes and artifacts. A later question starts a new bounded run using saved case context.

@@ -112,7 +112,9 @@ def demo(
             archived = previous.root.with_name(
                 previous.root.name + "-archive-" + uuid.uuid4().hex[:8]
             )
-            previous.root.rename(archived)
+        # Windows directory moves require our readiness-check handles to be
+        # closed. Other sessions must be closed before reset on every platform.
+        previous.root.rename(archived)
         if not as_json:
             console.print(f"Previous demo state archived at {archived}")
     workspace = Workspace(path)
@@ -361,7 +363,17 @@ def doctor(
         "platform": platform.system(),
         "dependencies": {
             p: version(p)
-            for p in ("typer", "textual", "rich", "duckdb", "pydantic", "mcp", "openai")
+            for p in (
+                "typer",
+                "textual",
+                "rich",
+                "duckdb",
+                "pydantic",
+                "mcp",
+                "openai",
+                "filelock",
+                "tzdata",
+            )
         },
         "meta": provider_status(),
         "workspace": str(Path(ctx.obj).absolute()),

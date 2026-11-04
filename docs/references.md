@@ -27,3 +27,10 @@ installed and tested in pyproject.toml; uv.lock records transitive versions and 
   [Rich documentation](https://rich.readthedocs.io/en/stable/),
   [pytest documentation](https://docs.pytest.org/en/stable/) and
   [Ruff documentation](https://docs.astral.sh/ruff/): CLI, validation, output and local checks.
+
+- [filelock documentation](https://py-filelock.readthedocs.io/en/stable/): native process locks,
+  bounded acquisition and persistent lock-file identity on Unix and Windows.
+- [Python zoneinfo data sources](https://docs.python.org/3/library/zoneinfo.html#data-sources):
+  explicit tzdata dependency supplies IANA zones on Windows and other systems lacking system data.
+- [uv in GitHub Actions](https://docs.astral.sh/uv/guides/integration/github/): pinned official actions,
+  locked environments and native runner matrix configuration.

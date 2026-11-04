@@ -1,13 +1,14 @@
 # Known limitations
 
-- Designed for macOS and Linux. This delivery was executed on macOS with CPython 3.12.16.
-  Linux is supported by the dependency/standard-library choices but was not executed here.
-  Windows is unsupported because workspace/run locking uses POSIX flock.
+- The core application targets macOS, Linux and Windows with Python 3.12 as the reference runtime.
+  See [platform validation](platforms.md) for actual native-runner and container results.
+  Textual Pilot verifies layout and navigation; it does not replace a manual Windows Terminal session.
+  The optional bundled terminal recorder requires POSIX APIs and is not available on Windows.
 - Three focused deterministic rules, not a SIEM, complete Sigma engine, threat-intelligence feed,
   production collector, forensic certification or legal chain-of-custody system.
 - Canonical CSV/JSONL only; no automatic vendor mappings, streaming collectors, remote scanners,
   external account administration or cloud ingestion integrations.
-- Local single-user workspaces. Cooperative locks serialize database operations. Workspace files
+- Local single-user workspaces. Native file locks serialize database operations. Workspace files
   are trusted local state. Do not share mutable databases on network filesystems or edit case JSON
   while the application is using it. Close other sessions before a demo reset.
 - The importer reads supported files into memory with explicit per-file, record and dataset bounds.
