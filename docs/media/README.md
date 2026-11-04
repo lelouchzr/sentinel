@@ -17,3 +17,9 @@ and normalized for this film. Full publication credit and source URLs are in
 
 Only this approved delivery and its poster are tracked here. Intermediate renders,
 workspaces, dependencies and large editable bundles remain ignored.
+
+`sentinel-youtube-thumbnail.png` is the generated YouTube cover: 1672×941 PNG, under 2 MB.
+It is a marketing illustration based on the actual terminal capture and film palette, not an
+additional product screenshot. Text: "SENTINEL", "LOGS → EVIDENCE", "Meta AI + MCP".
+Generation method, prompt and input hashes are recorded in `thumbnail-provenance.json`.
+The original film poster and approved MP4 remain unchanged.

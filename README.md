@@ -2,6 +2,8 @@
 
 **From scattered events to defensible investigations.**
 
+Built for the **Meta Global AI Developer Hackathon 2026**.
+
 An interactive terminal workspace for investigating authentication, application and file activity.
 Import CSV/JSONL, detect transparent signals, open a case, let Meta choose evidence searches through
 a real local MCP subprocess, inspect original records, export a report, and resume later.
@@ -39,7 +41,7 @@ Use macOS, Linux, or Windows with [uv](https://docs.astral.sh/uv/getting-started
 From a clean checkout of `main`:
 
 ```sh
-git clone git@github.com:lelouchzr/sentinel.git
+git clone https://github.com/lelouchzr/sentinel.git
 cd sentinel
 uv sync --locked --python 3.12
 uv run sentinel doctor
@@ -51,17 +53,15 @@ uv run sentinel demo
 A repeated launch preserves cases and does not duplicate unchanged events. Allow a few seconds for
 first ingestion. The default dataset produces 15 alerts; every displayed value comes from storage.
 
-In the checkout created for this task:
-
-```sh
-cd /path/to/sentinel
-uv run sentinel demo
-```
-
 The former Storyscape project is preserved on
 [`archive/storyscape-2026-11-05`](https://github.com/lelouchzr/sentinel/tree/archive/storyscape-2026-11-05).
-Its original local checkout remains intact at `/path/to/original-project`.
+Its original local checkout remains intact. Public history uses anonymized author contact and
+local-path metadata; the untouched original history is retained in a separate private archive.
 See [repository preservation](docs/preservation.md) before changing or updating that checkout.
+See the [publication review](docs/publication-review.md) for the scope and limits of the audit.
+
+The [hackathon submission kit](docs/submission.md) includes English form answers, the
+[YouTube thumbnail](docs/media/sentinel-youtube-thumbnail.png), and the video publication checklist.
 
 ## Enable live Meta investigation
 

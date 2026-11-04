@@ -45,3 +45,14 @@ The original local checkout, its branch, tracked files, ignored state and servic
 Only the Sentinel copy of AGENTS.md is adapted to the Python application; the original remains
 in the old checkout and archive. See [main promotion](main-promotion.md) for access instructions
 and the distinction between the old local main and the new remote main.
+
+## Authorized anonymized public copy
+
+The owner then requested public hackathon sharing and explicitly chose to anonymize historical
+author contact and local home paths. The original repository, original commit IDs and pull
+request refs are retained in a separate private archive. The public repository contains an
+anonymized copy of the branch history. One historical Slim screenshot with a visible personal
+home path is omitted from the public copy; its original remains intact in the private archive.
+No local project files, branches, configuration, ignored state or services were replaced by
+that publication operation. Public contributions must start from the public clone rather than
+reintroducing old private-history commits. See [publication review](publication-review.md).

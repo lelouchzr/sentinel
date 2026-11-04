@@ -25,3 +25,6 @@
   Do not alter the original Storyscape checkout or stop its running services.
 - Preserve licenses, media attribution, original generation manifests and historical evidence.
   Historical FRAME/Storyscape credits describe their original creation and must not be rewritten.
+- The public repository has anonymized Git author contact and local-path metadata. Keep the
+  untouched original repository private; do not push its old refs or PR history into public clones.
+  Use a public no-reply address for new commits. Never reintroduce private paths in public material.

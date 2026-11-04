@@ -1,0 +1,28 @@
+{
+  "created": "2026-11-05",
+  "method": "Built-in image generation tool",
+  "use": "Marketing illustration based on a genuine terminal capture; not independent evidence of application state",
+  "prompt": "Create one polished, high-impact YouTube thumbnail for the real software product SENTINEL. Use case: ads-marketing. Output a single finished landscape 16:9 image, ideally 1920x1080 or 1280x720, upload-ready. All text in English. Input reference 1 is the existing SENTINEL product film poster: use only its electric cobalt / cyan / near-black brand palette. Input reference 2 is the ACTUAL terminal application screenshot: preserve the real screenshot as a recognizable inset, do not invent or relabel its events, numbers, evidence, statuses or interface controls. Composition: bold editorial technology launch art, huge clean white 'SENTINEL' at top left, then large readable exact headline 'LOGS → EVIDENCE' across two lines below it; small exact label 'Meta AI + MCP'. The screenshot occupies the right half/lower-right as a crisp floating terminal panel with slight perspective and layered depth, without requiring tiny data to be legible. Behind it, a restrained luminous cyan evidence connection path with three simple geometric event nodes flows into the terminal; this is an abstract editorial illustration, not a claim of a product graph feature. Cobalt blue field and a subtle darker navy ground, cyan rim light, a small amber alert accent, sophisticated depth and well-directed lighting, spacious with strong hierarchy and ultra-readable at phone size. Purpose-built product launch thumbnail, not a generic hacker stock image. Keep all type within 6% safe margins. No faces, hooded hackers, robots, padlocks, stock shields, watermarks, certification badges, exaggerated security promises, fake numeric confidence, or official Meta endorsement. No YouTube play triangle. Make it dynamic, premium and clear, with the genuine terminal as product proof. Exact visible headline text: 'SENTINEL', 'LOGS → EVIDENCE', 'Meta AI + MCP'.",
+  "inputs": [
+    {
+      "reference": "docs/media/sentinel-demo-poster.png",
+      "role": "Film palette and style reference",
+      "sha256": "2f34c1cc0e178ad243598e1d1753ecc9b96b6d195271b635741e8457a7cd03c0"
+    },
+    {
+      "reference": "video/assets/captures/workflow-workspace.png",
+      "role": "Actual terminal screenshot reference",
+      "sha256": "f0e5535438f0764a8395c50e42196b1981f777292016d208b24db5b1a75d92cb"
+    }
+  ],
+  "output": "sentinel-youtube-thumbnail.png",
+  "sha256": "b4ffc9d4fec328abac9ca5c2918d3bd653cff02ac1c4709e2904f39932f33adf",
+  "bytes": 1817709,
+  "width": 1672,
+  "height": 941,
+  "text": [
+    "SENTINEL",
+    "LOGS → EVIDENCE",
+    "Meta AI + MCP"
+  ]
+}

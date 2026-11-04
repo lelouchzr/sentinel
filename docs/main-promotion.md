@@ -22,8 +22,19 @@ The Sentinel worktree remains `/path/to/sentinel`. Use its existing
 `projet/sentinel` checkout, or clone `git@github.com:lelouchzr/sentinel.git` to obtain Sentinel
 on the default branch. The shared local origin URL is retained to preserve other worktrees'
 configuration; GitHub redirects the former repository URL after a rename. New clones should
-use the new URL. No repository visibility change is authorized or performed.
+use the new URL. This promotion stage did not change repository visibility.
 
 The Sentinel copy of AGENTS.md is updated for the actual Python application. The original
 instructions remain verbatim in the old checkout and archive. LICENSE remains unchanged.
 CI now includes `main` and validates macOS; further Linux/Windows work remains paused.
+
+## Later public publication
+
+The owner subsequently authorized public sharing and requested anonymization of historical
+author contact and local paths. The untouched original repository and its pull request refs
+remain private. A separate repository at the same public `lelouchzr/sentinel` URL receives
+the anonymized branch history, including `main`, `projet/sentinel` and the historical archives.
+Pre-publication commit IDs above identify the private original; public commit IDs differ.
+Use a fresh public clone for future contributions. Existing shared local remotes were preserved
+and continue to refer to the private original through GitHub's rename redirect.
+See [the publication review](publication-review.md) for the audit and privacy changes.
