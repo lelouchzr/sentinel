@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import builtins
 import copy
 import importlib.util
 import re
@@ -180,6 +181,11 @@ class Codebase:
                 else:
                     selected[key] = node
                 refs = global_references(node)
+                missing = refs - module.bindings.keys() - set(vars(builtins)) - {"__name__", "__file__", "__package__", "__doc__", "__annotations__"}
+                for ref in sorted(missing):
+                    diagnostics.append(Diagnostic(level="error", code="unresolved_global", message=f"Unresolved global {ref} in {current_module}:{current_name}", symbol=f"{current_module}:{current_name}"))
+                if "__file__" in refs:
+                    diagnostics.append(Diagnostic(level="error", code="file_resource", message=f"{current_module}:{current_name} depends on its original file location; resource relocation requires manual adaptation"))
                 for ref in sorted(refs & module.bindings.keys()):
                     if ref != current_name:
                         edges.add((f"{current_module}:{current_name}", f"{current_module}:{ref}"))
@@ -199,6 +205,8 @@ class Codebase:
                                 self._include_module(f"{target}.{alias.name}", pending)
                             elif target not in self.modules and target.split(".")[0] not in sys.stdlib_module_names:
                                 external.add(target.split(".")[0])
+                            elif target in self.modules:
+                                diagnostics.append(Diagnostic(level="error", code="unresolved_import", message=f"Cannot resolve {target}:{alias.name}"))
                     elif isinstance(imported, ast.Import):
                         for alias in imported.names:
                             if alias.name in self.modules:
@@ -210,6 +218,11 @@ class Codebase:
                     diagnostics.append(Diagnostic(level="error", code="dynamic_code", message=f"Dynamic lookup or execution in {current_module}:{current_name} requires manual extraction"))
                 if isinstance(node, ast.If | ast.Try | ast.With | ast.For | ast.While):
                     diagnostics.append(Diagnostic(level="warning", code="compound_statement", message=f"Retained complete conditional/compound declaration in {current_module}"))
+        for module_name in {m for m, _ in selected}:
+            module = self.modules[module_name]
+            omitted = [statement.lineno for index, statement in enumerate(module.tree.body) if (module_name, index) not in selected and not isinstance(statement, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef | ast.Import | ast.ImportFrom) and not bound_names(statement) and not (isinstance(statement, ast.Expr) and isinstance(statement.value, ast.Constant))]
+            if omitted:
+                diagnostics.append(Diagnostic(level="warning", code="omitted_initialization", message=f"Top-level effects at {module_name} lines {omitted[:10]} are omitted. Review initialization and supply representative scenarios."))
         return selected, external, sorted(edges), diagnostics
 
     def _include_module(self, name: str, pending: list[tuple[str, str]]) -> None:

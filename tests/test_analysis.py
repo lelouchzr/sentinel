@@ -66,3 +66,28 @@ def test_dynamic_code_is_not_silently_extracted(tmp_path):
     codebase = Codebase(tmp_path)
     with pytest.raises(SlimError, match="Dynamic"):
         build_package(codebase, request, codebase.plan(request), tmp_path / "out")
+
+
+def test_unresolved_global_is_a_blocker(tmp_path):
+    (tmp_path / "app.py").write_text("def f(): return missing_dependency()\n")
+    request = PlanRequest(source=str(tmp_path), entry="app:f")
+    codebase = Codebase(tmp_path)
+    assert any(d.code == "unresolved_global" for d in codebase.plan(request).diagnostics)
+    with pytest.raises(SlimError, match="Unresolved global"):
+        build_package(codebase, request, codebase.plan(request), tmp_path / "out")
+
+
+def test_module_initialization_effects_are_disclosed(tmp_path):
+    (tmp_path / "app.py").write_text('TABLE = {}\nTABLE.update({"a": 1})\ndef f(): return TABLE\n')
+    plan = Codebase(tmp_path).plan(PlanRequest(source=str(tmp_path), entry="app:f"))
+    assert any(d.code == "omitted_initialization" for d in plan.diagnostics)
+
+
+def test_grouped_imports_only_retain_referenced_aliases(tmp_path):
+    (tmp_path / "app.py").write_text("from math import sqrt, sin\ndef f(x): return sqrt(x)\n")
+    request = PlanRequest(source=str(tmp_path), entry="app:f")
+    codebase = Codebase(tmp_path)
+    artifact = tmp_path / "out"
+    build_package(codebase, request, codebase.plan(request), artifact)
+    assert "from math import sqrt" in (artifact / "src/slim_feature/app.py").read_text()
+    assert "sin" not in (artifact / "src/slim_feature/app.py").read_text()

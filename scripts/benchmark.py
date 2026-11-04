@@ -5,10 +5,8 @@ build/install local wheels. Run: uv sync --extra upstream && make benchmark.
 """
 
 import json
-import os
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 from slim.config import Settings
@@ -62,7 +60,7 @@ def run():
             results.append(result)
             print(f"{name}: {report['matched']}/{len(scenarios)} matched; {report['diverged']} diverged; {report['unverified']} unverified", flush=True)
         consumer = artifacts / "consumer-venv"
-        subprocess.run(["uv", "venv", str(consumer)], check=True)
+        subprocess.run(["uv", "venv", "--clear", str(consumer)], check=True)
         wheels = sorted((artifacts / "wheels").glob("*.whl"))
         subprocess.run(["uv", "pip", "install", "--python", str(consumer / "bin/python"), "--no-deps", *map(str, wheels)], check=True)
         subprocess.run([str(consumer / "bin/python"), str(ROOT / "examples/consumer/app.py"), "--upstream"], check=True, cwd="/tmp")
