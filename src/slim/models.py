@@ -61,6 +61,9 @@ class Scenario(Contract):
     kwargs: dict[str, Any] = Field(default_factory=dict)
     candidate_kwargs: dict[str, Any] = Field(default_factory=dict)
     setup: dict[str, Any] = Field(default_factory=dict)
+    method: str | None = Field(default=None, pattern=r"^[a-zA-Z][a-zA-Z0-9_]*$")
+    method_args: list[Any] = Field(default_factory=list)
+    method_kwargs: dict[str, Any] = Field(default_factory=dict)
     # JSON values only; bytes are represented with {"$bytes": "hex"}.
 
 

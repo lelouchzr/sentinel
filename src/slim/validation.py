@@ -10,6 +10,7 @@ import sys
 import tempfile
 import time
 from pathlib import Path
+from uuid import uuid4
 
 from slim.errors import SlimError
 from slim.models import CaseResult, Outcome, PlanRequest, ValidationReport
@@ -25,15 +26,29 @@ class Runner:
         self.mode = mode
         self.timeout = timeout
 
-    def run(self, root: Path, entry: str, args: list, kwargs: dict, setup: dict) -> Outcome:
+    def run(
+        self,
+        root: Path,
+        entry: str,
+        args: list,
+        kwargs: dict,
+        setup: dict,
+        *,
+        method: str | None = None,
+        method_args: list | None = None,
+        method_kwargs: dict | None = None,
+    ) -> Outcome:
         paths = [str(root / "src"), str(root)]
         command = [sys.executable, "-I", str(WORKER)]
+        container_name = f"slim-{uuid4().hex}"
         if self.mode == "docker":
             paths = ["/source/src", "/source"]
             command = [
                 "docker",
                 "run",
                 "--rm",
+                "--name",
+                container_name,
                 "-i",
                 "--network=none",
                 "--read-only",
@@ -56,7 +71,16 @@ class Runner:
                 "/worker.py",
             ]
         payload = json.dumps(
-            {"paths": paths, "entry": entry, "args": args, "kwargs": kwargs, "setup": setup}
+            {
+                "paths": paths,
+                "entry": entry,
+                "args": args,
+                "kwargs": kwargs,
+                "setup": setup,
+                "method": method,
+                "method_args": method_args or [],
+                "method_kwargs": method_kwargs or {},
+            }
         ).encode()
         # No inherited API keys, cloud credentials, or Python path configuration.
         env = {
@@ -82,11 +106,13 @@ class Runner:
                 while process.poll() is None:
                     if time.monotonic() - started > self.timeout:
                         self._kill(process)
+                        self._remove_container(container_name, env)
                         return Outcome(
                             status="timeout", message=f"Exceeded {self.timeout:g}s deadline"
                         )
                     if stdout.tell() + stderr.tell() > OUTPUT_LIMIT:
                         self._kill(process)
+                        self._remove_container(container_name, env)
                         return Outcome(status="error", message="Worker exceeded output limit")
                     time.sleep(0.02)
             except (OSError, BrokenPipeError) as exc:
@@ -103,6 +129,15 @@ class Runner:
                 return Outcome.model_validate_json(output)
             except ValueError:
                 return Outcome(status="error", message="Worker did not return a valid result")
+
+    def _remove_container(self, name: str, env: dict) -> None:
+        if self.mode == "docker":
+            try:
+                subprocess.run(
+                    ["docker", "rm", "-f", name], env=env, capture_output=True, timeout=5
+                )
+            except (OSError, subprocess.TimeoutExpired):
+                pass
 
     @staticmethod
     def _kill(process: subprocess.Popen) -> None:
@@ -131,7 +166,14 @@ def validate(request: PlanRequest, artifact: Path, runner: Runner) -> Validation
     cases = []
     for scenario in request.scenarios:
         original = runner.run(
-            Path(request.source), request.entry, scenario.args, scenario.kwargs, scenario.setup
+            Path(request.source),
+            request.entry,
+            scenario.args,
+            scenario.kwargs,
+            scenario.setup,
+            method=scenario.method,
+            method_args=scenario.method_args,
+            method_kwargs=scenario.method_kwargs,
         )
         kwargs = {**scenario.kwargs, **scenario.candidate_kwargs}
         candidate = runner.run(
@@ -140,6 +182,9 @@ def validate(request: PlanRequest, artifact: Path, runner: Runner) -> Validation
             scenario.args,
             kwargs,
             {},
+            method=scenario.method,
+            method_args=scenario.method_args,
+            method_kwargs=scenario.method_kwargs,
         )
         cases.append(
             CaseResult(

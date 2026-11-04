@@ -95,6 +95,11 @@ def main():
                 result = target(
                     *decode(payload.get("args", [])), **decode(payload.get("kwargs", {}))
                 )
+                if payload.get("method"):
+                    result = getattr(result, payload["method"])(
+                        *decode(payload.get("method_args", [])),
+                        **decode(payload.get("method_kwargs", {})),
+                    )
                 if inspect.isawaitable(result):
                     result = asyncio.run(result)
             except BaseException as exc:

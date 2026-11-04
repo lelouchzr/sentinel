@@ -9,6 +9,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from slim import __version__
+from slim.catalog import SPECS
 from slim.config import Settings
 from slim.demo import demo_request
 from slim.errors import SlimError
@@ -93,6 +94,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.get("/api/demo")
     def demo():
         return demo_request(settings.workspace)
+
+    @app.get("/api/catalog")
+    def catalog():
+        return [
+            {
+                "name": name,
+                "spec": PlanRequest(
+                    source=url, entry=entry, package_name=package, scenarios=scenarios
+                ).model_dump(),
+            }
+            for name, url, entry, package, scenarios in SPECS
+        ]
 
     @app.post("/api/analyze")
     def analyze(request: AnalyzeRequest):

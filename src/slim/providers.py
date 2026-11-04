@@ -2,6 +2,8 @@
 
 import ast
 import json
+import keyword
+import re
 
 import httpx
 from pydantic import Field
@@ -59,6 +61,18 @@ class LlamaPlanner:
         schema["properties"]["entry_id"]["enum"] = [s.id for s in symbols[:20]]
         if zero_argument_calls:
             schema["$defs"]["Boundary"]["properties"]["call"]["enum"] = zero_argument_calls
+            parameter_names = []
+            for call in zero_argument_calls:
+                name = re.sub(r"^(load|fetch|get|read)_", "", call.split(".")[-1]).lstrip("_")
+                if not name or keyword.iskeyword(name):
+                    name = "injected_value"
+                parameter_names.append(name)
+            schema["$defs"]["Boundary"]["properties"]["parameter"]["enum"] = sorted(
+                set(parameter_names)
+            )
+            prompt["suggested_parameter_names"] = dict(
+                zip(zero_argument_calls, parameter_names, strict=True)
+            )
         else:
             schema["properties"]["boundaries"]["maxItems"] = 0
         system = (

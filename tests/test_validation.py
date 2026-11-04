@@ -63,3 +63,22 @@ def test_equal_errors_never_count_as_verified():
         )
         == "diverged"
     )
+
+
+def test_class_methods_can_be_compared(tmp_path):
+    from slim.models import PlanRequest, Scenario
+
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "pricing.py").write_text(
+        "class Price:\n def __init__(self, amount): self.amount = amount\n def total(self, tax): return round(self.amount * (1 + tax), 2)\n"
+    )
+    request = PlanRequest(
+        source=str(source),
+        entry="pricing:Price",
+        scenarios=[Scenario(name="tax calculation", args=[100], method="total", method_args=[0.2])],
+    )
+    codebase = Codebase(source)
+    artifact = tmp_path / "artifact"
+    build_package(codebase, request, codebase.plan(request), artifact)
+    assert validate(request, artifact, Runner()).matched == 1

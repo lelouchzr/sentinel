@@ -43,6 +43,7 @@ const busyStates = ["extracting", "validating"];
 
 export function App() {
   const [health, setHealth] = useState<Health | null>(null);
+  const [catalog, setCatalog] = useState<{name: string; spec: Spec}[]>([]);
   const [jobs, setJobs] = useState<JobSummary[]>([]);
   const [job, setJob] = useState<Job | null>(null);
   const [spec, setSpec] = useState<Spec | null>(null);
@@ -88,14 +89,16 @@ export function App() {
       api<Health>("/health"),
       api<Spec>("/demo"),
       api<JobSummary[]>("/jobs"),
+      api<{name: string; spec: Spec}[]>("/catalog"),
     ])
-      .then(async ([h, demo, list]) => {
+      .then(async ([h, demo, list, presets]) => {
         if (!active) return;
         setHealth(h);
         setSpec(demo);
         setSourceDraft(demo.source);
         setScenarioText(JSON.stringify(demo.scenarios, null, 2));
         setJobs(list);
+        setCatalog(presets);
         if (list.length) await selectJob(list[0].id);
       })
       .catch((e) => {
@@ -912,6 +915,11 @@ export function App() {
                   Select a local Python repository or a public GitHub URL.
                   Source analysis does not execute code.
                 </p>
+                <div className="repository-presets" aria-label="Real repository examples">
+                  {catalog.map(item => <button key={item.name} disabled={working} onClick={() => {
+                    setSpec(item.spec); setSourceDraft(item.spec.source); setScenarioText(JSON.stringify(item.spec.scenarios, null, 2)); setAnalysis(null); setAdvice(null); setError(''); setQuery(item.spec.entry.split(':')[1]);
+                  }}><GithubLogo size={14}/><span>{item.name}</span><small>{item.spec.scenarios.length} scenarios</small></button>)}
+                </div>
                 <label className="field-label" htmlFor="source">
                   SOURCE REPOSITORY
                 </label>
