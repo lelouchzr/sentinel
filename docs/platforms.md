@@ -4,6 +4,34 @@ The core application targets macOS, Linux and Windows. Python 3.12 is the refere
 The native CI matrix is defined in `.github/workflows/sentinel-platforms.yml` and runs only on
 Sentinel code changes. No CI job has a Meta credential or makes a paid model request.
 
+## Executed results
+
+The [completed native matrix](https://github.com/lelouchzr/storyscape/actions/runs/41907686724)
+passed on 2026-11-04 for application commit `14e27ce459572ae5dfbe5b3530a837de41333e0a`.
+Each job checked the locked installation, formatting, lint, wheel build, an independent
+runtime-only wheel installation, the full test suite, Textual Pilot and real MCP subprocesses.
+
+| Actual environment | Python | Full test suite | Runtime-only wheel workflow |
+| --- | --- | --- | --- |
+| Windows Server 2025, AMD64 | 3.12.10 | 35 passed, 608.60 seconds | Passed, 127.12 seconds |
+| Ubuntu 24.04, x86_64 | 3.12.3 | 34 passed, 1 skipped, 84.15 seconds | Passed, 14.65 seconds |
+| macOS 15.8.2, arm64 | 3.12.10 | 34 passed, 1 skipped, 93.09 seconds | Passed, 16.56 seconds |
+| Linux Docker, `python:3.12-slim`, aarch64 | 3.12.16 | 34 passed, 1 skipped, 60.81 seconds | Passed, 10.11 seconds |
+
+The one Unix skip is the Windows-specific drive-path and junction test; that test passed on
+Windows. Every environment imported 3,542 events, detected 15 alerts, inserted zero records on
+the repeat import, discovered eight actual MCP tools and retrieved the same event ID and source
+hashes. Both export formats, case reopening, note persistence and safe demo reset passed.
+These are measured runner timings, not a latency guarantee. Windows validation was substantially
+slower; the suite performs fresh ingestion for independent workspaces instead of sharing a database.
+
+Inspect the committed [machine-readable results](verification/platform-results.json), including
+the CI job links, source hashes, test counts and clean-wheel checks. Raw JUnit and smoke artifacts
+are attached to the workflow run for 14 days. Local copies are in the ignored
+`artifacts/platform-validation/verified-native-matrix/` directory. The Linux container results and
+real terminal recording are also retained locally under `artifacts/platform-validation/`.
+Interrupted Windows Server 2022 diagnostic runs are not counted as successful validation.
+
 ## Reproduce the checks
 
 ```sh
@@ -38,9 +66,10 @@ interpreter, counts, hashes and elapsed time. It never calls a model.
 
 Headless Textual tests cover 140×42 and 100×30, focus, input editing, event details, notes, export,
 case reopening and responsive cancellation. Real PTY checks were executed on macOS in the initial
-delivery. Native Windows runner tests are not a manual ConPTY/Windows Terminal recording.
+delivery and on Linux during platform validation. The installed Linux wheel ran at 140×42:
+open alert/case, filter service-account activity, inspect and scroll original evidence, export
+25 attached events, then quit with exit code 0. Native Windows runner tests are not a manual
+ConPTY/Windows Terminal recording; that interactive validation remains outstanding.
 The optional asciicast recorder is POSIX-only and returns a clear error on Windows. External
 recorders can capture Windows Terminal. Local-disk workspaces are required; shared network-drive
 locking and cloud-synchronized reparse-point directories are outside the supported scope.
-
-Executed results and CI evidence are recorded after the native matrix completes.

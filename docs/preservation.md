@@ -20,3 +20,9 @@ Do not switch the original directory to Sentinel to run this application.
 Final verification: the original checkout remained on main at the recorded SHA, with clean
 tracked/untracked status. All 210 original tracked files matched the pre-work SHA-256 baseline.
 The original 19 ignored status groups remained; no ignored project state was copied or removed.
+
+The follow-up platform work was pushed only to `projet/sentinel` in the existing private
+`lelouchzr/storyscape` repository. The original checkout and `main` were rechecked after Linux,
+Windows and macOS validation: the recorded branch/SHA, all 210 tracked hashes, clean
+tracked/untracked status and 19 ignored status groups still matched. No merge into `main`
+or change to repository visibility was performed.

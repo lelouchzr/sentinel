@@ -1,7 +1,18 @@
 # Executed verification
 
-Verified on 2026-11-04 on macOS (Darwin), CPython 3.12.16. Linux was not executed here.
-All checks below were actually run. No check or CI target invokes a paid provider.
+The initial delivery was verified on 2026-11-04 on macOS (Darwin), CPython 3.12.16.
+The initial-delivery results below are retained as a historical record, including the actual live
+Meta investigation. Subsequent native Windows, Ubuntu and macOS checks, Linux Docker validation
+and a real Linux PTY session all completed: see [platform validation](platforms.md) and its
+[machine-readable results](verification/platform-results.json).
+
+The updated suite has 35 tests: all 35 passed on Windows; 34 passed and the Windows-only test
+was skipped on macOS and Linux. Local `make check`, `make integration` (8 passed, 27 deselected),
+locked builds and runtime-only wheel checks also passed after the portability changes.
+No automated check or CI target invokes a paid provider. The separately authorized live run
+described below was executed once; platform validation did not repeat it.
+
+## Initial macOS delivery
 
 | Check | Executed result |
 | --- | --- |

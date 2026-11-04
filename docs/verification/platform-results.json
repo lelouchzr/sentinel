@@ -1,0 +1,192 @@
+{
+  "validation_date": "2026-11-04",
+  "code_commit": "14e27ce459572ae5dfbe5b3530a837de41333e0a",
+  "ci_url": "https://github.com/lelouchzr/storyscape/actions/runs/41907686724",
+  "ci_conclusion": "success",
+  "paid_model_calls": 0,
+  "native_matrix": [
+    {
+      "runner": "macos-15",
+      "job_url": "https://github.com/lelouchzr/storyscape/actions/runs/41907686724/job/126846614357",
+      "tests": {
+        "collected": 35,
+        "passed": 34,
+        "skipped": 1,
+        "failures": 0,
+        "errors": 0,
+        "elapsed_seconds": 93.087,
+        "skipped_tests": [
+          "tests.test_portability.test_windows_drive_relative_paths_and_junction_escapes"
+        ]
+      },
+      "clean_wheel": {
+        "platform": "macOS-15.8.2-arm64-arm-64bit",
+        "system": "Darwin",
+        "machine": "arm64",
+        "python": "3.12.10",
+        "dataset_id": "D-5c9f98be2b243b47d24d0964",
+        "events": 3542,
+        "alerts": 15,
+        "repeat_inserted": 0,
+        "case_reopened": true,
+        "exports": [
+          "markdown",
+          "json"
+        ],
+        "demo_archive_preserved_notes": true,
+        "mcp": {
+          "tool_count": 8,
+          "matching_events": 6,
+          "event_id": "E-b2473f2bfe07269f13e8ea07"
+        },
+        "source_sha256": {
+          "identity.csv": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+          "services.jsonl": "795f77fad564fff379e26fcfa384a0794080890d09b304736a5e68a3e2a8ddf4"
+        },
+        "model_calls": 0,
+        "elapsed_seconds": 16.56
+      }
+    },
+    {
+      "runner": "ubuntu-24.04",
+      "job_url": "https://github.com/lelouchzr/storyscape/actions/runs/41907686724/job/126846614860",
+      "tests": {
+        "collected": 35,
+        "passed": 34,
+        "skipped": 1,
+        "failures": 0,
+        "errors": 0,
+        "elapsed_seconds": 84.151,
+        "skipped_tests": [
+          "tests.test_portability.test_windows_drive_relative_paths_and_junction_escapes"
+        ]
+      },
+      "clean_wheel": {
+        "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+        "system": "Linux",
+        "machine": "x86_64",
+        "python": "3.12.3",
+        "dataset_id": "D-5c9f98be2b243b47d24d0964",
+        "events": 3542,
+        "alerts": 15,
+        "repeat_inserted": 0,
+        "case_reopened": true,
+        "exports": [
+          "markdown",
+          "json"
+        ],
+        "demo_archive_preserved_notes": true,
+        "mcp": {
+          "tool_count": 8,
+          "matching_events": 6,
+          "event_id": "E-b2473f2bfe07269f13e8ea07"
+        },
+        "source_sha256": {
+          "identity.csv": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+          "services.jsonl": "795f77fad564fff379e26fcfa384a0794080890d09b304736a5e68a3e2a8ddf4"
+        },
+        "model_calls": 0,
+        "elapsed_seconds": 14.65
+      }
+    },
+    {
+      "runner": "windows-2025",
+      "job_url": "https://github.com/lelouchzr/storyscape/actions/runs/41907686724/job/126846615121",
+      "tests": {
+        "collected": 35,
+        "passed": 35,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0,
+        "elapsed_seconds": 608.599,
+        "skipped_tests": []
+      },
+      "clean_wheel": {
+        "platform": "Windows-2025Server-10.0.26100-SP0",
+        "system": "Windows",
+        "machine": "AMD64",
+        "python": "3.12.10",
+        "dataset_id": "D-5c9f98be2b243b47d24d0964",
+        "events": 3542,
+        "alerts": 15,
+        "repeat_inserted": 0,
+        "case_reopened": true,
+        "exports": [
+          "markdown",
+          "json"
+        ],
+        "demo_archive_preserved_notes": true,
+        "mcp": {
+          "tool_count": 8,
+          "matching_events": 6,
+          "event_id": "E-b2473f2bfe07269f13e8ea07"
+        },
+        "source_sha256": {
+          "identity.csv": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+          "services.jsonl": "795f77fad564fff379e26fcfa384a0794080890d09b304736a5e68a3e2a8ddf4"
+        },
+        "model_calls": 0,
+        "elapsed_seconds": 127.12
+      }
+    }
+  ],
+  "linux_container": {
+    "image": "python:3.12-slim",
+    "tests": {
+      "collected": 35,
+      "passed": 34,
+      "skipped": 1,
+      "failures": 0,
+      "errors": 0,
+      "elapsed_seconds": 60.809
+    },
+    "clean_wheel": {
+      "platform": "Linux-7.0.14-linuxkit-aarch64-with-glibc2.41",
+      "system": "Linux",
+      "machine": "aarch64",
+      "python": "3.12.16",
+      "dataset_id": "D-5c9f98be2b243b47d24d0964",
+      "events": 3542,
+      "alerts": 15,
+      "repeat_inserted": 0,
+      "case_reopened": true,
+      "exports": [
+        "markdown",
+        "json"
+      ],
+      "demo_archive_preserved_notes": true,
+      "mcp": {
+        "tool_count": 8,
+        "matching_events": 6,
+        "event_id": "E-b2473f2bfe07269f13e8ea07"
+      },
+      "source_sha256": {
+        "identity.csv": "04898f075a11324ba7621c5422d5b844f6c11c02e216b26d964599bffa66963e",
+        "services.jsonl": "795f77fad564fff379e26fcfa384a0794080890d09b304736a5e68a3e2a8ddf4"
+      },
+      "model_calls": 0,
+      "elapsed_seconds": 10.11
+    }
+  },
+  "real_linux_terminal": {
+    "size": [
+      140,
+      42
+    ],
+    "actions": [
+      "open alert as case",
+      "filter svc-backup",
+      "open event provenance",
+      "scroll to approval context and source hash",
+      "export case",
+      "quit cleanly"
+    ],
+    "exit_code": 0,
+    "attached_event_count": 25
+  },
+  "limits": [
+    "Native Windows headless Textual tests passed; a manual Windows Terminal/ConPTY recording was not executed.",
+    "Interrupted Windows Server 2022 diagnostic runs do not establish support for that runner.",
+    "No paid Meta request was repeated for platform testing. Initial live Meta validation is documented separately."
+  ]
+}
