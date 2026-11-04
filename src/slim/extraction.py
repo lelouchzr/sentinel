@@ -9,7 +9,7 @@ import json
 import shutil
 from pathlib import Path
 
-from slim.analysis import Codebase
+from slim.analysis import Codebase, bound_names
 from slim.errors import SlimError
 from slim.models import Plan, PlanRequest
 
@@ -169,6 +169,9 @@ def build_package(codebase: Codebase, request: PlanRequest, plan: Plan, destinat
         "external_imports": dependencies,
         "dependency_resolution": "manual_required" if dependencies else "stdlib_only",
         "licenses": plan.licenses, "planner": plan.provider,
+        "retained_symbols": sorted(f"{m}:{name}" for (m, _), node in selected.items() for name in bound_names(node)),
+        "removed_symbols": sorted({symbol.id for symbol in plan.symbols} - {f"{m}:{name}" for (m, _), node in selected.items() for name in bound_names(node)}),
+        "generated_lines": sum(len(path.read_text().splitlines()) for path in package_root.rglob("*.py")),
     }
     (destination / "PROVENANCE.json").write_text(json.dumps(manifest, indent=2) + "\n")
     (destination / "scenarios.json").write_text(json.dumps([s.model_dump() for s in request.scenarios], indent=2) + "\n")

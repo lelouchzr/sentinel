@@ -8,7 +8,7 @@ export interface Outcome { status: string; value: unknown; exception: string | n
 export interface CaseResult { name: string; status: 'matched' | 'diverged' | 'unverified'; original: Outcome; candidate: Outcome }
 export interface Report { status: string; matched: number; diverged: number; unverified: number; runner: string; scope: string; cases: CaseResult[] }
 export interface Event { seq: number; time: string; stage: string; message: string }
-export interface Job { id: string; status: string; created_at: string; request: Spec; plan: Plan; report: Report | null; manifest: { external_imports: string[]; files: { source: string; generated: string }[] } | null; error: string | null; events: Event[] }
+export interface Job { id: string; status: string; created_at: string; request: Spec; plan: Plan; report: Report | null; manifest: { external_imports: string[]; retained_symbols?: string[]; removed_symbols?: string[]; generated_lines?: number; files: { source: string; generated: string }[] } | null; error: string | null; events: Event[] }
 export interface JobSummary { id: string; name: string; package_name: string; status: string; created_at: string }
 export interface Analysis { source: string; files: number; lines: number; symbols: SymbolInfo[]; diagnostics: Diagnostic[] }
 export interface Health { version: string; model_enabled: boolean; model: string; runner: string; execution_enabled: boolean; workspace: string }
