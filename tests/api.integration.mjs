@@ -85,6 +85,7 @@ const started = await request("play", {
 });
 assert.equal(started.status, 201);
 const session = started.data;
+assert.deepEqual(session.journal, []);
 assert.equal((await request(`play/${session.id}`)).status, 404);
 record("play sessions require their separate capability token");
 assert.ok(
@@ -105,6 +106,20 @@ for (const object of room.objects) {
     },
   });
   assert.equal(result.status, 200);
+  assert.deepEqual(
+    result.data.journal,
+    result.data.state.resolved.map(
+      (id) => room.objects.find((o) => o.id === id).message,
+    ),
+  );
+  if (rev === 0) {
+    const midway = await request(`play/${session.id}`, {
+      headers: { "X-Play-Token": session.token },
+    });
+    assert.deepEqual(midway.data.journal, [room.objects[0].message]);
+    assert.ok(!midway.data.journal.includes(room.objects[1].message));
+    record("reloading a partial game restores only discoveries already earned");
+  }
   rev = result.data.revision;
 }
 const stale = await request(`play/${session.id}`, {
@@ -118,6 +133,10 @@ const restored = await request(`play/${session.id}`, {
   headers: { "X-Play-Token": session.token },
 });
 assert.equal(restored.data.state.complete, true);
+assert.equal(
+  restored.data.journal.at(-1),
+  room.objects.find((o) => o.action === "exit").message,
+);
 record("completed game state survives a fresh request");
 const pub = await request(`drafts/${id}/publish`, {
   authenticated: true,

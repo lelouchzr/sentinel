@@ -81,6 +81,8 @@ export default function Editor({
           setId(r.id);
           setRevision(r.revision);
           setTested(r.tested === true);
+          if (new URLSearchParams(window.location.search).get("test") === "1")
+            setTesting(true);
         }
       })
       .catch((e) => setNotice(errorText(e)))
@@ -277,7 +279,10 @@ export default function Editor({
     return (
       <Player
         draftId={id}
-        onBack={() => setTesting(false)}
+        onBack={() => {
+          history.replaceState(null, "", `/atelier/${id}`);
+          setTesting(false);
+        }}
         onComplete={() => setTested(true)}
       />
     );
@@ -976,13 +981,13 @@ export default function Editor({
       )}
       {publish && (
         <Modal
-          title="Ouvrez la porte aux autres."
+          title="Publier votre aventure dans FRAME"
           onClose={() => !busy && setPublish(false)}
         >
           <p className="modal-intro">
             Votre jeu sera publié sous le nom {viewer.displayName}. Vous pourrez
             continuer à modifier votre brouillon sans changer la version
-            publiée.
+            publiée. Les règles d’accès du site s’appliquent aussi à vos jeux.
           </p>
           <div className="publish-preview">
             <img src={room.image} alt="Aperçu de la publication" />
@@ -1002,8 +1007,8 @@ export default function Editor({
             />
             <Globe size={20} />
             <span>
-              <strong>Dans la galerie publique</strong>
-              <small>Les joueurs peuvent découvrir votre aventure.</small>
+              <strong>Dans la galerie du site</strong>
+              <small>Visible par les personnes qui ont accès à FRAME.</small>
             </span>
           </label>
           <label className="visibility-choice">

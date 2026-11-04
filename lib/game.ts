@@ -153,6 +153,13 @@ export type GameState = {
   moves: number;
   hints: number;
 };
+/** Only discoveries already earned by the player may survive a reload. */
+export function discoveredMessages(room: Room, state: GameState): string[] {
+  return state.resolved.flatMap((id) => {
+    const object = room.objects.find((o) => o.id === id);
+    return object ? [object.message] : [];
+  });
+}
 /** Select the asset fields explicitly; API metadata must not enter a room. */
 export function replaceIllustration(
   room: Room,

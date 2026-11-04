@@ -27,6 +27,9 @@ export default function FrameApp({ view, slug, draftId }: Props) {
   }, []);
   return (
     <div className={`app view-${view}`}>
+      <a className="skip-link" href="#main-content">
+        Aller au contenu
+      </a>
       <header className="site-header">
         <a className="wordmark" href="/" aria-label="FRAME, accueil">
           <Frame size={25} strokeWidth={1.7} />
@@ -35,6 +38,9 @@ export default function FrameApp({ view, slug, draftId }: Props) {
         <nav aria-label="Navigation principale">
           <a className={view === "gallery" ? "active" : ""} href="/">
             Créer
+          </a>
+          <a className={view === "player" ? "active" : ""} href="/#galerie">
+            Jouer
           </a>
           <a className={view === "editor" ? "active" : ""} href="/atelier">
             L’atelier
@@ -67,7 +73,7 @@ export default function FrameApp({ view, slug, draftId }: Props) {
           </a>
         </div>
       </header>
-      <main>
+      <main id="main-content" tabIndex={-1}>
         {view === "gallery" ? (
           <Gallery viewer={viewer} />
         ) : view === "player" ? (

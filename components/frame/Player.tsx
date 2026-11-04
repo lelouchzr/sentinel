@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   ArrowRight,
   ArrowLeft,
-  Plus,
   Clock,
   MousePointer2,
   Eye,
@@ -14,12 +13,12 @@ import {
   LockKeyhole,
   Check,
   Play,
-  X,
   LoaderCircle,
   RotateCcw,
   ScanLine,
   BookOpen,
   DoorOpen,
+  CircleHelp,
 } from "lucide-react";
 import {
   api,
@@ -33,9 +32,11 @@ import {
   Loading,
   Notice,
   Hotspots,
+  Modal,
   type PublicRoom,
   type PlayData,
 } from "./shared";
+import HowToPlay from "./HowToPlay";
 
 export default function Player({
   slug,
@@ -53,13 +54,40 @@ export default function Player({
     [busy, setBusy] = useState(false),
     [loading, setLoading] = useState(true),
     [error, setError] = useState(""),
-    [show, setShow] = useState(false),
+    [show, setShow] = useState(true),
+    [compact, setCompact] = useState(false),
+    [help, setHelp] = useState(false),
+    [restart, setRestart] = useState(false),
+    [resumed, setResumed] = useState(false),
     [selected, setSelected] = useState<string>(),
     [message, setMessage] = useState(""),
     [outcome, setOutcome] = useState(""),
     [code, setCode] = useState(""),
     [notes, setNotes] = useState<string[]>([]);
+  const discoveryRef = useRef<HTMLDivElement>(null);
   const storageKey = `frame-play-${slug ?? draftId}`;
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 950px)");
+    const update = () => setCompact(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    if (!message || busy || session?.state.complete) return;
+    const target = discoveryRef.current;
+    if (!target) return;
+    (target.querySelector<HTMLInputElement>("input") ?? target).focus({
+      preventScroll: true,
+    });
+    if (compact)
+      target.scrollIntoView({
+        block: "nearest",
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+      });
+  }, [message, busy, compact]);
   useEffect(() => {
     let alive = true;
     async function init() {
@@ -81,7 +109,13 @@ export default function Player({
               const restored = await api<PlayData>(`play/${saved.id}`, {
                 headers: { "X-Play-Token": saved.token },
               });
-              if (alive) setSession({ ...restored, token: saved.token });
+              if (alive) {
+                setSession({ ...restored, token: saved.token });
+                setNotes(restored.journal ?? []);
+                if (restored.state.complete)
+                  setMessage(restored.journal?.at(-1) ?? "");
+                setResumed(true);
+              }
             }
           } catch {
             localStorage.removeItem(storageKey);
@@ -108,6 +142,7 @@ export default function Player({
       setSelected(undefined);
       setMessage("");
       setNotes([]);
+      setResumed(false);
       setOutcome("");
       localStorage.setItem(
         storageKey,
@@ -122,6 +157,10 @@ export default function Player({
   async function interact(id: string, answer?: string, hint = false) {
     if (!session || busy || session.state.complete) return;
     setSelected(id);
+    if (id !== selected) {
+      setMessage("");
+      setOutcome("");
+    }
     if (!hint) setCode("");
     setBusy(true);
     setError("");
@@ -143,8 +182,7 @@ export default function Player({
       });
       setMessage(result.message);
       setOutcome(result.outcome);
-      if (result.outcome === "resolved")
-        setNotes((prev) => [result.message, ...prev].slice(0, 6));
+      setNotes(result.journal ?? []);
       if (result.state.complete) onComplete?.();
     } catch (e) {
       setError(errorText(e));
@@ -154,6 +192,7 @@ export default function Player({
             headers: { "X-Play-Token": session.token },
           });
           setSession({ ...current, token: session.token });
+          setNotes(current.journal ?? []);
         } catch {}
       }
     } finally {
@@ -171,6 +210,80 @@ export default function Player({
         </a>
       </div>
     );
+  const discovery = (
+    <div
+      className="discovery"
+      aria-live="polite"
+      aria-busy={busy}
+      ref={discoveryRef}
+      tabIndex={-1}
+    >
+      {selected && object ? (
+        <>
+          <div className="discovery-label">
+            {outcome === "locked" ? (
+              <LockKeyhole size={16} />
+            ) : (
+              <Eye size={16} />
+            )}
+            <h3>{object.name}</h3>
+            {busy && <LoaderCircle className="spin" size={15} />}
+          </div>
+          <p>{message}</p>
+          {(outcome === "needs_code" ||
+            outcome === "wrong_code" ||
+            (outcome === "hint" && object.action === "code")) && (
+            <form
+              className="code-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                void interact(selected, code);
+              }}
+            >
+              <label htmlFor="puzzle-code">Le code du cadenas</label>
+              <div>
+                <input
+                  id="puzzle-code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  autoComplete="off"
+                  maxLength={16}
+                  placeholder="Votre code"
+                />
+                <button
+                  className="button primary"
+                  disabled={busy || !code.trim()}
+                  type="submit"
+                >
+                  <ArrowRight size={18} />
+                  <span className="sr-only">Essayer le code</span>
+                </button>
+              </div>
+            </form>
+          )}
+          {!session?.state.complete && (
+            <button
+              className="text-link hint-link"
+              disabled={busy}
+              onClick={() => void interact(selected, undefined, true)}
+            >
+              <Lightbulb size={15} />
+              Un petit indice
+            </button>
+          )}
+        </>
+      ) : (
+        <div className="first-discovery">
+          <MousePointer2 size={24} />
+          <p>
+            Un détail, une serrure, un objet…
+            <br />
+            L’exploration commence par un clic.
+          </p>
+        </div>
+      )}
+    </div>
+  );
   return (
     <div className="player-shell">
       <div className="player-topline">
@@ -186,14 +299,24 @@ export default function Player({
           </a>
         )}
         <span>{draftId ? "PARTIE DE TEST" : themeName[room.theme]}</span>
-        <button
-          className="text-link"
-          disabled={busy || !session}
-          onClick={start}
-        >
-          <RotateCcw size={14} />
-          Recommencer
-        </button>
+        <div className="player-utilities">
+          <button className="text-link" onClick={() => setHelp(true)}>
+            <CircleHelp size={15} />
+            Comment jouer
+          </button>
+          <button
+            className="text-link"
+            disabled={busy || !session}
+            onClick={() =>
+              session && session.state.moves > 0 && !session.state.complete
+                ? setRestart(true)
+                : void start()
+            }
+          >
+            <RotateCcw size={14} />
+            Recommencer
+          </button>
+        </div>
       </div>
       <div className="game-heading">
         <div>
@@ -209,6 +332,12 @@ export default function Player({
         </div>
       </div>
       {error && <Notice message={error} onClose={() => setError("")} />}
+      {resumed && !session?.state.complete && (
+        <p className="resume-note">
+          <BookOpen size={15} />
+          Partie reprise · Vos objets et vos découvertes ont été conservés.
+        </p>
+      )}
       <div className="game-layout">
         <div className="game-main">
           <div className="scene-player">
@@ -222,6 +351,8 @@ export default function Player({
                 room={room}
                 selected={selected}
                 show={show}
+                resolved={session.state.resolved}
+                disabled={busy}
                 onSelect={(id) => void interact(id)}
               />
             )}
@@ -229,8 +360,11 @@ export default function Player({
               <div className="start-curtain">
                 <div className="start-content">
                   <span className="eyebrow">Une courte évasion</span>
-                  <h2>Regardez de plus près.</h2>
-                  <p>Chaque détail peut être un indice.</p>
+                  <h2>Trouvez votre sortie.</h2>
+                  <p>
+                    Explorez les objets de l’image, reliez les indices et ouvrez
+                    la porte.
+                  </p>
                   <button
                     className="button primary"
                     disabled={busy}
@@ -241,8 +375,11 @@ export default function Player({
                     ) : (
                       <Play size={17} />
                     )}
-                    Entrer dans la pièce
+                    Commencer l’aventure
                   </button>
+                  <p className="start-reassurance">
+                    Sans chronomètre · Progression conservée
+                  </p>
                 </div>
               </div>
             )}
@@ -271,8 +408,8 @@ export default function Player({
                         Retourner à l’atelier <ArrowRight size={16} />
                       </button>
                     ) : (
-                      <a className="button primary" href="/atelier">
-                        Créer mon aventure <Plus size={16} />
+                      <a className="button primary" href="/#galerie">
+                        Jouer une autre histoire <ArrowRight size={16} />
                       </a>
                     )}
                     <button
@@ -298,9 +435,10 @@ export default function Player({
               onClick={() => setShow(!show)}
             >
               <ScanLine size={15} />
-              {show ? "Masquer les zones" : "Afficher les zones"}
+              {show ? "Masquer les repères" : "Afficher les repères"}
             </button>
           </div>
+          {compact && discovery}
           <div className="inventory">
             <div className="inventory-title">
               <KeyRound size={17} />
@@ -317,7 +455,10 @@ export default function Player({
                   </div>
                 ))
               ) : (
-                <p>Les objets que vous trouvez apparaîtront ici.</p>
+                <p>
+                  Les objets trouvés sont utilisés automatiquement au bon
+                  endroit.
+                </p>
               )}
             </div>
           </div>
@@ -347,73 +488,7 @@ export default function Player({
             <span className="section-kicker">L’histoire</span>
             <p>{room.story}</p>
           </div>
-          <div className="discovery" aria-live="polite">
-            {selected && object ? (
-              <>
-                <div className="discovery-label">
-                  {outcome === "locked" ? (
-                    <LockKeyhole size={16} />
-                  ) : (
-                    <Eye size={16} />
-                  )}
-                  <h3>{object.name}</h3>
-                  {busy && <LoaderCircle className="spin" size={15} />}
-                </div>
-                <p>{message}</p>
-                {(outcome === "needs_code" ||
-                  outcome === "wrong_code" ||
-                  (outcome === "hint" && object.action === "code")) && (
-                  <form
-                    className="code-form"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      void interact(selected, code);
-                    }}
-                  >
-                    <label htmlFor="puzzle-code">Le code du cadenas</label>
-                    <div>
-                      <input
-                        id="puzzle-code"
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
-                        autoComplete="off"
-                        maxLength={16}
-                        autoFocus
-                        placeholder="Votre code"
-                      />
-                      <button
-                        className="button primary"
-                        disabled={busy || !code.trim()}
-                        type="submit"
-                      >
-                        <ArrowRight size={18} />
-                        <span className="sr-only">Essayer le code</span>
-                      </button>
-                    </div>
-                  </form>
-                )}
-                {!session?.state.complete && (
-                  <button
-                    className="text-link hint-link"
-                    disabled={busy}
-                    onClick={() => void interact(selected, undefined, true)}
-                  >
-                    <Lightbulb size={15} />
-                    Un petit indice
-                  </button>
-                )}
-              </>
-            ) : (
-              <div className="first-discovery">
-                <MousePointer2 size={24} />
-                <p>
-                  Un détail, une serrure, un objet…
-                  <br />
-                  L’exploration commence par un clic.
-                </p>
-              </div>
-            )}
-          </div>
+          {!compact && discovery}
           <details className="object-access">
             <summary>Explorer les objets au clavier</summary>
             <div>
@@ -423,7 +498,12 @@ export default function Player({
                   key={o.id}
                   onClick={() => void interact(o.id)}
                 >
-                  {o.name}
+                  <span>
+                    {session?.state.resolved.includes(o.id) && (
+                      <Check size={13} />
+                    )}
+                    {o.name}
+                  </span>
                   <ArrowUpRight size={14} />
                 </button>
               ))}
@@ -432,13 +512,51 @@ export default function Player({
           {notes.length > 0 && (
             <details className="notes">
               <summary>Vos découvertes ({notes.length})</summary>
-              {notes.map((n, i) => (
+              {[...notes].reverse().map((n, i) => (
                 <p key={i}>{n}</p>
               ))}
             </details>
           )}
         </aside>
       </div>
+      {help && (
+        <Modal title="Comment jouer ?" onClose={() => setHelp(false)}>
+          <HowToPlay />
+          <button
+            className="button primary full"
+            onClick={() => setHelp(false)}
+          >
+            J’ai compris <Check size={16} />
+          </button>
+        </Modal>
+      )}
+      {restart && (
+        <Modal
+          title="Recommencer cette histoire ?"
+          onClose={() => setRestart(false)}
+        >
+          <p className="modal-intro">
+            Votre progression actuelle sera remplacée par une nouvelle partie.
+          </p>
+          <div className="button-row">
+            <button
+              className="button secondary"
+              onClick={() => setRestart(false)}
+            >
+              Continuer ma partie
+            </button>
+            <button
+              className="button primary"
+              onClick={() => {
+                setRestart(false);
+                void start();
+              }}
+            >
+              Recommencer
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

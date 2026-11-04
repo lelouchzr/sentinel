@@ -1,4 +1,4 @@
-import type { Scene } from "./game";
+import type { Scene, Room } from "./game";
 
 export type CreationIntent = {
   id: string;
@@ -9,6 +9,8 @@ export type CreationIntent = {
   file?: Blob;
   prompt?: string;
   scene?: Scene;
+  brief?: string;
+  proposal?: Room;
 };
 
 /** IndexedDB keeps a selected file across navigation and sign-in without URL

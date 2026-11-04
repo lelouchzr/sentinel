@@ -12,6 +12,7 @@ import {
   X,
   LoaderCircle,
   DoorOpen,
+  Check,
 } from "lucide-react";
 import type { Room, GameState, playerRoom } from "@/lib/game";
 
@@ -35,6 +36,7 @@ export type PlayData = {
   state: GameState;
   revision: number;
   room: PublicRoom;
+  journal: string[];
 };
 export type Props = {
   view: "gallery" | "editor" | "player" | "mine";
@@ -194,12 +196,16 @@ export function Hotspots({
   show,
   onSelect,
   drawing = false,
+  resolved = [],
+  disabled = false,
 }: {
   room: PublicRoom | Room;
   selected?: string;
   show: boolean;
   onSelect: (id: string) => void;
   drawing?: boolean;
+  resolved?: string[];
+  disabled?: boolean;
 }) {
   return (
     <div
@@ -217,7 +223,7 @@ export function Hotspots({
         return object.mask ? (
           <svg
             key={object.id}
-            className={`mask-hotspot ${selected === object.id ? "chosen" : ""}`}
+            className={`mask-hotspot ${selected === object.id ? "chosen" : ""} ${resolved.includes(object.id) ? "resolved" : ""}`}
             style={style}
             viewBox={`0 0 ${object.mask.width} ${object.mask.height}`}
             preserveAspectRatio="none"
@@ -227,11 +233,12 @@ export function Hotspots({
               role="button"
               tabIndex={drawing ? -1 : 0}
               aria-label={object.name}
-              onClick={() => onSelect(object.id)}
+              aria-disabled={disabled}
+              onClick={() => !disabled && onSelect(object.id)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  onSelect(object.id);
+                  if (!disabled) onSelect(object.id);
                 }
               }}
             />
@@ -240,12 +247,15 @@ export function Hotspots({
           <button
             key={object.id}
             style={style}
-            className={`hotspot ${selected === object.id ? "chosen" : ""}`}
+            className={`hotspot ${selected === object.id ? "chosen" : ""} ${resolved.includes(object.id) ? "resolved" : ""}`}
             aria-label={object.name}
             onClick={() => onSelect(object.id)}
             tabIndex={drawing ? -1 : 0}
+            disabled={disabled}
           >
-            <span>{index + 1}</span>
+            <span>
+              {resolved.includes(object.id) ? <Check size={12} /> : index + 1}
+            </span>
           </button>
         );
       })}

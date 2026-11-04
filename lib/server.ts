@@ -7,6 +7,7 @@ import {
   validateRoom,
   solution,
   sceneSchema,
+  discoveredMessages,
   type Room,
   type GameState,
 } from "./game";
@@ -365,7 +366,14 @@ export async function handle(request: Request): Promise<Response> {
           )
           .run();
         return json(
-          { id, token, state, revision: 0, room: playerRoom(definition) },
+          {
+            id,
+            token,
+            state,
+            journal: [],
+            revision: 0,
+            room: playerRoom(definition),
+          },
           201,
         );
       }
@@ -388,6 +396,7 @@ export async function handle(request: Request): Promise<Response> {
           return json({
             id: row.id,
             state: JSON.parse(row.state),
+            journal: discoveredMessages(definition, JSON.parse(row.state)),
             revision: row.revision,
             room: playerRoom(definition),
           });
@@ -426,7 +435,11 @@ export async function handle(request: Request): Promise<Response> {
               409,
               "Une autre action a été reçue. Rechargez la partie.",
             );
-          return json({ ...result, revision: row.revision + 1 });
+          return json({
+            ...result,
+            journal: discoveredMessages(definition, result.state),
+            revision: row.revision + 1,
+          });
         }
       }
     }

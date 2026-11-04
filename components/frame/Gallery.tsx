@@ -8,18 +8,23 @@ import {
   Sparkles,
   Search,
   Clock,
+  Play,
+  CircleHelp,
   RotateCcw,
 } from "lucide-react";
 import { api, errorText, themeName, difficultyName } from "@/lib/client";
 import { Loading, Notice, type Card, type Viewer } from "./shared";
 import CreationForm from "./CreationForm";
+import HowToPlay from "./HowToPlay";
+import { Modal } from "./shared";
 
 export default function Gallery({ viewer }: { viewer: Viewer | undefined }) {
   const [rooms, setRooms] = useState<Card[]>([]),
     [query, setQuery] = useState(""),
     [theme, setTheme] = useState(""),
     [loading, setLoading] = useState(true),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [help, setHelp] = useState(false);
   const load = () => {
     setLoading(true);
     api("gallery")
@@ -60,8 +65,8 @@ export default function Gallery({ viewer }: { viewer: Viewer | undefined }) {
             <span>Composez les énigmes.</span>
             <span>Testez et partagez.</span>
           </div>
-          <a href="#galerie" className="text-link hero-gallery-link">
-            Explorer les jeux <ArrowRight size={15} />
+          <a href="#galerie" className="button secondary hero-gallery-link">
+            <Play size={15} /> Jouer une histoire
           </a>
         </div>
         <CreationForm viewer={viewer} />
@@ -74,14 +79,20 @@ export default function Gallery({ viewer }: { viewer: Viewer | undefined }) {
         <div className="section-heading">
           <div>
             <p className="section-kicker">La galerie</p>
-            <h2 id="gallery-heading">À vous de jouer.</h2>
+            <h2 id="gallery-heading">Choisissez votre histoire.</h2>
             <p className="gallery-intro">
-              Essayez une aventure avant d’imaginer la vôtre.
+              Une image à explorer, des indices à relier, une sortie à trouver.
             </p>
           </div>
-          <span className="room-count">
-            {rooms.length} aventure{rooms.length > 1 ? "s" : ""}
-          </span>
+          <div className="gallery-heading-tools">
+            <button className="text-link" onClick={() => setHelp(true)}>
+              <CircleHelp size={15} />
+              Comment jouer
+            </button>
+            <span className="room-count">
+              {rooms.length} aventure{rooms.length > 1 ? "s" : ""}
+            </span>
+          </div>
         </div>
         <div className="filter-bar">
           <div
@@ -163,6 +174,17 @@ export default function Gallery({ viewer }: { viewer: Viewer | undefined }) {
           </div>
         )}
       </section>
+      {help && (
+        <Modal title="Comment jouer ?" onClose={() => setHelp(false)}>
+          <HowToPlay />
+          <button
+            className="button primary full"
+            onClick={() => setHelp(false)}
+          >
+            Choisir une histoire <ArrowRight size={16} />
+          </button>
+        </Modal>
+      )}
       <section className="creator-strip">
         <span className="large-icon">
           <Sparkles size={24} />
@@ -183,7 +205,11 @@ export default function Gallery({ viewer }: { viewer: Viewer | undefined }) {
 }
 function RoomCard({ room }: { room: Card }) {
   return (
-    <a href={`/jouer/${room.slug}`} className="room-card">
+    <a
+      href={`/jouer/${room.slug}`}
+      className="room-card"
+      aria-label={`Jouer à ${room.title}`}
+    >
       <div className="room-art">
         <img
           src={room.image}
@@ -191,7 +217,7 @@ function RoomCard({ room }: { room: Card }) {
           loading="lazy"
         />
         <span className="card-play">
-          <ArrowUpRight size={23} />
+          <Play size={14} /> Jouer
         </span>
       </div>
       <div className="room-card-meta">

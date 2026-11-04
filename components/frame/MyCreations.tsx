@@ -8,6 +8,7 @@ import {
   Globe,
   Pencil,
   ExternalLink,
+  Play,
 } from "lucide-react";
 import { api, errorText } from "@/lib/client";
 import { Loading, Notice, SignIn, type Viewer } from "./shared";
@@ -83,13 +84,22 @@ export default function MyCreations({
                 </span>
                 <h2>{draft.room.title}</h2>
                 <p>{draft.room.description}</p>
-                <a
-                  className="button secondary small"
-                  href={`/atelier/${draft.id}`}
-                >
-                  <Pencil size={14} />
-                  Continuer à créer
-                </a>
+                <div className="draft-actions">
+                  <a
+                    className="button primary small"
+                    href={`/atelier/${draft.id}?test=1`}
+                  >
+                    <Play size={14} />
+                    Jouer en privé
+                  </a>
+                  <a
+                    className="button secondary small"
+                    href={`/atelier/${draft.id}`}
+                  >
+                    <Pencil size={14} />
+                    Continuer à créer
+                  </a>
+                </div>
                 {data.publications
                   .filter((p: any) => p.draft_id === draft.id && p.active)
                   .map((p: any) => (

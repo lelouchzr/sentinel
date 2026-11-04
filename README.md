@@ -20,6 +20,14 @@ failed or interrupted image creation requires an explicit retry. Imported images
 are normalized to a bounded PNG before upload. A new scenario needs only a scene,
 never the kitchen's puzzle definition. The manual authoring option remains available.
 
+The gallery and navigation expose a dedicated play entry and a short how-to-play
+guide. Interactive regions are visible by default. On small screens discoveries
+and code inputs sit immediately below the scene; focus follows the returned
+interaction. The server restores only already-earned discovery messages with a
+saved session, including the ending. Restarting an unfinished game requires a
+confirmation. Creators can use **Jouer en privé** in their library to test an
+owned draft without publishing it; draft authorization still applies.
+
 ```sh
 npm ci
 npm run build

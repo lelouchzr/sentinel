@@ -56,6 +56,8 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
         setIntent(record);
         if (record.phase === "ready" && record.scene) {
           setScene(record.scene);
+          if (record.brief) setBrief(record.brief);
+          if (record.proposal) setProposal(record.proposal);
           setLoading(false);
         } else if (record.phase === "working" || record.phase === "failed") {
           setError(
@@ -74,6 +76,18 @@ export default function NewGame({ viewer }: { viewer: Viewer | undefined }) {
       mounted = false;
     };
   }, [viewer]);
+  // Preserve the paid proposal as well as its illustration across a reload.
+  useEffect(() => {
+    if (intent?.phase !== "ready" || !scene) return;
+    const timeout = window.setTimeout(() => {
+      void putCreation({
+        ...intent,
+        brief,
+        proposal: proposal ?? undefined,
+      }).catch(() => {});
+    }, 300);
+    return () => window.clearTimeout(timeout);
+  }, [brief, proposal, intent, scene]);
 
   async function prepare(record: CreationIntent) {
     setLoading(false);

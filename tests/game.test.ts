@@ -10,9 +10,33 @@ import {
   replaceIllustration,
   objectSchema,
   sceneSchema,
+  discoveredMessages,
 } from "../lib/game.ts";
 import { kitchen, japanese } from "../lib/rooms.ts";
 import { checkIllustration } from "../lib/creation.ts";
+
+test("the journal restores only earned discoveries, preserving their order and the ending", () => {
+  assert.deepEqual(discoveredMessages(kitchen, initialState()), []);
+  const observed = act(kitchen, initialState(), "assiettes").state;
+  assert.deepEqual(discoveredMessages(kitchen, observed), [
+    kitchen.objects[0].message,
+  ]);
+  assert.ok(
+    !discoveredMessages(kitchen, observed).includes(kitchen.objects[1].message),
+  );
+  const opened = act(kitchen, observed, "tiroir", "23").state;
+  const ready = act(kitchen, opened, "fruits").state;
+  const complete = act(kitchen, ready, "porte").state;
+  const journal = discoveredMessages(
+    kitchen,
+    JSON.parse(JSON.stringify(complete)),
+  );
+  assert.equal(journal.length, 4);
+  assert.equal(
+    journal.at(-1),
+    kitchen.objects.find((o) => o.action === "exit")!.message,
+  );
+});
 
 test("a new scene needs no template puzzles, while preserving image ownership and provenance", () => {
   const scene = sceneSchema.parse({
