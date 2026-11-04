@@ -1,0 +1,40 @@
+{
+  "assets": [
+    {
+      "served_path": "/scenes/kitchen.png",
+      "author": "jcrown41",
+      "license": "CC0-1.0",
+      "source_page": "https://opengameart.org/content/kitchen-background-4-styles",
+      "download_url": "https://opengameart.org/sites/default/files/Kitchen%20Background.zip",
+      "original_archive_member": "Kitchen Background/kitchen Background (items).png",
+      "sha256": "7ec8f382e4f36b1f55db3af9140c2b7731911d5208b89318628980f35e4b19f1",
+      "adaptations": [
+        "Renamed for serving; original pixel bytes unchanged."
+      ]
+    },
+    {
+      "served_path": "/scenes/kitchen-empty.png",
+      "author": "jcrown41",
+      "license": "CC0-1.0",
+      "source_page": "https://opengameart.org/content/kitchen-background-4-styles",
+      "download_url": "https://opengameart.org/sites/default/files/Kitchen%20Background.zip",
+      "original_archive_member": "Kitchen Background/kitchen Background.png",
+      "sha256": "24953f43dcef35e06791dd22dccf98ce69160c7f36a9d7a96a6f92dcbc260873",
+      "adaptations": [
+        "Renamed for serving; original pixel bytes unchanged."
+      ]
+    },
+    {
+      "served_path": "/scenes/japanese.png",
+      "author": "HachiStudio",
+      "license": "CC0-1.0",
+      "source_page": "https://opengameart.org/content/japanese-room",
+      "download_url": "https://opengameart.org/sites/default/files/room1_0.png",
+      "original_archive_member": null,
+      "sha256": "cf4dc0286cda219c5fa676f532e44c24879e80e455245adcd37c5acc26a3188a",
+      "adaptations": [
+        "Renamed for serving; original pixel bytes unchanged."
+      ]
+    }
+  ]
+}

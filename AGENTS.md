@@ -1,11 +1,12 @@
-# Slim
+# Storyscape
 
-- Python engine in `src/slim`, React/TypeScript workbench in `web/src`.
-- Source repositories are read-only. Static analysis must never import source code.
-- Model output is advisory and must pass the same deterministic contracts as manual input.
-- Preserve upstream licenses, source commits, hashes and adaptation provenance.
-- Reports must distinguish matched, diverged and unverified cases. Do not claim general equivalence.
-- Local subprocess execution is for trusted repositories; it is not a security sandbox.
-- Never commit `.env`, `.slim`, build artifacts, credentials or source checkout caches.
-- Run `make check` before delivery. Use the real-repository benchmark when changing slicing or packaging.
-- Keep changes focused and commit actual work at its real creation time.
+- React/TypeScript application using Vinext, Cloudflare D1 and R2.
+- App routes are in `app/`, UI in `components/storyscape/`, game rules in `lib/game.ts`, server API in `lib/server.ts`, and Meta adapters in `lib/meta.ts`.
+- Validate model proposals with the same deterministic contracts as manual stories. Keep puzzle answers and hidden dependencies on the server.
+- Preserve published snapshots, existing play capabilities and the original `frame-play-*` / `frame-creation` browser-storage namespaces.
+- Preserve Site project identity and the current owner-private audience unless the user explicitly changes access.
+- Keep runtime secrets in Sites or environment variables. Never commit `.env`, credentials, `.wrangler`, `.sites-runtime`, build output or dependency caches.
+- Preserve licenses, image hashes, original generation manifests and adaptation provenance. Historical FRAME credits in source evidence describe the original creation.
+- Run `make check` before delivery. Use `make integration` against a disposable loopback server for API or rule changes; integration scripts must never target production.
+- Do not run paid Meta calls automatically in CI or as a retry. Existing captured Meta evidence is used for regression tests.
+- The former Slim project is preserved on `archive/slim-2026-11-04` in GitHub. Do not restore its Python tooling into the main app.

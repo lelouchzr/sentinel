@@ -1,0 +1,615 @@
+{
+  "verifiedAt": "2026-11-04T15:38:31.834Z",
+  "source": "Actual local Meta Model API integration, no mock",
+  "room": {
+    "title": "Le dernier service - Transmission",
+    "description": "Aidez Élise et Lou à préparer le dernier service du bistrot : fouillez les fruits, ouvrez le tiroir codé, remettez recette et service en ordre, utilisez la clé et choisissez l’avenir du carnet.",
+    "story": "Vous poussez la porte du petit bistrot familial à l’heure dorée : la cuisine embaume encore la pomme et le beurre. Élise, la patronne aux cheveux argentés, prépare sa dernière soirée après quarante ans de services. Sa petite-fille Lou, venue de la ville, rêve de reprendre la maison mais se croit incapable de porter cet héritage. Entre elles, un vieux carnet de recettes, un tiroir fermé, une coupe de fruits et un fourneau qui ronronne. Élise cache son émotion derrière ses gestes précis, Lou cache sa peur derrière ses questions. Vous êtes l’ami appelé à l’aide pour fouiller, ranger et transmettre. En trois moments, du matin au soir, vous remettrez de l’ordre dans les fiches et les assiettes, vous ouvrirez le buffet à la clé et choisirez avec elles l’avenir du carnet. Ce soir, il ne s’agit pas seulement de cuisiner, mais de dire merci et de confier.",
+    "theme": "cosy",
+    "difficulty": "intermediaire",
+    "duration": 42,
+    "image": "/stories/kitchen-base.png",
+    "imageProvenance": {
+      "model": "muse-image-1.0",
+      "runId": "9f61cf2e-69a4-4b3d-b1cd-ce02a6e84b69",
+      "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Warm family bistro kitchen at closing time, golden evening light, sage and cream cupboards. Plate shelf on upper left, drawer unit on lower left, bowl of fruit on the center worktop, old oven on the right, wooden back door on the rear right. A tea towel and a notebook are clearly visible. Cozy French bistro.",
+      "generatedAt": "2026-11-04T14:07:48.125Z"
+    },
+    "objects": [
+      {
+        "id": "carnet-elise",
+        "name": "Carnet ouvert d’Élise",
+        "prompt": "Feuilleter le carnet resté ouvert",
+        "action": "inspect",
+        "region": {
+          "x": 0.155,
+          "y": 0.56,
+          "w": 0.18,
+          "h": 0.09
+        },
+        "requires": [],
+        "code": null,
+        "itemName": null,
+        "message": "Le carnet d’Élise est ouvert sur le comptoir en bois clair. D’une écriture ronde, elle y raconte ses quarante ans de bistrot et sa fierté pour Lou. En marge, elle a noté que le tiroir du haut s’ouvre avec un code à trois chiffres caché dans les fruits. Vous sentez la farine et la lavande entre les pages.",
+        "lockedMessage": "Le carnet est ouvert, il ne demande qu’à être lu attentivement.",
+        "hint": "Lisez bien les deux pages ouvertes, tout y est expliqué simplement.",
+        "chapterId": "acte-matin",
+        "animation": "page"
+      },
+      {
+        "id": "coupe-fruits",
+        "name": "Coupe de fruits du verger",
+        "prompt": "Fouiller sous les pommes et les poires",
+        "action": "inspect",
+        "region": {
+          "x": 0.315,
+          "y": 0.4,
+          "w": 0.15,
+          "h": 0.14
+        },
+        "requires": [],
+        "code": null,
+        "itemName": null,
+        "message": "La grande coupe crème déborde de pommes, poires et raisins du verger. En soulevant les fruits, vous trouvez un petit papier : 3 pommes rouges, 7 fruits jaunes, 1 grappe violette. Élise rit : c’est son pense-bête. Le code du tiroir est donc 3 puis 7 puis 1, dans cet ordre précis.",
+        "lockedMessage": "La coupe déborde de fruits, il faut regarder sous chacun d’eux.",
+        "hint": "Comptez les fruits par couleur : rouges, jaunes puis violets.",
+        "chapterId": "acte-matin",
+        "animation": "fruits"
+      },
+      {
+        "id": "assiettes-mur",
+        "name": "Assiettes sur l’étagère",
+        "prompt": "Observer les piles d’assiettes",
+        "action": "inspect",
+        "region": {
+          "x": 0.1,
+          "y": 0.13,
+          "w": 0.23,
+          "h": 0.18
+        },
+        "requires": [],
+        "code": null,
+        "itemName": null,
+        "message": "Sur l’étagère vert sauge s’alignent trois piles d’assiettes blanches à liseré bleu. Élise les astique chaque matin depuis toujours. Lou explique l’ordre du service : d’abord les grandes plates du bas, puis les creuses, puis les petites à dessert tout en haut. Cette logique vous sera précieuse pour dresser la table.",
+        "lockedMessage": "Les assiettes sont bien rangées, comptez les piles calmement.",
+        "hint": "Les piles vous serviront plus tard pour le service du soir.",
+        "chapterId": "acte-matin"
+      },
+      {
+        "id": "torchon-brode",
+        "name": "Torchon brodé",
+        "prompt": "Prendre le torchon en lin",
+        "action": "collect",
+        "region": {
+          "x": 0.465,
+          "y": 0.49,
+          "w": 0.14,
+          "h": 0.2
+        },
+        "requires": [],
+        "code": null,
+        "itemName": "Torchon brodé",
+        "message": "Le torchon en lin à rayures vertes est doux d’usure. On y a brodé E. et L. entrelacés, pour Élise et Lou. Il sent le savon et le soleil. Lou le serre contre elle : sa grand-mère le lui avait promis pour son premier service. Vous le pliez avec soin et le gardez avec vous.",
+        "lockedMessage": "Le torchon à rayures vertes pend au bord du meuble.",
+        "hint": "Prenez le torchon, il porte les initiales de la famille.",
+        "chapterId": "acte-matin"
+      },
+      {
+        "id": "tiroir-recettes",
+        "name": "Tiroir du haut à code",
+        "prompt": "Composer le code du tiroir",
+        "action": "code",
+        "region": {
+          "x": 0.175,
+          "y": 0.68,
+          "w": 0.18,
+          "h": 0.1
+        },
+        "requires": [
+          "coupe-fruits"
+        ],
+        "code": "371",
+        "itemName": null,
+        "message": "Le cadenas cède dans un clic joyeux. Dans le tiroir vert, sous un papier de soie, reposent les fiches de la tarte verger et une clé en laiton gravée. Élise s’exclame, émue : ce sont ses recettes de mariage. Lou n’ose y toucher tant le papier est précieux et parfumé.",
+        "lockedMessage": "Le tiroir du haut est fermé par un petit cadenas à chiffres. Il faut le code en trois chiffres.",
+        "hint": "Tapez 3 puis 7 puis 1 comme indiqué par le papier dans les fruits.",
+        "chapterId": "acte-matin"
+      },
+      {
+        "id": "cle-laiton",
+        "name": "Clé en laiton",
+        "prompt": "Ramasser la clé en laiton",
+        "action": "collect",
+        "region": {
+          "x": 0.22,
+          "y": 0.72,
+          "w": 0.08,
+          "h": 0.05
+        },
+        "requires": [
+          "tiroir-recettes"
+        ],
+        "code": null,
+        "itemName": "Clé en laiton",
+        "message": "Sous les fiches jaunies brille une petite clé en laiton, toute patinée. Son anneau porte une étiquette : buffet bas. Élise explique qu’elle y range son cahier de transmission. Lou vous confie la clé avec solennité : à vous d’ouvrir la suite de l’histoire.",
+        "lockedMessage": "Il faut d’abord ouvrir le tiroir du haut pour accéder à la clé.",
+        "hint": "La clé était cachée sous les fiches du tiroir du haut.",
+        "chapterId": "acte-matin"
+      },
+      {
+        "id": "placard-vert",
+        "name": "Placard vert ouvert",
+        "prompt": "Examiner l’intérieur du placard",
+        "action": "inspect",
+        "region": {
+          "x": 0.385,
+          "y": 0.055,
+          "w": 0.18,
+          "h": 0.22
+        },
+        "requires": [],
+        "code": null,
+        "itemName": null,
+        "message": "Le placard vert sauge est à moitié vide, baigné de lumière. À l’intérieur, Élise a collé l’ordre de sa tarte : 1 Farine, 2 Beurre, 3 Pommes, 4 Sucre glace. Lou rit : sans cet ordre, la pâte retombe toujours. Vous recopiez soigneusement la liste pour remettre les fiches en place.",
+        "lockedMessage": "Le placard vide au-dessus du comptoir garde une inscription.",
+        "hint": "Lisez l’ordre des étapes écrit à l’intérieur de la porte.",
+        "chapterId": "acte-midi",
+        "animation": "light"
+      },
+      {
+        "id": "fourneau-noir",
+        "name": "Vieux fourneau en fonte",
+        "prompt": "Ouvrir la porte du fourneau",
+        "action": "inspect",
+        "region": {
+          "x": 0.625,
+          "y": 0.57,
+          "w": 0.18,
+          "h": 0.24
+        },
+        "requires": [],
+        "code": null,
+        "itemName": null,
+        "message": "Le fourneau noir en fonte trône fièrement avec ses quatre plaques et ses boutons ronds. En ouvrant la porte, une bonne odeur de pomme chaude s’échappe encore. Élise y réchauffait les plats pendant que son mari racontait des histoires. Tout semble en ordre pour la dernière flambée du soir.",
+        "lockedMessage": "Le fourneau en fonte attend d’être vérifié pour la dernière cuisson.",
+        "hint": "Le vieux four a besoin d’un regard avant le soir.",
+        "chapterId": "acte-midi",
+        "animation": "door"
+      },
+      {
+        "id": "recette-melangee",
+        "name": "Fiches de la tarte verger",
+        "prompt": "Remettre les fiches en ordre",
+        "action": "unlock",
+        "region": {
+          "x": 0.3,
+          "y": 0.52,
+          "w": 0.16,
+          "h": 0.08
+        },
+        "requires": [
+          "placard-vert"
+        ],
+        "code": null,
+        "itemName": null,
+        "message": "Vous alignez les quatre fiches tachées de beurre sur le comptoir. En suivant l’ordre du placard, la recette reprend son sens et parfume l’air. Lou lit à voix haute, Élise corrige d’un clin d’œil. La tarte verger est sauvée, prête à être enfournée pour le dernier service.",
+        "lockedMessage": "Les quatre fiches de la tarte sont mélangées. Remettez-les dans le bon ordre.",
+        "hint": "Replacez dans l’ordre du placard : Farine, Beurre, Pommes, Sucre.",
+        "chapterId": "acte-midi",
+        "puzzle": {
+          "kind": "sequence",
+          "instruction": "Remettez les quatre étapes de la tarte dans l’ordre indiqué dans le placard vert.",
+          "pieces": [
+            {
+              "id": "r-sucre",
+              "label": "Sucre glace"
+            },
+            {
+              "id": "r-pommes",
+              "label": "Pommes"
+            },
+            {
+              "id": "r-farine",
+              "label": "Farine"
+            },
+            {
+              "id": "r-beurre",
+              "label": "Beurre"
+            }
+          ],
+          "solution": [
+            "r-farine",
+            "r-beurre",
+            "r-pommes",
+            "r-sucre"
+          ]
+        }
+      },
+      {
+        "id": "porte-jardin",
+        "name": "Porte ouverte sur le jardin",
+        "prompt": "Regarder l’ardoise près du jardin",
+        "action": "inspect",
+        "region": {
+          "x": 0.795,
+          "y": 0.13,
+          "w": 0.1,
+          "h": 0.3
+        },
+        "requires": [],
+        "code": null,
+        "itemName": null,
+        "message": "La porte vitrée s’ouvre sur le jardin doré où chantent les merles. Sur le chambranle, une ardoise indique le service du soir dans l’ordre : Soupe, Plat, Fromage, Dessert. Lou s’y est entraînée petite en portant les assiettes. Vous respirez l’air tiède, prêt à dresser la table dans les règles.",
+        "lockedMessage": "La porte vitrée ouverte sur le jardin laisse entrer le soir.",
+        "hint": "La lumière du jardin vous rappellera l’ordre du service.",
+        "chapterId": "acte-midi",
+        "animation": "door"
+      },
+      {
+        "id": "armoire-basse",
+        "name": "Buffet bas verrouillé",
+        "prompt": "Ouvrir le buffet avec la clé",
+        "action": "unlock",
+        "region": {
+          "x": 0.395,
+          "y": 0.62,
+          "w": 0.22,
+          "h": 0.2
+        },
+        "requires": [
+          "cle-laiton"
+        ],
+        "code": null,
+        "itemName": null,
+        "message": "La clé en laiton tourne doucement dans la serrure du buffet crème. À l’intérieur dorment des nappes brodées, un cahier noir et la photo du mariage d’Élise. Lou porte la main à sa bouche, bouleversée. Le passé du bistrot s’offre à vous, intact et chaleureux.",
+        "lockedMessage": "Le buffet bas sous le torchon est verrouillé. Il faut la clé en laiton.",
+        "hint": "Utilisez la clé en laiton trouvée le matin dans le tiroir.",
+        "chapterId": "acte-midi",
+        "animation": "drawer",
+        "useItem": "cle-laiton"
+      },
+      {
+        "id": "assiettes-service",
+        "name": "Service du soir à ordonner",
+        "prompt": "Ordonner le service du soir",
+        "action": "unlock",
+        "region": {
+          "x": 0.11,
+          "y": 0.24,
+          "w": 0.18,
+          "h": 0.08
+        },
+        "requires": [
+          "porte-jardin"
+        ],
+        "code": null,
+        "itemName": null,
+        "message": "Vous triez les assiettes avec Lou en suivant l’ardoise du jardin. La pile retrouve sa logique : chaque plat aura son assiette pour le dernier service. Élise applaudit doucement, fière de voir Lou compter à voix haute comme autrefois. La table du soir est désormais prête à accueillir le village.",
+        "lockedMessage": "Les assiettes du service sont empilées sans ordre. Il faut les remettre en séquence.",
+        "hint": "Suivez l’ardoise du jardin : Soupe, Plat, Fromage, Dessert.",
+        "chapterId": "acte-midi",
+        "puzzle": {
+          "kind": "sequence",
+          "instruction": "Replacez les quatre services dans l’ordre écrit sur l’ardoise près de la porte du jardin.",
+          "pieces": [
+            {
+              "id": "s-fromage",
+              "label": "Fromage"
+            },
+            {
+              "id": "s-soupe",
+              "label": "Soupe"
+            },
+            {
+              "id": "s-dessert",
+              "label": "Dessert"
+            },
+            {
+              "id": "s-plat",
+              "label": "Plat"
+            }
+          ],
+          "solution": [
+            "s-soupe",
+            "s-plat",
+            "s-fromage",
+            "s-dessert"
+          ]
+        }
+      },
+      {
+        "id": "carnet-page-jaunie",
+        "name": "Cahier de transmission",
+        "prompt": "Lire le cahier aux pages jaunies",
+        "action": "inspect",
+        "region": {
+          "x": 0.42,
+          "y": 0.55,
+          "w": 0.14,
+          "h": 0.08
+        },
+        "requires": [
+          "armoire-basse"
+        ],
+        "code": null,
+        "itemName": null,
+        "message": "Le cahier noir aux pages jaunies contient les conseils d’Élise : ne jamais presser la pâte, sourire même les soirs de pluie, noter chaque idée de Lou. Une photo glissée montre Élise jeune devant ce même fourneau. Lou lit en silence, les larmes aux yeux, et promet de continuer.",
+        "lockedMessage": "Le cahier de transmission est rangé dans le buffet fraîchement ouvert.",
+        "hint": "Le cahier noir du buffet contient les mots pour Lou.",
+        "chapterId": "acte-midi"
+      },
+      {
+        "id": "tiroir-bas",
+        "name": "Grand tiroir du bas",
+        "prompt": "Ranger les ustensiles du tiroir",
+        "action": "unlock",
+        "region": {
+          "x": 0.175,
+          "y": 0.79,
+          "w": 0.18,
+          "h": 0.09
+        },
+        "requires": [],
+        "code": null,
+        "itemName": null,
+        "message": "Vous ouvrez en grand le tiroir du bas aux poignées de bois. Cuillères, fouets et spatules s’emmêlent joyeusement. En les déplaçant un par un, vous leur trouvez une place nette et accueillante. Lou y glisse les nappes brodées, prête pour le service, sous le regard attendri d’Élise.",
+        "lockedMessage": "Le grand tiroir du bas est plein d’ustensiles en désordre.",
+        "hint": "Rangez librement les ustensiles pour faire de la place aux nappes.",
+        "chapterId": "acte-soir",
+        "animation": "drawer",
+        "puzzle": {
+          "kind": "move",
+          "instruction": "Déplacez tous les ustensiles pour ranger le tiroir avant le service.",
+          "pieces": [
+            {
+              "id": "u-cuillere",
+              "label": "Cuillère"
+            },
+            {
+              "id": "u-fouet",
+              "label": "Fouet"
+            },
+            {
+              "id": "u-spatule",
+              "label": "Spatule"
+            },
+            {
+              "id": "u-louche",
+              "label": "Louche"
+            }
+          ]
+        }
+      },
+      {
+        "id": "boutons-fourneau",
+        "name": "Boutons du fourneau",
+        "prompt": "Régler les boutons du fourneau",
+        "action": "inspect",
+        "region": {
+          "x": 0.635,
+          "y": 0.51,
+          "w": 0.17,
+          "h": 0.06
+        },
+        "requires": [],
+        "code": null,
+        "itemName": null,
+        "message": "Les quatre boutons ronds du fourneau sont tièdes sous vos doigts. Vous les tournez doucement jusqu’au repère gravé par le mari d’Élise. Un léger ronron monte de la fonte, rassurant. Lou enfourne la tarte verger : le parfum envahit aussitôt la cuisine et fait sourire les voisins.",
+        "lockedMessage": "Les boutons du fourneau doivent être réglés pour la tarte.",
+        "hint": "Tournez doucement les boutons pour vérifier la chaleur.",
+        "chapterId": "acte-soir",
+        "animation": "lever"
+      },
+      {
+        "id": "four-derniere",
+        "name": "Four de la dernière cuisson",
+        "prompt": "Surveiller la tarte dans le four",
+        "action": "inspect",
+        "region": {
+          "x": 0.66,
+          "y": 0.74,
+          "w": 0.11,
+          "h": 0.08
+        },
+        "requires": [
+          "boutons-fourneau"
+        ],
+        "code": null,
+        "itemName": null,
+        "message": "En soulevant la porte lourde, une vague de chaleur aux pommes vous enveloppe. La tarte dore parfaitement, sa croûte chante doucement. Élise hume et approuve : c’est exactement la couleur des grands soirs. Lou, tablier fleuri noué, n’ose croire qu’elle a réussi sa première cuisson seule.",
+        "lockedMessage": "Le four renferme la tarte du dernier service, à surveiller.",
+        "hint": "Soulevez doucement le couvercle pour sentir la dernière cuisson.",
+        "chapterId": "acte-soir",
+        "animation": "lid"
+      },
+      {
+        "id": "cahier-transmission",
+        "name": "Cahier posé pour le choix",
+        "prompt": "Relire le mot pour Lou",
+        "action": "inspect",
+        "region": {
+          "x": 0.16,
+          "y": 0.57,
+          "w": 0.16,
+          "h": 0.08
+        },
+        "requires": [
+          "four-derniere",
+          "tiroir-bas"
+        ],
+        "code": null,
+        "itemName": null,
+        "message": "Le cahier de transmission est posé près de la coupe de fruits vidée. Élise y a écrit : Ma Lou, ce carnet est ma vie, fais-en ta joie. Garde-le ou partage-le, je serai fière. Lou vous regarde, les mains tremblantes. À vous de l’aider à choisir : confier le carnet à Lou ou l’offrir au village entier.",
+        "lockedMessage": "Le cahier posé sur le comptoir attend votre lecture attentive.",
+        "hint": "Relisez le mot qu’Élise a laissé pour Lou avant de choisir.",
+        "chapterId": "acte-soir",
+        "animation": "page"
+      },
+      {
+        "id": "carnet-avenir",
+        "name": "Choisir l’avenir du carnet",
+        "prompt": "Décider de l’avenir du carnet",
+        "action": "choose",
+        "region": {
+          "x": 0.32,
+          "y": 0.41,
+          "w": 0.14,
+          "h": 0.1
+        },
+        "requires": [
+          "cahier-transmission"
+        ],
+        "code": null,
+        "itemName": null,
+        "message": "Le moment est venu : voisins et amis retiennent leur souffle autour de la table dressée. Élise confie le vieux carnet à vos mains et vous demande de trancher. Allez-vous le remettre solennellement à Lou pour qu’elle poursuive le bistrot, ou l’ouvrir au village pour que chacun en garde une part ? Votre voix tremble un peu.",
+        "lockedMessage": "Il faut avoir relu le cahier et préparé le service pour choisir.",
+        "hint": "Écoutez votre cœur : fidélité à Lou ou partage au village.",
+        "chapterId": "acte-soir",
+        "choices": [
+          {
+            "id": "confier-carnet",
+            "label": "Confier le carnet à Lou",
+            "reply": "Lou serre le carnet contre son cœur et promet de garder le bistrot ouvert. Élise l’embrasse, émue aux larmes."
+          },
+          {
+            "id": "partager-carnet",
+            "label": "Partager les recettes au village",
+            "reply": "Vous proposez de copier les recettes pour chaque voisin. Élise sourit et Lou distribue les pages avec joie."
+          }
+        ]
+      },
+      {
+        "id": "porte-sortie",
+        "name": "Sortir fêter au jardin",
+        "prompt": "Rejoindre les voisins au jardin",
+        "action": "exit",
+        "region": {
+          "x": 0.87,
+          "y": 0.6,
+          "w": 0.12,
+          "h": 0.22
+        },
+        "requires": [
+          "carnet-avenir"
+        ],
+        "code": null,
+        "itemName": null,
+        "message": "Vous poussez la porte vitrée et le jardin vous accueille dans la douceur du soir. Les voisins applaudissent, la tarte fume sur la table, les guirlandes s’allument. Élise et Lou, main dans la main, vous remercient d’avoir sauvé leur dernière soirée. Le bistrot s’efface, mais sa chaleur restera longtemps.",
+        "lockedMessage": "La fête ne peut commencer sans avoir choisi l’avenir du carnet.",
+        "hint": "Sortez dans le jardin pour fêter le dernier service sous les étoiles.",
+        "chapterId": "acte-soir"
+      }
+    ],
+    "credits": [
+      {
+        "title": "La cuisine du dernier service",
+        "author": "Muse Image · Meta",
+        "license": "Image générée pour FRAME",
+        "url": "https://dev.meta.ai/models/muse-image"
+      }
+    ],
+    "chapters": [
+      {
+        "id": "acte-matin",
+        "title": "Acte I - La cuisine du matin",
+        "subtitle": "Le café est chaud, Lou retient son souffle",
+        "objective": "Fouillez la cuisine du matin et ouvrez le tiroir aux recettes d’Élise.",
+        "story": "Il est huit heures et le bistrot sent encore la cire et le café d’hier. Élise, soixante-dix ans de service derrière le comptoir, vous accueille avec son tablier amidonné : ce soir, c’est le dernier service après quarante ans de gratins et de tartes. Sa petite-fille Lou, vingt ans, veut reprendre la maison mais doute d’être à la hauteur. Élise a tout noté dans son carnet, mais elle l’a rangé par pudeur et la clé du tiroir s’est perdue dans l’agitation. Vous devez l’aider à remettre la main sur ses papiers avant l’arrivée des fournisseurs. Observez le carnet resté ouvert, la coupe de fruits du verger, les assiettes alignées et le torchon brodé par la mère d’Élise. Chaque détail compte, chaque objet vous parle de transmission. Lou vous regarde, mi-inquiète, mi-espoir : prouvez-lui que cette cuisine a encore tant à donner.",
+        "image": "/stories/kitchen-base.png",
+        "credits": [
+          {
+            "title": "La cuisine du dernier service",
+            "author": "Muse Image · Meta",
+            "license": "Image générée pour FRAME",
+            "url": "https://dev.meta.ai/models/muse-image"
+          }
+        ],
+        "imageProvenance": {
+          "model": "muse-image-1.0",
+          "runId": "9f61cf2e-69a4-4b3d-b1cd-ce02a6e84b69",
+          "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Warm family bistro kitchen at closing time, golden evening light, sage and cream cupboards. Plate shelf on upper left, drawer unit on lower left, bowl of fruit on the center worktop, old oven on the right, wooden back door on the rear right. A tea towel and a notebook are clearly visible. Cozy French bistro.",
+          "generatedAt": "2026-11-04T14:07:48.125Z"
+        },
+        "requires": [],
+        "unlockMessage": "Le tiroir s’ouvre : les recettes d’Élise refont surface. L’après-midi peut commencer.",
+        "ambience": "steam"
+      },
+      {
+        "id": "acte-midi",
+        "title": "Acte II - Remettre en ordre",
+        "subtitle": "Les fiches sont mêlées, le service attend",
+        "objective": "Remettez la recette et le service dans l’ordre, puis ouvrez le bas du buffet.",
+        "story": "Midi sonne au clocher et la lumière dore le fourneau. Grâce à vous, Élise a retrouvé sa clé en laiton et son sourire malicieux. Elle avoue alors son vrai tourment : Lou a mélangé hier les fiches de la fameuse tarte verger et bousculé la pile des assiettes du service du soir. Si tout n’est pas remis dans l’ordre, le dernier service manquera son éclat. Élise raconte comment son mari réglait le fourneau d’un geste lent, comment sa mère comptait les assiettes à voix haute. Lou écoute, les yeux brillants, et comprend qu’elle fait partie de cette chaîne. À vous de remettre de l’ordre : lisez le placard, poussez la porte du jardin pour respirer, ouvrez le buffet du bas. La cuisine semble vous encourager, le bois craque doucement sous vos pas.",
+        "image": "/stories/kitchen-base.png",
+        "credits": [
+          {
+            "title": "La cuisine du dernier service",
+            "author": "Muse Image · Meta",
+            "license": "Image générée pour FRAME",
+            "url": "https://dev.meta.ai/models/muse-image"
+          }
+        ],
+        "imageProvenance": {
+          "model": "muse-image-1.0",
+          "runId": "9f61cf2e-69a4-4b3d-b1cd-ce02a6e84b69",
+          "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Warm family bistro kitchen at closing time, golden evening light, sage and cream cupboards. Plate shelf on upper left, drawer unit on lower left, bowl of fruit on the center worktop, old oven on the right, wooden back door on the rear right. A tea towel and a notebook are clearly visible. Cozy French bistro.",
+          "generatedAt": "2026-11-04T14:07:48.125Z"
+        },
+        "requires": [
+          "cle-laiton"
+        ],
+        "unlockMessage": "La recette est lisible, le service est prêt. Le soir tombe sur le bistrot, dernier acte.",
+        "ambience": "leaves"
+      },
+      {
+        "id": "acte-soir",
+        "title": "Acte III - La dernière flambée",
+        "subtitle": "Les voisins arrivent, le tablier change d’épaules",
+        "objective": "Préparez le four, rangez le tiroir du bas et choisissez l’avenir du carnet.",
+        "story": "Le soleil décline derrière la porte vitrée, la salle embaume la pomme chaude. Les voisins arrivent pour la dernière soirée, les chaises raclent doucement. Élise prend les mains de Lou : il est temps de transmettre, pas seulement des recettes, mais une manière d’accueillir. Il reste le bas du meuble à ranger, le fourneau à vérifier et le grand cahier de transmission à relire. Vous sentez l’émotion monter, les rires contenus, la fierté fragile de Lou qui enfile enfin le tablier fleuri. Chaque geste devient un adieu et une promesse. Quand tout sera prêt, il vous faudra trancher avec elles : que deviendra le précieux carnet après ce soir ? Votre choix scellera l’avenir du bistrot familial, entre fidélité et renouveau.",
+        "image": "/stories/kitchen-base.png",
+        "credits": [
+          {
+            "title": "La cuisine du dernier service",
+            "author": "Muse Image · Meta",
+            "license": "Image générée pour FRAME",
+            "url": "https://dev.meta.ai/models/muse-image"
+          }
+        ],
+        "imageProvenance": {
+          "model": "muse-image-1.0",
+          "runId": "9f61cf2e-69a4-4b3d-b1cd-ce02a6e84b69",
+          "prompt": "Original hand-painted storybook illustration for an exploration adventure, ink and gouache on textured paper, sophisticated painterly detail, wide landscape composition, no people, no logos, no text or readable numbers, inviting layered depth, clearly separated objects, each mentioned object entirely visible. One coherent room, eye-level view, calm magical realism. No UI, no frames, no collages. Warm family bistro kitchen at closing time, golden evening light, sage and cream cupboards. Plate shelf on upper left, drawer unit on lower left, bowl of fruit on the center worktop, old oven on the right, wooden back door on the rear right. A tea towel and a notebook are clearly visible. Cozy French bistro.",
+          "generatedAt": "2026-11-04T14:07:48.125Z"
+        },
+        "requires": [
+          "assiettes-service"
+        ],
+        "unlockMessage": "Le four ronronne, la table est mise. Il ne reste qu’une décision, la plus belle.",
+        "ambience": "stars"
+      }
+    ],
+    "ending": {
+      "sourceObjectId": "carnet-avenir",
+      "variants": [
+        {
+          "choiceId": "confier-carnet",
+          "title": "Transmettre à Lou",
+          "text": "Vous posez le carnet entre les mains de Lou devant tous les voisins émus. Élise noue le tablier fleuri autour de sa taille et l’embrasse sur le front. Le four sonne, la tarte verger embaume, les applaudissements éclatent. Lou promet de garder chaque recette et d’y ajouter ses idées. Le bistrot restera ouvert, porté par la jeunesse et la mémoire."
+        },
+        {
+          "choiceId": "partager-carnet",
+          "title": "Offrir au village",
+          "text": "Vous ouvrez le carnet au milieu de la table et proposez de le copier pour chacun. Élise sourit à travers ses larmes, Lou distribue les pages recopiées aux voisins. La tarte est partagée en parts égales, les histoires fusent. Le bistrot fermera ses portes, mais ses recettes vivront dans toutes les cuisines du village, comme un feu qui ne s’éteint pas."
+        }
+      ]
+    },
+    "provenance": {
+      "method": "meta",
+      "model": "muse-spark-1.3",
+      "generatedAt": "2026-11-04T15:38:31.825Z",
+      "promptVersion": "frame-interactive-v3",
+      "runId": "c64c2f2e-905d-42cd-bc98-e81b6f0de347"
+    }
+  }
+}

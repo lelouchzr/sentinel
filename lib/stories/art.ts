@@ -1,0 +1,23 @@
+import generated from "../../public/stories/manifest.json" with { type: "json" };
+import existing from "../../public/stories/base-manifest.json" with { type: "json" };
+import type { Room } from "../game.ts";
+
+type Artwork = Pick<Room, "image" | "credits" | "imageProvenance">;
+/** Provenance is taken from recorded real model calls, never synthesized by a story author. */
+export function artwork(id: string): Artwork {
+  const asset = [...generated.assets, ...existing.assets].find(
+    (a) => a.id === id,
+  );
+  if (!asset) throw new Error(`Illustration manquante : ${id}`);
+  return {
+    image: asset.path,
+    credits: asset.credits.map((c) =>
+      c.license === "Image générée pour FRAME"
+        ? { ...c, license: "Image générée pour cette aventure" }
+        : c,
+    ),
+    ...("imageProvenance" in asset
+      ? { imageProvenance: asset.imageProvenance as Room["imageProvenance"] }
+      : {}),
+  };
+}

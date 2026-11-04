@@ -1,0 +1,110 @@
+{
+  "purpose": "Candidate fixtures for development and held-out evaluation, not a trained model.",
+  "retrieved_at_utc": "2026-11-04T11:18:48.209660+00:00",
+  "meta_inference_executed": false,
+  "sources": [
+    {
+      "id": "kitchen",
+      "title": "Kitchen Background (4 styles)",
+      "author": "jcrown41",
+      "source_page": "https://opengameart.org/content/kitchen-background-4-styles",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_evidence": "The source page lists CC0 and says attribution is not required.",
+      "files": [
+        "https://opengameart.org/sites/default/files/Kitchen%20Background.zip",
+        "https://opengameart.org/sites/default/files/Items.zip"
+      ],
+      "assets": [
+        {
+          "path": "fixtures/kitchen/kitchen Background (items).png",
+          "archive_member": "Kitchen Background/kitchen Background (items).png",
+          "download_url": "https://opengameart.org/sites/default/files/Kitchen%20Background.zip",
+          "sha256": "7ec8f382e4f36b1f55db3af9140c2b7731911d5208b89318628980f35e4b19f1",
+          "adaptations": [],
+          "evaluation_status": "unverified"
+        },
+        {
+          "path": "fixtures/kitchen/kitchen Background Lite (items).png",
+          "archive_member": "Kitchen Background/kitchen Background Lite (items).png",
+          "download_url": "https://opengameart.org/sites/default/files/Kitchen%20Background.zip",
+          "sha256": "2df02e34c43f7a576c71028916d488b9f5a313d123574d7ab96baf2b7f371802",
+          "adaptations": [],
+          "evaluation_status": "unverified"
+        },
+        {
+          "path": "fixtures/kitchen/kitchen Background Lite.png",
+          "archive_member": "Kitchen Background/kitchen Background Lite.png",
+          "download_url": "https://opengameart.org/sites/default/files/Kitchen%20Background.zip",
+          "sha256": "cc7684df9506ce5b3de5c4cda736a6536b6145dd1e736315b82cdcfb98ee7be7",
+          "adaptations": [],
+          "evaluation_status": "unverified"
+        },
+        {
+          "path": "fixtures/kitchen/kitchen Background.png",
+          "archive_member": "Kitchen Background/kitchen Background.png",
+          "download_url": "https://opengameart.org/sites/default/files/Kitchen%20Background.zip",
+          "sha256": "24953f43dcef35e06791dd22dccf98ce69160c7f36a9d7a96a6f92dcbc260873",
+          "adaptations": [],
+          "evaluation_status": "unverified"
+        },
+        {
+          "path": "fixtures/kitchen/ftuits.png",
+          "archive_member": "Items/ftuits.png",
+          "download_url": "https://opengameart.org/sites/default/files/Items.zip",
+          "sha256": "4c6e5af5d94a5c231fb8e2a267c0a306191ff61c52a048caac08fc3773912566",
+          "adaptations": [],
+          "evaluation_status": "unverified"
+        },
+        {
+          "path": "fixtures/kitchen/plate.png",
+          "archive_member": "Items/plate.png",
+          "download_url": "https://opengameart.org/sites/default/files/Items.zip",
+          "sha256": "7a871e19fe2528da071f98da8dd569a8217003ae0a3a193e8a01f96764d7ed5a",
+          "adaptations": [],
+          "evaluation_status": "unverified"
+        }
+      ],
+      "download_records": [
+        {
+          "url": "https://opengameart.org/sites/default/files/Kitchen%20Background.zip",
+          "sha256": "451d06ece0a45eea24b9fc2cd68a16f59bfdcedbd00eade6072f68cc7a51a2fd",
+          "bytes": 2849720
+        },
+        {
+          "url": "https://opengameart.org/sites/default/files/Items.zip",
+          "sha256": "9077397df073f6f4bfc871516c31b6e78bb58a7a1eca91b074a4f9b7741cf271",
+          "bytes": 260127
+        }
+      ]
+    },
+    {
+      "id": "japanese-room",
+      "title": "Japanese Room",
+      "author": "HachiStudio",
+      "source_page": "https://opengameart.org/content/japanese-room",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_evidence": "The source page lists CC0 in both License(s) and Copyright/Attribution Notice.",
+      "files": [
+        "https://opengameart.org/sites/default/files/room1_0.png"
+      ],
+      "assets": [
+        {
+          "path": "fixtures/japanese-room/room1_0.png",
+          "download_url": "https://opengameart.org/sites/default/files/room1_0.png",
+          "sha256": "cf4dc0286cda219c5fa676f532e44c24879e80e455245adcd37c5acc26a3188a",
+          "adaptations": [],
+          "evaluation_status": "unverified"
+        }
+      ],
+      "download_records": [
+        {
+          "url": "https://opengameart.org/sites/default/files/room1_0.png",
+          "sha256": "cf4dc0286cda219c5fa676f532e44c24879e80e455245adcd37c5acc26a3188a",
+          "bytes": 65883
+        }
+      ]
+    }
+  ]
+}
