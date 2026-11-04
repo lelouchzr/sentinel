@@ -6,6 +6,7 @@ import csv
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -18,6 +19,23 @@ from .workspace import Workspace
 
 MAX_FILE_BYTES = 25 * 1024 * 1024
 MAX_RECORDS = 200_000
+
+
+def source_files(root: Path) -> list[Path]:
+    """Validate directory entries before recursion, including Windows junctions."""
+    candidates = []
+
+    def unreadable(error: OSError) -> None:
+        raise error
+
+    for current, directories, filenames in os.walk(root, followlinks=False, onerror=unreadable):
+        for name in [*directories, *filenames]:
+            try:
+                no_symlinks(Path(current) / name)
+            except SentinelError as exc:
+                raise SentinelError("Source symlinks and reparse points are not allowed") from exc
+        candidates.extend(Path(current) / name for name in filenames)
+    return sorted(candidates)
 
 
 def ingest(workspace: Workspace, directory: Path, timezone: str = "UTC") -> dict:
@@ -34,7 +52,7 @@ def ingest(workspace: Workspace, directory: Path, timezone: str = "UTC") -> dict
         raise SentinelError("Keep source datasets outside generated workspace state")
     files, issues, events = [], [], []
     rejected = skipped = 0
-    candidates = sorted(root.rglob("*"))
+    candidates = source_files(root)
     for path in candidates:
         if path.is_symlink():
             raise SentinelError("Source symlinks are not allowed, including directory symlinks")

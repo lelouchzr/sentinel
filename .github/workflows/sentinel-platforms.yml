@@ -65,7 +65,7 @@ jobs:
       - name: Run unit, Textual and actual MCP subprocess tests
         run: |
           mkdir -p artifacts
-          uv run pytest -q --junitxml=artifacts/pytest.xml
+          uv run pytest -vv --durations=10 --junitxml=artifacts/pytest.xml
       - name: Build the installable package
         run: uv build
       - name: Validate a clean runtime-only wheel installation

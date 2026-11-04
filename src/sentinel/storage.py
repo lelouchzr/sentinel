@@ -66,8 +66,13 @@ class Store:
             connection.execute("BEGIN TRANSACTION")
             try:
                 if rows:
-                    connection.executemany(
-                        "INSERT OR IGNORE INTO events VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", rows
+                    # Equal-length column arrays are unnested side by side in one
+                    # parameterized statement, avoiding one engine call per event.
+                    columns = [list(column) for column in zip(*rows, strict=True)]
+                    connection.execute(
+                        "INSERT OR IGNORE INTO events SELECT "
+                        + ",".join("unnest(?)" for _ in columns),
+                        columns,
                     )
                 connection.execute("COMMIT")
             except Exception:

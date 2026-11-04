@@ -1,7 +1,9 @@
 import asyncio
+from contextlib import suppress
 
 import pytest
 from textual.widgets import DataTable, Input, Static, TabbedContent
+from textual.worker import WorkerCancelled
 
 from sentinel.cases import Cases
 from sentinel.tui import EvidenceScreen, HelpScreen, SentinelApp
@@ -79,7 +81,10 @@ async def test_tui_stays_responsive_and_cancels_real_mcp_worker(demo, monkeypatc
         await pilot.press("f1")
         assert isinstance(app.screen, HelpScreen)
         await pilot.press("escape", "ctrl+g")
-        await pilot.pause()
+        # Cancellation includes shutting down the real MCP child. A UI frame is
+        # not a completion signal on slower native runners.
+        with suppress(WorkerCancelled):
+            await asyncio.wait_for(app.agent_worker.wait(), timeout=15)
         assert Cases(demo).get(app.case_id).status == "interrupted"
         assert Cases(demo).get(app.case_id).evidence_ids
         assert provider.closed

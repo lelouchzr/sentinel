@@ -104,3 +104,36 @@ def test_windows_drive_relative_paths_and_junction_escapes(workspace, tmp_path):
         # Remove only the junction, never recursively walk its destination.
         junction.rmdir()
     assert outside.is_dir()
+    source = tmp_path / "source"
+    source.mkdir()
+    linked = source / "linked"
+    cycle = outside / "cycle"
+    for link, target in [(linked, outside), (cycle, source)]:
+        subprocess.run(
+            ["cmd", "/c", "mklink", "/J", str(link), str(target)],
+            capture_output=True,
+            check=True,
+            timeout=15,
+        )
+    script = """
+import sys
+from sentinel.ingest import ingest
+from sentinel.workspace import Workspace
+from sentinel.security import SentinelError
+try:
+    ingest(Workspace(sys.argv[1], create=False), __import__('pathlib').Path(sys.argv[2]))
+except SentinelError as exc:
+    print(str(exc))
+    raise SystemExit(2)
+"""
+    try:
+        result = subprocess.run(
+            [sys.executable, "-c", script, str(workspace.root), str(source)],
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+        assert result.returncode == 2 and "reparse" in result.stdout
+    finally:
+        cycle.rmdir()
+        linked.rmdir()
