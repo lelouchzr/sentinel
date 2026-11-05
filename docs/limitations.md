@@ -23,8 +23,9 @@
   Selected log excerpts and case context leave the local process during live investigation.
   No key is bundled. The model/base URL are explicit configuration; no automatic provider fallback.
 - Zero automatic paid retries. Failed/cancelled runs retain completed artifacts; a follow-up is a new
-  explicitly requested run, not an invisible retry. A hard process kill can leave the status as
-  investigating; its OS run lock is released and the case can be reopened for a new run.
+  explicitly requested run, not an invisible retry. After a hard process kill, reopening a case
+  checks its native run lock and marks a stale investigating status as interrupted. Evidence,
+  notes, findings and artifacts are retained. An active locked investigation is left running.
 - The demo timing is based on an observed approximately 66.5-second live run. Rehearse shortly before
   recording. If the API is slow, show honest manual evidence or identify a reopened saved report as
   previously completed; do not represent saved/offline output as current live activity.

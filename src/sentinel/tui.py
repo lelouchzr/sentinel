@@ -268,6 +268,8 @@ class SentinelApp(App):
     @work(exclusive=True, group="refresh")
     async def refresh_workspace(self):
         try:
+            if self.case_id:
+                await asyncio.to_thread(self.cases.reopen, self.case_id)
             summary, alerts, case_list = await asyncio.to_thread(
                 lambda: (self.store.summary(), load_alerts(self.store), self.cases.list())
             )
@@ -414,7 +416,7 @@ class SentinelApp(App):
 
     async def open_case(self, case_id):
         self.case_id = case_id
-        case = self.cases.get(case_id)
+        case = await asyncio.to_thread(self.cases.reopen, case_id)
         self.store = Store(self.workspace, case.dataset_id)
         self.timeline_mode, self.offset = True, 0
         self.render_case()

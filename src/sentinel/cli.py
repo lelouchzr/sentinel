@@ -216,7 +216,7 @@ def cases_open(
 ):
     """Reopen one saved investigation and its original dataset."""
     workspace = ws(ctx, False)
-    case = Cases(workspace).get(case_id)
+    case = Cases(workspace).reopen(case_id)
     if no_tui or as_json:
         emit(case.model_dump(), as_json)
     else:

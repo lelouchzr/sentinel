@@ -13,6 +13,10 @@ from .security import SentinelError, atomic_json, inside, no_symlinks
 LOCK_TIMEOUT_SECONDS = 30
 
 
+class WorkspaceBusyError(SentinelError):
+    """A native process lock is currently held by another operation."""
+
+
 class Workspace:
     def __init__(self, path: Path | str, *, create: bool = True):
         self.root = no_symlinks(Path(path))
@@ -72,7 +76,7 @@ class Workspace:
                 if not blocking
                 else "Workspace is busy; another Sentinel operation holds its lock"
             )
-            raise SentinelError(message) from exc
+            raise WorkspaceBusyError(message) from exc
         try:
             yield
         finally:

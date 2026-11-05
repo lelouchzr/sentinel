@@ -12,7 +12,7 @@ from .detection import load_alerts
 from .models import Activity, Case, Finding, QueryReceipt, now
 from .security import SentinelError, atomic_json, plain
 from .storage import Store
-from .workspace import Workspace
+from .workspace import Workspace, WorkspaceBusyError
 
 
 def valid_id(value: str, prefix: str) -> str:
@@ -33,6 +33,33 @@ class Cases:
             return Case.model_validate_json(path.read_text())
         except ValueError as exc:
             raise SentinelError("Case file is invalid; preserve it for recovery") from exc
+
+    def reopen(self, case_id: str) -> Case:
+        """Recover a stale running status only while owning the actual run lock."""
+        case = self.get(case_id)
+        if case.status != "investigating":
+            return case
+        try:
+            with self.workspace.lock(f"run-{case_id}", blocking=False):
+                # A previous run may have completed between the first read and lock.
+                if self.get(case_id).status != "investigating":
+                    return self.get(case_id)
+
+                def recover(current):
+                    if current.status == "investigating":
+                        current.status = "interrupted"
+                        current.activity.append(
+                            Activity(
+                                role="System",
+                                action="Recovered interrupted investigation; completed work retained",
+                                details={"reason": "No active investigation holds the run lock"},
+                            )
+                        )
+
+                return self.update(case_id, recover)
+        except WorkspaceBusyError:
+            # A live agent still owns its lock; reopening must never cancel it.
+            return self.get(case_id)
 
     def list(self) -> list[Case]:
         return sorted(

@@ -50,7 +50,9 @@ uv run sentinel demo
 
 `demo` is the single demonstration command. It generates 3,542 deterministic fictional records in
 `.sentinel-sources`, imports them into `.sentinel`, runs three rules, and opens the Textual workspace.
-A repeated launch preserves cases and does not duplicate unchanged events. Allow a few seconds for
+A repeated launch preserves cases and does not duplicate unchanged events. Reopening a case after an abrupt process exit
+recovers a stale running status as interrupted, retaining completed evidence and notes. Native
+process locks protect investigations that are still active. Allow a few seconds for
 first ingestion. The default dataset produces 15 alerts; every displayed value comes from storage.
 
 The former Storyscape project is preserved on

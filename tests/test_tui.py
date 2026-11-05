@@ -88,3 +88,16 @@ async def test_tui_stays_responsive_and_cancels_real_mcp_worker(demo, monkeypatc
         assert Cases(demo).get(app.case_id).status == "interrupted"
         assert Cases(demo).get(app.case_id).evidence_ids
         assert provider.closed
+
+
+async def test_tui_reopening_recovers_stale_investigation(demo):
+    cases = Cases(demo)
+    case = cases.create()
+    cases.note(case.case_id, "Preserved after an abrupt process exit.")
+    cases.update(case.case_id, lambda c: setattr(c, "status", "investigating"))
+    app = SentinelApp(demo, case.case_id)
+    async with app.run_test(size=(100, 30)):
+        await app.workers.wait_for_complete()
+        assert cases.get(case.case_id).status == "interrupted"
+        content = str(app.query_one("#case-text", Static).content)
+        assert "INTERRUPTED" in content and "Preserved after an abrupt process exit" in content
