@@ -188,6 +188,23 @@ Markdown exports include a contents list, individual finding links, and clickabl
 references that jump to the original evidence or computed receipt. Evidence sections link back
 to the findings. JSON exports retain their structured format and source records.
 
+## Follow actual investigation progress
+
+The Activity tab shows the current role, model requests/replies, tool attempts/completions,
+attached evidence and elapsed time from recorded operations. New runs persist their actual
+configured limits. Follow-ups have separate counters; old cases do not acquire invented budgets.
+An abruptly stopped process has no claimed execution duration when its stop time is unknown.
+No private model reasoning is displayed. Tool attempts include rejected/failed requests;
+completed operations are counted separately. The recorded provider remains explicit.
+
+```sh
+uv run sentinel cases progress CASE_ID
+uv run sentinel cases progress CASE_ID --json
+```
+
+Search results from an obsolete view cannot replace the current filters or case. Failed exports
+and database reads show safe diagnostics while keeping case/source files available for recovery.
+
 ## Understand a case before asking the model
 
 Press **F6** for a computed case brief: the actual detection explanation, UTC range, attached

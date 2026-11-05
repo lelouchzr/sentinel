@@ -78,6 +78,8 @@ async def test_tui_stays_responsive_and_cancels_real_mcp_worker(demo, monkeypatc
                 break
             await asyncio.sleep(0.01)
         assert provider.stage >= 3
+        status = str(app.query_one("#run-status", Static).content)
+        assert "OFFLINE TEST MODE" in status and "Model" in status and "Tools" in status
         await pilot.press("f1")
         assert isinstance(app.screen, HelpScreen)
         await pilot.press("escape", "ctrl+g")
@@ -156,3 +158,70 @@ async def test_entity_pivots_and_case_filter_state_are_consistent(demo):
         await app.open_case(app.case_id)
         assert app.query_one("#filters", Input).value == "" and app.filters == SearchFilters()
         assert app.timeline_mode
+
+
+@pytest.mark.parametrize("fail_old_search", [False, True])
+async def test_obsolete_search_does_not_replace_the_current_view(
+    demo, monkeypatch, fail_old_search
+):
+    import threading
+
+    from sentinel.models import SearchFilters
+    from sentinel.storage import Store
+
+    started, release = threading.Event(), threading.Event()
+    search = Store.search
+
+    def delayed(store, filters=None, limit=50, offset=0):
+        if filters and filters.account == "morgan":
+            started.set()
+            assert release.wait(10), "Delayed test search was not released"
+            if fail_old_search:
+                from sentinel.security import SentinelError
+
+                raise SentinelError("Previous query failed after the view changed")
+        return search(store, filters, limit, offset)
+
+    app = SentinelApp(demo)
+    async with app.run_test(size=(100, 30)):
+        await app.workers.wait_for_complete()
+        monkeypatch.setattr(Store, "search", delayed)
+        app.filters = SearchFilters(account="morgan")
+        old = asyncio.create_task(app.load_events())
+        try:
+            assert await asyncio.to_thread(started.wait, 5)
+            app.filters = SearchFilters(account="svc-backup")
+            await app.load_events()
+            release.set()
+            await old
+            assert app.total == 6
+            assert all(event.account == "svc-backup" for event in app.events.values())
+        finally:
+            release.set()
+            await old
+
+
+async def test_export_failure_is_actionable_and_does_not_close_the_workspace(demo, monkeypatch):
+    from sentinel import tui
+
+    app = SentinelApp(demo)
+    async with app.run_test(size=(100, 30)) as pilot:
+        await app.workers.wait_for_complete()
+        await pilot.press("enter")
+        await app.workers.wait_for_complete()
+        messages = []
+        monkeypatch.setattr(
+            app,
+            "tell",
+            lambda message, severity="information": messages.append((message, severity)),
+        )
+
+        def fail(*args):
+            raise PermissionError("sensitive filesystem diagnostic")
+
+        monkeypatch.setattr(tui, "export_case", fail)
+        app.action_export()
+        await app.workers.wait_for_complete()
+        assert messages and messages[-1][1] == "error"
+        assert "retained" in messages[-1][0] and "sensitive" not in messages[-1][0]
+        assert app.is_running and Cases(demo).get(app.case_id).evidence_ids

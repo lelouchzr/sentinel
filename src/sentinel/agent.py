@@ -217,7 +217,18 @@ async def investigate(
                     setattr(c, "provider", provider.label),
                 ),
             )
-            activity("Investigator", "Investigation started", {"question": plain(question, 4000)})
+            activity(
+                "Investigator",
+                "Investigation started",
+                {
+                    "question": plain(question, 4000),
+                    "limits": {
+                        "model_calls": config.max_model_calls,
+                        "tool_calls": config.max_tool_calls,
+                        "deadline_seconds": config.deadline,
+                    },
+                },
+            )
             async with asyncio.timeout(config.deadline):
                 async with connect(
                     cases.workspace, case_id, timeout=min(config.request_timeout, 30)

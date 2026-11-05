@@ -33,6 +33,7 @@ from .detection import load_alerts
 from .export import export_case
 from .models import Event, SearchFilters
 from .presentation import AMBER, CYAN, GREEN, MUTED, activity_text, status_color
+from .progress import progress_text, run_progress
 from .security import SentinelError, one_line, plain
 from .storage import Store
 from .workspace import Workspace
@@ -196,6 +197,7 @@ class SentinelApp(App):
     #case-scroll { height: 1fr; padding: 1; }
     #case-text { height: auto; }
     #note { width: 1fr; }
+    #run-status { height: auto; max-height: 5; padding: 0 1; color: #a0dedc; background: #142936; }
     #activity { height: 1fr; border: solid #24404d; padding: 0 1; }
     Footer { background: #101e2b; }
     HelpScreen, EvidenceScreen { align: center middle; background: #000000 60%; }
@@ -248,6 +250,7 @@ class SentinelApp(App):
         self.total = 0
         self.timeline_mode = bool(case_id)
         self.case_rows = []
+        self._view_generation = 0
 
     def compose(self) -> ComposeResult:
         with Vertical(id="top"):
@@ -314,6 +317,11 @@ class SentinelApp(App):
                             yield Input(placeholder="Add an analyst note…", id="note")
                             yield Button("Save note", id="save-note")
                     with TabPane("Activity", id="activity-tab"):
+                        yield Static(
+                            "Open a case to inspect its investigation status.",
+                            id="run-status",
+                            markup=False,
+                        )
                         yield RichLog(
                             id="activity", wrap=True, min_width=20, max_lines=1000, markup=False
                         )
@@ -328,13 +336,16 @@ class SentinelApp(App):
     def on_mount(self):
         self.query_one("#filters", Input).border_title = "FILTER EVIDENCE · F3"
         self.query_one("#question", Input).border_title = "ASK ABOUT THIS CASE · F2"
-        self.query_one("#activity", RichLog).border_title = "LIVE OPERATIONS · NO PRIVATE REASONING"
+        self.query_one(
+            "#activity", RichLog
+        ).border_title = "INVESTIGATION ACTIVITY · ACTION SUMMARIES"
         self.query_one("#alerts", DataTable).add_columns("Priority / rule", "Account")
         self.query_one("#cases", DataTable).add_columns("Case / status", "Title")
         self.query_one("#events", DataTable).add_columns(
             "UTC time", "Account", "Action", "Result", "Source IP", "Resource"
         )
         self.refresh_workspace()
+        self.set_interval(1, self.refresh_run_progress)
         self.query_one("#alerts", DataTable).focus()
 
     def on_resize(self, event):
@@ -410,47 +421,111 @@ class SentinelApp(App):
             self.tell(str(exc), "error")
 
     async def load_events(self):
-        if self.timeline_mode and self.case_id:
-            case = self.cases.get(self.case_id)
+        generation = self._view_generation + 1
+        try:
+            await self._load_events()
+        except (SentinelError, OSError, ValueError):
+            if generation != self._view_generation:
+                return
+            self.events = {}
+            self.total = 0
+            self.query_one("#events", DataTable).clear()
+            self.query_one("#page-info", Static).update(
+                "Evidence could not be loaded. Check workspace integrity and try again."
+            )
+            self.tell(
+                "Evidence could not be loaded. Check workspace access and integrity; no source files were changed.",
+                "error",
+            )
+
+    async def _load_events(self):
+        self._view_generation += 1
+        generation = self._view_generation
+        case_id, timeline, filters, offset = (
+            self.case_id,
+            self.timeline_mode,
+            self.filters,
+            self.offset,
+        )
+        store = Store(self.workspace, self.store.dataset)
+        if timeline and case_id:
+            case = self.cases.get(case_id)
             events = await asyncio.to_thread(
                 lambda: sorted(
-                    self.store.get_many(case.evidence_ids),
-                    key=lambda e: (e.timestamp, e.event_id),
+                    store.get_many(case.evidence_ids),
+                    key=lambda event: (event.timestamp, event.event_id),
                 )
             )
-            self.total = len(events)
-            events = events[self.offset : self.offset + 100]
+            total = len(events)
+            events = events[offset : offset + 100]
         else:
-            page = await asyncio.to_thread(self.store.search, self.filters, 100, self.offset)
-            self.total, events = page.total, page.events
-        self.events = {e.event_id: e for e in events}
+            page = await asyncio.to_thread(store.search, filters, 100, offset)
+            total, events = page.total, page.events
+        if (
+            generation != self._view_generation
+            or case_id != self.case_id
+            or timeline != self.timeline_mode
+            or filters != self.filters
+            or offset != self.offset
+            or store.dataset != self.store.dataset
+        ):
+            return
+        self.total = total
+        self.events = {event.event_id: event for event in events}
         table = self.query_one("#events", DataTable)
         table.clear()
-        for e in events:
+        for event in events:
             table.add_row(
-                Text(e.timestamp[11:19], style=MUTED),
-                Text(plain(e.account), style=CYAN),
-                Text(plain(e.action), style=AMBER if e.action in {"export", "download"} else ""),
-                Text(plain(e.outcome), style=status_color(e.outcome)),
-                Text(plain(e.source_ip), style=MUTED),
-                Text(plain(e.resource)),
-                key=e.event_id,
+                Text(event.timestamp[11:19], style=MUTED),
+                Text(plain(event.account), style=CYAN),
+                Text(
+                    plain(event.action),
+                    style=AMBER if event.action in {"export", "download"} else "",
+                ),
+                Text(plain(event.outcome), style=status_color(event.outcome)),
+                Text(plain(event.source_ip), style=MUTED),
+                Text(plain(event.resource)),
+                key=event.event_id,
             )
-        mode = "Case timeline" if self.timeline_mode else "Dataset search"
-        self.query_one("#page-info", Static).update(
-            Text(
-                f"{mode} · {self.offset + 1 if events else 0}–{self.offset + len(events)} / {self.total:,}"
+        mode = "Case timeline" if timeline else "Dataset search"
+        detail = f"{mode} · {offset + 1 if events else 0}–{offset + len(events)} / {total:,}"
+        if not events:
+            detail = (
+                "No attached evidence yet · Open an event and attach it"
+                if timeline
+                else "No matching events · Clear or change the filters"
             )
-        )
-        self.query_one("#previous", Button).disabled = self.offset == 0
-        self.query_one("#next", Button).disabled = self.offset + len(events) >= self.total
+        self.query_one("#page-info", Static).update(Text(detail))
+        self.query_one("#previous", Button).disabled = offset == 0
+        self.query_one("#next", Button).disabled = offset + len(events) >= total
         await self.refresh_brief()
+        await self.refresh_run_progress()
+
+    async def refresh_run_progress(self):
+        if not self.case_id:
+            return
+        case_id = self.case_id
+        try:
+            case = await asyncio.to_thread(self.cases.get, case_id)
+        except (SentinelError, OSError, ValueError):
+            self.query_one("#run-status", Static).update(
+                "Progress unavailable. Inspect the case file before reopening it."
+            )
+            return
+        if case_id == self.case_id:
+            self.query_one("#run-status", Static).update(Text(progress_text(run_progress(case))))
 
     async def refresh_brief(self):
         if not self.case_id:
             return
         case_id = self.case_id
-        brief = await asyncio.to_thread(case_brief, self.cases, case_id)
+        try:
+            brief = await asyncio.to_thread(case_brief, self.cases, case_id)
+        except (SentinelError, OSError, ValueError):
+            self.query_one("#brief-text", Static).update(
+                "Case context unavailable. Check the case file and event database; existing files are preserved."
+            )
+            return
         if self.case_id != case_id:
             return
         self.query_one("#brief-text", Static).update(Text(brief_text(brief)))
@@ -536,7 +611,11 @@ class SentinelApp(App):
             self.push_screen(EvidenceScreen(self.events[key]), self.evidence_action)
 
     async def open_case(self, case_id):
+        self._view_generation += 1
         self.case_id = case_id
+        self.events = {}
+        self.query_one("#events", DataTable).clear()
+        self.query_one("#page-info", Static).update("Opening case evidence…")
         self.query_one("#main-tabs", TabbedContent).active = "evidence-tab"
         case = await asyncio.to_thread(self.cases.reopen, case_id)
         self.store = Store(self.workspace, case.dataset_id)
@@ -669,8 +748,10 @@ class SentinelApp(App):
         log = self.query_one("#activity", RichLog)
 
         def changed(role, message):
-            entry = self.cases.get(case_id).activity[-1]
+            case = self.cases.get(case_id)
+            entry = case.activity[-1]
             log.write(activity_text(role, message, entry.details, entry.timestamp))
+            self.query_one("#run-status", Static).update(Text(progress_text(run_progress(case))))
             if role == "Meta" and message == "Model response received":
                 self.model_state = "Connected after a successful call"
                 self.update_header()
@@ -690,6 +771,8 @@ class SentinelApp(App):
             self.render_case()
             self.update_header()
             self.refresh_case_navigation()
+            await self.refresh_brief()
+            await self.refresh_run_progress()
 
     def action_help(self):
         self.push_screen(HelpScreen())
@@ -721,9 +804,19 @@ class SentinelApp(App):
         if not self.case_id:
             self.tell("Open a case before exporting", "warning")
             return
-        paths = await asyncio.to_thread(
-            lambda: [export_case(self.cases, self.case_id, f) for f in ("markdown", "json")]
-        )
+        case_id = self.case_id
+        try:
+            paths = await asyncio.to_thread(
+                lambda: [
+                    export_case(self.cases, case_id, format) for format in ("markdown", "json")
+                ]
+            )
+        except (SentinelError, OSError, ValueError):
+            self.tell(
+                "Export could not finish. Check report permissions and case integrity. The case and completed reports are retained.",
+                "error",
+            )
+            return
         self.tell(f"Exported Markdown and JSON to {paths[0].parent}")
         self.query_one("#activity", RichLog).write(Text(f"Export saved: {paths[0]}"))
 

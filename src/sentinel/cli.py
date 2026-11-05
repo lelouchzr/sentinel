@@ -25,6 +25,7 @@ from .generator import SEED, generate
 from .ingest import ingest as import_logs
 from .models import SearchFilters
 from .presentation import activity_text, output_panel
+from .progress import progress_text, run_progress
 from .security import SentinelError, atomic_json, plain
 from .storage import Store
 from .workspace import Workspace
@@ -223,6 +224,16 @@ def cases_open(
         emit(case.model_dump(), as_json)
     else:
         launch(workspace, case_id)
+
+
+@cases_app.command("progress")
+def cases_progress(ctx: typer.Context, case_id: str, as_json: bool = typer.Option(False, "--json")):
+    """Inspect actual operation counts for the latest run without starting a model."""
+    progress = run_progress(Cases(ws(ctx, False)).get(case_id))
+    if as_json:
+        emit(progress.model_dump(), True)
+    else:
+        console.print(progress_text(progress))
 
 
 @cases_app.command("brief")

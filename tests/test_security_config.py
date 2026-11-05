@@ -89,3 +89,16 @@ def test_filters_and_cli_json(demo, monkeypatch):
 
 def test_untrusted_field_newlines_stay_inside_their_labeled_row():
     assert one_line("account\nFAKE HEADING\t[bold]") == "account\\nFAKE HEADING\\t[bold]"
+
+
+def test_corrupt_event_database_reports_safe_error_and_keeps_case_files(demo):
+    from sentinel.storage import Store
+
+    cases = Cases(demo)
+    case = cases.create()
+    before = demo.path(f"cases/{case.case_id}.json").read_bytes()
+    demo.path("events.duckdb").write_bytes(b"not a DuckDB database")
+    with pytest.raises(SentinelError, match="Event database") as error:
+        Store(demo).summary()
+    assert "not a DuckDB database" not in str(error.value)
+    assert demo.path(f"cases/{case.case_id}.json").read_bytes() == before

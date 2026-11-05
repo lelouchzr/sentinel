@@ -27,18 +27,23 @@ class Store:
         # Close each connection before releasing the process lock. No live DB handle
         # crosses an MCP subprocess boundary.
         with self.workspace.lock("database"):
-            connection = duckdb.connect(
-                str(self.workspace.path("events.duckdb")), config={"threads": 2}
-            )
             try:
-                connection.execute("""CREATE TABLE IF NOT EXISTS events (
-                    dataset_id VARCHAR, event_id VARCHAR, timestamp VARCHAR,
-                    source_type VARCHAR, host VARCHAR, account VARCHAR, source_ip VARCHAR,
-                    action VARCHAR, outcome VARCHAR, resource VARCHAR, session_id VARCHAR,
-                    bytes BIGINT, payload VARCHAR, PRIMARY KEY(dataset_id, event_id))""")
-                yield connection
-            finally:
-                connection.close()
+                connection = duckdb.connect(
+                    str(self.workspace.path("events.duckdb")), config={"threads": 2}
+                )
+                try:
+                    connection.execute("""CREATE TABLE IF NOT EXISTS events (
+                        dataset_id VARCHAR, event_id VARCHAR, timestamp VARCHAR,
+                        source_type VARCHAR, host VARCHAR, account VARCHAR, source_ip VARCHAR,
+                        action VARCHAR, outcome VARCHAR, resource VARCHAR, session_id VARCHAR,
+                        bytes BIGINT, payload VARCHAR, PRIMARY KEY(dataset_id, event_id))""")
+                    yield connection
+                finally:
+                    connection.close()
+            except duckdb.Error:
+                raise SentinelError(
+                    "Event database could not be opened or queried. Close other sessions and check workspace integrity. Original source files and case files have not been modified by this failure."
+                ) from None
 
     def insert(self, dataset_id: str, events: list[Event]) -> int:
         with self.connection() as connection:
