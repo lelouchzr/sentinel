@@ -33,6 +33,11 @@ def plain(value: Any, limit: int = 20000) -> str:
     )[:limit]
 
 
+def one_line(value: Any, limit: int = 20000) -> str:
+    """Keep untrusted field text within its own labeled terminal row."""
+    return plain(value, limit).replace("\n", "\\n").replace("\t", "\\t")
+
+
 def no_symlinks(path: Path) -> Path:
     path = path.expanduser().absolute()
     # macOS aliases /tmp and /var are allowed as OS-owned ancestors only.

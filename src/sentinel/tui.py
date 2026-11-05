@@ -26,13 +26,14 @@ from textual.widgets import (
 )
 
 from .agent import investigate
+from .brief import brief_text, case_brief
 from .cases import Cases
 from .config import AgentConfig, provider_status
 from .detection import load_alerts
 from .export import export_case
 from .models import Event, SearchFilters
 from .presentation import AMBER, CYAN, GREEN, MUTED, activity_text, status_color
-from .security import SentinelError, plain
+from .security import SentinelError, one_line, plain
 from .storage import Store
 from .workspace import Workspace
 
@@ -41,10 +42,13 @@ HELP = """SENTINEL · Investigation workspace
 Tab / Shift+Tab: move focus. Arrow keys: navigate tables. Enter: select.
 Select an alert with Enter to create a case. Select a case with Enter to reopen it.
 Select an evidence row with Enter to inspect the original record and provenance.
-The evidence dialog can attach the event or filter by its explicit session.
+The evidence dialog shows canonical fields and the original record. Pivot by account,
+source IP, host or explicit session; missing fields have disabled pivot buttons.
 
 F3: focus filters. F2: focus the investigation question.
 F4: show the selected case evidence in chronological order.
+F6: explain the selected case, evidence scope and suggested next checks.
+The Case brief can fill a suggested question; it never starts an API request by itself.
 F5: export the selected case as Markdown and JSON into workspace/reports.
 Ctrl+G: cancel a running investigation and keep completed evidence.
 Ctrl+Q: quit cleanly. F1 / Escape: open / close help.
@@ -109,20 +113,46 @@ class EvidenceScreen(ModalScreen):
             yield Label("ORIGINAL EVIDENCE", classes="eyebrow")
             with VerticalScroll(id="event-scroll"):
                 yield Static(
-                    Text(plain(json.dumps(self.event.model_dump(), indent=2, ensure_ascii=True))),
+                    Text(
+                        plain(
+                            f"{self.event.event_id}\nUTC: {self.event.timestamp}\n"
+                            f"Action: {one_line(self.event.action)} · Outcome: {one_line(self.event.outcome)}\n"
+                            f"Account: {one_line(self.event.account) or '(not recorded)'}\n"
+                            f"Host: {one_line(self.event.host) or '(not recorded)'} · Source IP: {one_line(self.event.source_ip) or '(not recorded)'}\n"
+                            f"Session: {one_line(self.event.session_id) or '(not recorded)'}\n"
+                            f"Resource: {one_line(self.event.resource) or '(not recorded)'}\n"
+                            f"Recorded bytes: {self.event.bytes if self.event.bytes is not None else '(not recorded)'}\n"
+                            f"Source type: {one_line(self.event.source_type)}\n\n"
+                            f"SOURCE REFERENCE\n{one_line(self.event.source.filename)} · record {self.event.source.record} · line {self.event.source.line}\n"
+                            f"SHA-256: {self.event.source.sha256}\n\n"
+                            "ORIGINAL RECORD · UNTRUSTED DATA\n"
+                            + json.dumps(self.event.source.original, indent=2, ensure_ascii=True)
+                        )
+                    ),
                     markup=False,
                     id="event-detail",
                 )
             with Horizontal(classes="actions"):
-                yield Button("Attach to case", id="attach-event", variant="primary")
+                yield Button("Account", id="pivot-account", disabled=not bool(self.event.account))
+                yield Button("Source IP", id="pivot-ip", disabled=not bool(self.event.source_ip))
+                yield Button("Host", id="pivot-host", disabled=not bool(self.event.host))
                 yield Button(
-                    "Filter session", id="pivot-session", disabled=not bool(self.event.session_id)
+                    "Session", id="pivot-session", disabled=not bool(self.event.session_id)
                 )
+            with Horizontal(classes="actions"):
+                yield Button("Attach to case", id="attach-event", variant="primary")
                 yield Button("Close", id="close-event")
 
     @on(Button.Pressed)
     def selected(self, event: Button.Pressed):
-        actions = {"attach-event": "attach", "pivot-session": "session", "close-event": "close"}
+        actions = {
+            "attach-event": "attach",
+            "pivot-account": "account",
+            "pivot-ip": "source_ip",
+            "pivot-host": "host",
+            "pivot-session": "session",
+            "close-event": "close",
+        }
         self.dismiss((actions[event.button.id], self.event))
 
 
@@ -149,6 +179,9 @@ class SentinelApp(App):
     #alerts-note { height: 2; color: #d9b365; padding: 0 1; }
     .eyebrow { height: 2; padding: 0 1; color: #69d4cf; text-style: bold; }
     #filters { margin: 0 0 1 0; }
+    #case-context { height: 1; color: #8fa8b8; padding: 0 1; }
+    #brief-scroll { height: 1fr; padding: 1; }
+    #brief-text { height: auto; }
     Input { height: 3; border: solid #284450; background: #101c27; }
     Input:focus { border: solid #54bdb9; }
     #page-info { width: 1fr; padding: 1 1; color: #acc4cc; }
@@ -178,6 +211,7 @@ class SentinelApp(App):
         Binding("f2", "question", "Ask"),
         Binding("f4", "timeline", "Case timeline"),
         Binding("f5", "export", "Export"),
+        Binding("f6", "brief", "Case brief"),
         Binding("ctrl+g", "cancel", "Cancel", priority=True),
         Binding("ctrl+q", "quit", "Quit", priority=True),
     ]
@@ -241,6 +275,11 @@ class SentinelApp(App):
             with Vertical(id="main"):
                 with TabbedContent(id="main-tabs"):
                     with TabPane("Evidence", id="evidence-tab"):
+                        yield Static(
+                            "Enter on a signal to open a case · Enter on an event to inspect its source",
+                            id="case-context",
+                            markup=False,
+                        )
                         yield Input(
                             placeholder="Exact filters: account=morgan ip=203.0.113.74  ·  Enter to apply",
                             id="filters",
@@ -250,6 +289,20 @@ class SentinelApp(App):
                             yield Static("", id="page-info", markup=False)
                             yield Button("Previous", id="previous")
                             yield Button("Next", id="next")
+                    with TabPane("Case brief", id="brief-tab"):
+                        with VerticalScroll(id="brief-scroll"):
+                            yield Static(
+                                "Open a signal or select a saved case to see its explanation, attached evidence and next checks.",
+                                id="brief-text",
+                                markup=False,
+                            )
+                        with Horizontal(classes="actions"):
+                            yield Button(
+                                "Use suggested question",
+                                id="suggest-question",
+                                disabled=True,
+                                variant="primary",
+                            )
                     with TabPane("Case review", id="case-tab"):
                         with VerticalScroll(id="case-scroll"):
                             yield Static(
@@ -391,6 +444,22 @@ class SentinelApp(App):
         )
         self.query_one("#previous", Button).disabled = self.offset == 0
         self.query_one("#next", Button).disabled = self.offset + len(events) >= self.total
+        await self.refresh_brief()
+
+    async def refresh_brief(self):
+        if not self.case_id:
+            return
+        case_id = self.case_id
+        brief = await asyncio.to_thread(case_brief, self.cases, case_id)
+        if self.case_id != case_id:
+            return
+        self.query_one("#brief-text", Static).update(Text(brief_text(brief)))
+        self.query_one("#case-context", Static).update(
+            Text(
+                plain(f"{brief.title} · {brief.evidence_count:,} attached records · F6 case brief")
+            )
+        )
+        self.query_one("#suggest-question", Button).disabled = False
 
     def render_case(self):
         if not self.case_id:
@@ -468,8 +537,11 @@ class SentinelApp(App):
 
     async def open_case(self, case_id):
         self.case_id = case_id
+        self.query_one("#main-tabs", TabbedContent).active = "evidence-tab"
         case = await asyncio.to_thread(self.cases.reopen, case_id)
         self.store = Store(self.workspace, case.dataset_id)
+        self.filters = SearchFilters()
+        self.query_one("#filters", Input).value = ""
         self.timeline_mode, self.offset = True, 0
         self.render_case()
         self.render_activity()
@@ -477,9 +549,9 @@ class SentinelApp(App):
         self.event_count = summary["event_count"]
         self.update_header()
         await self.load_events()
-        self.query_one("#main-tabs", TabbedContent).active = "evidence-tab"
-        self.query_one("#events", DataTable).focus()
-        self.tell(f"Opened {case_id}; showing its attached evidence")
+        if self.query_one("#main-tabs", TabbedContent).active == "evidence-tab":
+            self.query_one("#events", DataTable).focus()
+        self.tell(f"Opened {case_id}; Enter inspects evidence · F6 explains this case")
         self.refresh_case_navigation()
 
     def refresh_case_navigation(self):
@@ -503,10 +575,16 @@ class SentinelApp(App):
             else:
                 self.cases.attach(self.case_id, [event.event_id])
                 self.render_case()
+                self.run_worker(self.refresh_brief(), group="brief", exclusive=True)
                 self.tell("Evidence attached with its source reference")
-        elif action == "session":
-            self.query_one("#filters", Input).value = "session=" + shlex.quote(event.session_id)
-            self.apply_filters()
+        elif action in {"account", "source_ip", "host", "session"}:
+            field = {"account": "account", "source_ip": "ip", "host": "host", "session": "session"}[
+                action
+            ]
+            value = event.session_id if action == "session" else getattr(event, action)
+            if value:
+                self.query_one("#filters", Input).value = field + "=" + shlex.quote(value)
+                self.apply_filters()
 
     @work(exclusive=True, group="search")
     async def apply_filters(self):
@@ -534,6 +612,21 @@ class SentinelApp(App):
             self.action_cancel()
         elif event.button.id == "save-note":
             self.save_note()
+        elif event.button.id == "suggest-question":
+            if self.case_id:
+                question = self.query_one("#question", Input)
+                if question.value.strip():
+                    self.tell(
+                        "Your question draft is kept. Clear it before using a suggestion.",
+                        "warning",
+                    )
+                else:
+                    brief = await asyncio.to_thread(case_brief, self.cases, self.case_id)
+                    question.value = brief.suggested_question
+                    question.focus()
+                    self.tell(
+                        "Suggested question filled. Edit it, then Enter starts a live Meta request."
+                    )
         elif event.button.id in ("next", "previous"):
             self.offset = max(0, self.offset + (100 if event.button.id == "next" else -100))
             await self.load_events()
@@ -608,10 +701,17 @@ class SentinelApp(App):
     def action_question(self):
         self.query_one("#question", Input).focus()
 
+    def action_brief(self):
+        self.query_one("#main-tabs", TabbedContent).active = "brief-tab"
+        self.query_one("#brief-scroll", VerticalScroll).focus()
+        self.run_worker(self.refresh_brief(), group="brief", exclusive=True)
+
     def action_timeline(self):
         if not self.case_id:
             self.tell("Open a case first", "warning")
             return
+        self.filters = SearchFilters()
+        self.query_one("#filters", Input).value = ""
         self.timeline_mode, self.offset = True, 0
         self.query_one("#main-tabs", TabbedContent).active = "evidence-tab"
         self.run_worker(self.load_events(), group="search", exclusive=True)

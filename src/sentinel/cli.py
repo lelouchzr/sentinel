@@ -16,6 +16,7 @@ from rich.console import Console
 from rich.table import Table
 
 from .agent import investigate as run_investigation
+from .brief import brief_text, case_brief
 from .cases import Cases
 from .config import AgentConfig, provider_status
 from .detection import RuleConfig, detect, load_alerts
@@ -222,6 +223,16 @@ def cases_open(
         emit(case.model_dump(), as_json)
     else:
         launch(workspace, case_id)
+
+
+@cases_app.command("brief")
+def cases_brief(ctx: typer.Context, case_id: str, as_json: bool = typer.Option(False, "--json")):
+    """Explain a case using deterministic counts, signal context and next checks."""
+    brief = case_brief(Cases(ws(ctx, False)), case_id)
+    if as_json:
+        emit(brief.model_dump(), True)
+    else:
+        console.print(brief_text(brief))
 
 
 @cases_app.command("note")

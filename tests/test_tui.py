@@ -101,3 +101,58 @@ async def test_tui_reopening_recovers_stale_investigation(demo):
         assert cases.get(case.case_id).status == "interrupted"
         content = str(app.query_one("#case-text", Static).content)
         assert "INTERRUPTED" in content and "Preserved after an abrupt process exit" in content
+
+
+async def test_case_brief_guides_without_starting_model_and_keeps_drafts(demo):
+    app = SentinelApp(demo)
+    async with app.run_test(size=(100, 30)) as pilot:
+        await app.workers.wait_for_complete()
+        await pilot.press("enter", "f6")
+        await app.workers.wait_for_complete()
+        assert app.query_one("#main-tabs", TabbedContent).active == "brief-tab"
+        brief = str(app.query_one("#brief-text", Static).content)
+        assert "WHY THIS CASE" in brief and "24" in brief and "ATTACHED EVIDENCE" in brief
+        await pilot.click("#suggest-question")
+        assert "authentication sequence" in app.query_one("#question", Input).value
+        assert app.agent_worker is None
+        app.query_one("#question", Input).value = "Keep my existing draft."
+        await pilot.click("#suggest-question")
+        assert app.query_one("#question", Input).value == "Keep my existing draft."
+        assert app.agent_worker is None
+
+
+async def test_entity_pivots_and_case_filter_state_are_consistent(demo):
+    from sentinel.models import SearchFilters
+    from sentinel.storage import Store
+
+    app = SentinelApp(demo)
+    async with app.run_test(size=(100, 30)) as pilot:
+        await app.workers.wait_for_complete()
+        await pilot.press("enter", "enter")
+        assert isinstance(app.screen, EvidenceScreen)
+        detail = str(app.screen.query_one("#event-detail", Static).content)
+        assert "SOURCE REFERENCE" in detail and "ORIGINAL RECORD" in detail
+        event = app.screen.event
+        await pilot.click("#pivot-account")
+        await app.workers.wait_for_complete()
+        assert app.filters.account == event.account
+        assert app.total == Store(demo).search(SearchFilters(account=event.account)).total
+        for action, field in [
+            ("source_ip", "source_ip"),
+            ("host", "host"),
+            ("session", "session_id"),
+        ]:
+            app.evidence_action((action, event))
+            await app.workers.wait_for_complete()
+            expected = getattr(event, field)
+            assert getattr(app.filters, field) == expected
+            assert app.total == Store(demo).search(SearchFilters(**{field: expected})).total
+        await pilot.press("f4")
+        await app.workers.wait_for_complete()
+        assert app.query_one("#filters", Input).value == "" and app.filters == SearchFilters()
+        app.query_one("#filters", Input).value = "account=svc-backup"
+        app.apply_filters()
+        await app.workers.wait_for_complete()
+        await app.open_case(app.case_id)
+        assert app.query_one("#filters", Input).value == "" and app.filters == SearchFilters()
+        assert app.timeline_mode

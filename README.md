@@ -167,6 +167,7 @@ Recommended: **140 columns Ã— 42 rows**. The workspace is also tested at **100 Ã
 | F3 | Focus exact search filters |
 | F4 | Show attached case evidence chronologically |
 | F5 | Export selected case as Markdown and JSON |
+| F6 | Explain the case, evidence scope and next checks |
 | Ctrl+G | Cancel the investigation; keep completed work |
 | Ctrl+Q | Shut down cleanly |
 
@@ -186,6 +187,23 @@ On macOS keyboards you may need Fn for function keys. `NO_COLOR` is respected.
 Markdown exports include a contents list, individual finding links, and clickable event/query
 references that jump to the original evidence or computed receipt. Evidence sections link back
 to the findings. JSON exports retain their structured format and source records.
+
+## Understand a case before asking the model
+
+Press **F6** for a computed case brief: the actual detection explanation, UTC range, attached
+record count, recorded bytes, involved accounts/IPs/hosts/sessions, source files and suggested
+next checks. These quantities describe attached evidence, not the entire dataset. The brief
+works without Meta. "Use suggested question" fills an editable draft and does not call the API.
+An existing draft is kept. Press Enter yourself to start a configured live investigation.
+
+The evidence dialog separates canonical fields, provenance and the original untrusted record.
+Its Account, Source IP, Host and Session buttons run exact filters; no filter syntax is needed.
+F4 returns to attached evidence and clears the displayed search filters.
+
+```sh
+uv run sentinel cases brief CASE_ID
+uv run sentinel cases brief CASE_ID --json
+```
 
 ## CLI workflow
 

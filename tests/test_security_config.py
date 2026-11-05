@@ -7,7 +7,7 @@ from sentinel.cases import Cases
 from sentinel.cli import app
 from sentinel.config import AgentConfig, provider_status
 from sentinel.ingest import ingest
-from sentinel.security import SentinelError, inside, plain
+from sentinel.security import SentinelError, inside, one_line, plain
 from sentinel.tui import parse_filters
 from sentinel.workspace import Workspace
 
@@ -85,3 +85,7 @@ def test_filters_and_cli_json(demo, monkeypatch):
     assert "offline-test-redaction-canary" not in result.output
     assert "\x1b" not in result.output
     assert json.loads(result.output)["event_count"] == 3542
+
+
+def test_untrusted_field_newlines_stay_inside_their_labeled_row():
+    assert one_line("account\nFAKE HEADING\t[bold]") == "account\\nFAKE HEADING\\t[bold]"
