@@ -12,6 +12,7 @@ from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.screen import ModalScreen
+from textual.theme import Theme
 from textual.widgets import (
     Button,
     DataTable,
@@ -30,6 +31,7 @@ from .config import AgentConfig, provider_status
 from .detection import load_alerts
 from .export import export_case
 from .models import Event, SearchFilters
+from .presentation import AMBER, CYAN, GREEN, MUTED, activity_text, status_color
 from .security import SentinelError, plain
 from .storage import Store
 from .workspace import Workspace
@@ -129,9 +131,12 @@ class SentinelApp(App):
     SUB_TITLE = "From scattered events to defensible investigations."
     CSS = """
     Screen { background: #0a1119; color: #dbe8ed; }
-    #top { height: 4; padding: 0 2; background: #101e2b; border-bottom: solid #1c5c64; }
+    #top { height: 5; padding: 0 2; background: #101e2b; border-bottom: solid #1c5c64; }
     #brand { height: 1; color: #69d4cf; text-style: bold; }
     #status { height: 2; color: #acc4cc; }
+    #workflow { height: 1; color: #8fa8b8; }
+    Tab.-active { color: #69d4cf; text-style: bold; }
+    DataTable:focus { border-left: tall #69d4cf; }
     #body { height: 1fr; }
     #navigation { width: 34; min-width: 26; border-right: solid #24404d; padding: 0 1; }
     #main { width: 1fr; padding: 0 1; }
@@ -179,6 +184,23 @@ class SentinelApp(App):
 
     def __init__(self, workspace: Workspace, case_id: str | None = None):
         super().__init__()
+        self.register_theme(
+            Theme(
+                name="sentinel",
+                primary="#69d4cf",
+                secondary="#87b6ff",
+                accent="#c5a5f5",
+                warning="#edc477",
+                error="#f28b91",
+                success="#83d9a4",
+                foreground="#dbe8ed",
+                background="#0a1119",
+                surface="#101e2b",
+                panel="#142936",
+                dark=True,
+            )
+        )
+        self.theme = "sentinel"
         self.workspace = workspace
         self.cases = Cases(workspace)
         self.case_id = case_id
@@ -201,6 +223,11 @@ class SentinelApp(App):
                 markup=False,
             )
             yield Static("Loading workspace…", id="status", markup=False)
+            yield Static(
+                "01 CASE  /  02 EVIDENCE  /  03 INVESTIGATE  /  04 REVIEW & EXPORT",
+                id="workflow",
+                markup=False,
+            )
         with Horizontal(id="body"):
             with Vertical(id="navigation"):
                 with TabbedContent(id="nav-tabs"):
@@ -246,6 +273,9 @@ class SentinelApp(App):
         yield Footer()
 
     def on_mount(self):
+        self.query_one("#filters", Input).border_title = "FILTER EVIDENCE · F3"
+        self.query_one("#question", Input).border_title = "ASK ABOUT THIS CASE · F2"
+        self.query_one("#activity", RichLog).border_title = "LIVE OPERATIONS · NO PRIVATE REASONING"
         self.query_one("#alerts", DataTable).add_columns("Priority / rule", "Account")
         self.query_one("#cases", DataTable).add_columns("Case / status", "Title")
         self.query_one("#events", DataTable).add_columns(
@@ -262,8 +292,29 @@ class SentinelApp(App):
 
     def update_header(self):
         selection = self.case_id or "No case selected"
-        text = f"{self.workspace.root.name}  ·  {self.store.dataset}  ·  {self.event_count:,} events  ·  {selection}\nMeta: {self.model_state}"
-        self.query_one("#status", Static).update(Text(plain(text)))
+        text = Text(plain(self.workspace.root.name) + "  ·  ", style=MUTED)
+        text.append(f"{self.event_count:,} events", style="bold " + CYAN)
+        text.append(f"  ·  {plain(self.store.dataset)}  ·  {plain(selection)}\n", style=MUTED)
+        text.append("Meta: " + plain(self.model_state), style=status_color(self.model_state))
+        hint = (
+            "  ·  Enter on a signal to open a case"
+            if not self.case_id
+            else "  ·  F2 ask  /  F4 timeline  /  F5 export"
+        )
+        text.append(hint, style=MUTED)
+        self.query_one("#status", Static).update(text)
+        stage = 0
+        if self.case_id:
+            case = self.cases.get(self.case_id)
+            stage = 3 if case.status == "reviewed" else 2 if case.status == "investigating" else 1
+        guide = Text()
+        for index, label in enumerate(
+            ("01 CASE", "02 EVIDENCE", "03 INVESTIGATE", "04 REVIEW & EXPORT")
+        ):
+            if index:
+                guide.append("  /  ", style=MUTED)
+            guide.append(label, style="bold " + CYAN if index == stage else MUTED)
+        self.query_one("#workflow", Static).update(guide)
 
     @work(exclusive=True, group="refresh")
     async def refresh_workspace(self):
@@ -324,17 +375,12 @@ class SentinelApp(App):
         table.clear()
         for e in events:
             table.add_row(
-                *[
-                    Text(plain(v))
-                    for v in (
-                        e.timestamp[11:19],
-                        e.account,
-                        e.action,
-                        e.outcome,
-                        e.source_ip,
-                        e.resource,
-                    )
-                ],
+                Text(e.timestamp[11:19], style=MUTED),
+                Text(plain(e.account), style=CYAN),
+                Text(plain(e.action), style=AMBER if e.action in {"export", "download"} else ""),
+                Text(plain(e.outcome), style=status_color(e.outcome)),
+                Text(plain(e.source_ip), style=MUTED),
+                Text(plain(e.resource)),
                 key=e.event_id,
             )
         mode = "Case timeline" if self.timeline_mode else "Dataset search"
@@ -373,15 +419,21 @@ class SentinelApp(App):
                 ]
             )
         lines.extend(["", "OPEN QUESTIONS", *case.open_questions, "", "ANALYST NOTES", *case.notes])
-        self.query_one("#case-text", Static).update(Text(plain("\n".join(lines), 200000)))
+        content = Text(plain("\n".join(lines), 200000))
+        content.highlight_regex(
+            r"(?m)^(?:LATEST SUMMARY|FINDINGS|OPEN QUESTIONS|ANALYST NOTES)$", "bold " + CYAN
+        )
+        content.highlight_regex(r"(?m)^OBSERVED FACT.*$", "bold " + GREEN)
+        content.highlight_regex(r"(?m)^(?:HYPOTHESIS|OPEN QUESTION) ·.*$", "bold " + AMBER)
+        content.highlight_regex(r"\bE-[a-f0-9]{8,32}\b", CYAN)
+        self.query_one("#case-text", Static).update(content)
 
     def render_activity(self):
         log = self.query_one("#activity", RichLog)
         log.clear()
         if self.case_id:
             for entry in self.cases.get(self.case_id).activity[-100:]:
-                details = plain(json.dumps(entry.details, ensure_ascii=True), 500)
-                log.write(Text(f"{entry.timestamp[11:19]}  {entry.role}: {entry.action} {details}"))
+                log.write(activity_text(entry.role, entry.action, entry.details, entry.timestamp))
 
     @on(DataTable.RowSelected)
     async def select_row(self, event: DataTable.RowSelected):
@@ -525,8 +577,7 @@ class SentinelApp(App):
 
         def changed(role, message):
             entry = self.cases.get(case_id).activity[-1]
-            details = plain(json.dumps(entry.details, ensure_ascii=True), 500)
-            log.write(Text(f"{entry.timestamp[11:19]}  {role}: {plain(message)} {details}"))
+            log.write(activity_text(role, message, entry.details, entry.timestamp))
             if role == "Meta" and message == "Model response received":
                 self.model_state = "Connected after a successful call"
                 self.update_header()

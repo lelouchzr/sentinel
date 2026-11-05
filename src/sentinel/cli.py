@@ -23,6 +23,7 @@ from .export import export_case
 from .generator import SEED, generate
 from .ingest import ingest as import_logs
 from .models import SearchFilters
+from .presentation import activity_text, output_panel
 from .security import SentinelError, atomic_json, plain
 from .storage import Store
 from .workspace import Workspace
@@ -41,7 +42,7 @@ def emit(data, as_json=False):
     if as_json:
         typer.echo(json.dumps(data, indent=2, ensure_ascii=True, default=str))
     else:
-        console.print(plain(json.dumps(data, indent=2, ensure_ascii=True, default=str)))
+        console.print(output_panel(data))
 
 
 @app.callback()
@@ -261,7 +262,12 @@ def agent_run(
     config = AgentConfig.from_env()
 
     def changed(role, message):
-        typer.echo(plain(f"{role}: {message}"), err=True)
+        if as_json:
+            typer.echo(plain(f"{role}: {message}"), err=True)
+        else:
+            Console(stderr=True, markup=False, no_color="NO_COLOR" in os.environ).print(
+                activity_text(role, message)
+            )
 
     try:
         result = asyncio.run(

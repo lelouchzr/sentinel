@@ -139,6 +139,19 @@ Textual Pilot, clean wheel installation, provenance, reset and persistence witho
 Further Linux/Windows work is on hold; historical native results are documented separately.
 The optional bundled asciicast recorder remains POSIX-only; use an external recorder on Windows.
 
+## Terminal presentation
+
+The workspace uses a dark teal theme with explicit text labels: green for successful outcomes,
+red for failures/high-priority signals, amber for attention and purple for reporting activity.
+The compact guide shows the current case stage. Filters and the question input show their
+keyboard shortcuts; activity colors distinguish actual investigation responsibilities.
+
+Human CLI output uses readable panels and signal tables. Use `--json` for machine-readable
+output; it remains free of ANSI formatting. Colors follow terminal capabilities and `NO_COLOR`.
+Color is supplementary: statuses, roles and severity remain readable in monochrome.
+See the actual [wide workspace](docs/screenshots/terminal-refresh-140.svg) and
+[compact workspace](docs/screenshots/terminal-refresh-100.svg) captures.
+
 ## Terminal controls
 
 Recommended: **140 columns × 42 rows**. The workspace is also tested at **100 × 30**.
