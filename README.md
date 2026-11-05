@@ -170,6 +170,10 @@ The Case review tab accepts analyst notes. Activity shows actual operations, arg
 and artifact paths. Function keys keep normal text-entry editing shortcuts available.
 On macOS keyboards you may need Fn for function keys. `NO_COLOR` is respected.
 
+Markdown exports include a contents list, individual finding links, and clickable event/query
+references that jump to the original evidence or computed receipt. Evidence sections link back
+to the findings. JSON exports retain their structured format and source records.
+
 ## CLI workflow
 
 Global `--workspace` must appear **before** the command. State defaults to `SENTINEL_WORKSPACE` or
