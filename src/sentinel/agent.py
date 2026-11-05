@@ -8,7 +8,7 @@ import time
 from collections.abc import Callable
 from typing import Protocol
 
-from openai import AsyncOpenAI
+from openai import APIConnectionError, APIStatusError, APITimeoutError, AsyncOpenAI
 from pydantic import ValidationError
 
 from .cases import Cases, summarize_findings, verify_findings
@@ -100,11 +100,41 @@ class MetaProvider:
             return response
         except asyncio.CancelledError:
             raise
-        except Exception as exc:
-            # Provider exceptions can embed headers, prompts or URLs. Never display raw text.
+        except APITimeoutError:
             raise SentinelError(
-                "Meta request failed. Check API access, model, connectivity, quota, and timeout. Completed evidence is retained."
-            ) from exc
+                "Meta request failed: request timed out. Check connectivity or increase SENTINEL_REQUEST_TIMEOUT. Completed evidence is retained."
+            ) from None
+        except APIConnectionError:
+            raise SentinelError(
+                "Meta request failed: connection unavailable. Check network connectivity and META_BASE_URL. Completed evidence is retained."
+            ) from None
+        except APIStatusError as exc:
+            # Classify only the status; provider bodies and headers may contain secrets.
+            reasons = {
+                400: "request rejected (HTTP 400). Check the model and request settings",
+                401: "authentication failed (HTTP 401). Check META_API_KEY",
+                402: "billing or credit required (HTTP 402). Check your Meta account balance",
+                403: "access denied (HTTP 403). Check account permissions for META_MODEL",
+                404: "model or API endpoint not found (HTTP 404). Check META_MODEL and META_BASE_URL",
+                408: "request timed out (HTTP 408). Check connectivity and request timeout",
+                422: "request schema rejected (HTTP 422). Check model support and structured-output settings",
+                429: "rate limit or quota reached (HTTP 429). Check usage limits and available credit; retry manually when ready",
+            }
+            reason = reasons.get(exc.status_code)
+            if reason is None:
+                reason = (
+                    f"service unavailable (HTTP {exc.status_code}). Try again manually later"
+                    if 500 <= exc.status_code <= 599
+                    else f"request rejected (HTTP {exc.status_code}). Check API configuration"
+                )
+            raise SentinelError(
+                f"Meta request failed: {reason}. Completed evidence is retained."
+            ) from None
+        except Exception:
+            # Never display raw SDK exceptions, prompts, headers or response bodies.
+            raise SentinelError(
+                "Meta request failed: unexpected response or request failure. Check API access and model compatibility. Completed evidence is retained."
+            ) from None
 
     async def close(self):
         await self.client.close()

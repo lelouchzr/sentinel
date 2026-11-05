@@ -96,6 +96,10 @@ Model hypotheses and model-authored notes remain explicitly unverified interpret
 
 Provider states distinguish missing configuration, unverified configuration, successful connection
 and failure. `doctor` checks local readiness only; it does not spend API credit.
+Provider errors distinguish authentication, model access, missing endpoints, request schema,
+quota/rate limits, network failures and timeouts. Messages never include provider response bodies
+or credentials. Failed requests are not automatically retried; completed evidence is retained.
+
 Default bounds: 10 model requests, 18 tool calls, 160 distinct retrieved event records, 45 seconds per request, 180 seconds overall.
 Override with `SENTINEL_MAX_MODEL_CALLS`, `SENTINEL_MAX_TOOL_CALLS`,
 `SENTINEL_REQUEST_TIMEOUT` and `SENTINEL_DEADLINE`. Paid request retries are disabled.

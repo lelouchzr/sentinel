@@ -118,12 +118,31 @@ async def test_cancel_retains_completed_work_and_prevents_duplicate_runs(demo):
     assert provider.closed and duplicate.closed
 
 
-async def test_meta_transport_failure_is_safe_and_no_retry():
+@pytest.mark.parametrize(
+    "status,expected",
+    [
+        (400, "request rejected"),
+        (401, "authentication failed"),
+        (402, "billing or credit required"),
+        (403, "access denied"),
+        (404, "model or API endpoint not found"),
+        (408, "request timed out"),
+        (422, "request schema rejected"),
+        (429, "rate limit or quota reached"),
+        (500, "service unavailable"),
+        (503, "service unavailable"),
+        (418, "request rejected"),
+    ],
+)
+async def test_meta_transport_failure_is_safe_and_no_retry(status, expected):
     requests = []
 
     async def handler(request):
         requests.append(request)
-        return httpx.Response(401, json={"error": {"message": "sensitive-provider-debug"}})
+        return httpx.Response(
+            status,
+            json={"error": {"message": "sensitive-provider-debug offline-test-not-a-live-key"}},
+        )
 
     provider = MetaProvider(configuration())
     await provider.client.close()
@@ -133,10 +152,45 @@ async def test_meta_transport_failure_is_safe_and_no_retry():
         max_retries=0,
         http_client=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
     )
-    with pytest.raises(SentinelError, match="Meta request failed") as error:
-        await provider.complete([{"role": "user", "content": "test"}])
-    assert "sensitive" not in str(error.value) and len(requests) == 1
-    await provider.close()
+    try:
+        with pytest.raises(SentinelError, match="Meta request failed") as error:
+            await provider.complete([{"role": "user", "content": "test"}])
+        message = str(error.value)
+        assert expected in message and f"HTTP {status}" in message
+        assert "sensitive" not in message and "offline-test-not-a-live-key" not in message
+        assert "Completed evidence is retained" in message and len(requests) == 1
+        assert error.value.__suppress_context__
+    finally:
+        await provider.close()
+
+
+@pytest.mark.parametrize(
+    "failure,expected",
+    [(httpx.ReadTimeout, "request timed out"), (httpx.ConnectError, "connection unavailable")],
+)
+async def test_meta_network_diagnostics_are_safe_and_not_retried(failure, expected):
+    requests = []
+
+    async def handler(request):
+        requests.append(request)
+        raise failure("sensitive-network-debug offline-test-not-a-live-key", request=request)
+
+    provider = MetaProvider(configuration())
+    await provider.client.close()
+    provider.client = AsyncOpenAI(
+        api_key="offline-test-not-a-live-key",
+        base_url="https://api.meta.ai/v1",
+        max_retries=0,
+        http_client=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
+    )
+    try:
+        with pytest.raises(SentinelError, match=expected) as error:
+            await provider.complete([{"role": "user", "content": "test"}])
+        assert "sensitive" not in str(error.value)
+        assert "offline-test-not-a-live-key" not in str(error.value)
+        assert len(requests) == 1 and error.value.__suppress_context__
+    finally:
+        await provider.close()
 
 
 async def test_meta_report_uses_strict_schema_and_retains_finish_reason():
