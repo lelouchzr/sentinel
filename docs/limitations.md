@@ -31,3 +31,7 @@
   previously completed; do not represent saved/offline output as current live activity.
 - Function-key behavior depends on terminal/keyboard settings; macOS may require Fn. Very narrow
   terminals need horizontal table scrolling or the evidence dialog. Tests target 100×30 and 140×42.
+
+- The optional `demo --recorded-case` imports a clearly labeled previously completed Meta run.
+  It is not a fresh live investigation. Canonical evidence and quantitative receipts are checked
+  locally; individual historical per-tool runtime files are not bundled.

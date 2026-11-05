@@ -225,3 +225,17 @@ async def test_export_failure_is_actionable_and_does_not_close_the_workspace(dem
         assert messages and messages[-1][1] == "error"
         assert "retained" in messages[-1][0] and "sensitive" not in messages[-1][0]
         assert app.is_running and Cases(demo).get(app.case_id).evidence_ids
+
+
+async def test_recorded_case_is_labeled_and_does_not_start_a_live_run(demo):
+    from sentinel.recorded import restore_recorded_case
+
+    case = restore_recorded_case(demo)
+    app = SentinelApp(demo, case.case_id)
+    async with app.run_test(size=(100, 30)) as pilot:
+        await app.workers.wait_for_complete()
+        await pilot.press("f6")
+        await app.workers.wait_for_complete()
+        assert "RECORDED META RUN" in str(app.query_one("#brief-text", Static).content)
+        assert "RECORDED META RUN" in str(app.query_one("#run-status", Static).content)
+        assert app.agent_worker is None

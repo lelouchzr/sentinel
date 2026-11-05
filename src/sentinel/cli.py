@@ -94,6 +94,11 @@ def ingest(
 def demo(
     ctx: typer.Context,
     no_tui: bool = typer.Option(False, help="Prepare demo data without opening the terminal UI."),
+    recorded_case: bool = typer.Option(
+        False,
+        "--recorded-case",
+        help="Open the real recorded Meta example, visibly labeled; makes no model request.",
+    ),
     reset: bool = typer.Option(
         False, help="Archive only this workspace's generated demo state, then start fresh."
     ),
@@ -143,19 +148,30 @@ def demo(
     meta["demo_dataset"] = workspace.dataset_id
     atomic_json(workspace.path("workspace.json"), meta)
     alerts = detect(Store(workspace))
-    emit(
-        {
-            "workspace": str(workspace.root),
-            "dataset_id": workspace.dataset_id,
-            "events": summary["accepted"],
-            "inserted": summary["inserted"],
-            "alerts": len(alerts),
-            "provider": provider_status(),
-        },
-        as_json,
-    )
+    selected_case = None
+    if recorded_case:
+        from .recorded import restore_recorded_case
+
+        selected_case = restore_recorded_case(workspace)
+    result = {
+        "workspace": str(workspace.root),
+        "dataset_id": workspace.dataset_id,
+        "events": summary["accepted"],
+        "inserted": summary["inserted"],
+        "alerts": len(alerts),
+        "provider": provider_status(),
+    }
+    if selected_case:
+        result.update(
+            {
+                "opened_case": selected_case.case_id,
+                "case_provider": selected_case.provider,
+                "case_origin": "Explicitly loaded recorded Meta investigation; no new model request",
+            }
+        )
+    emit(result, as_json)
     if not no_tui and not as_json:
-        launch(workspace)
+        launch(workspace, selected_case.case_id if selected_case else None)
 
 
 @app.command()

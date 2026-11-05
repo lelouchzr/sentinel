@@ -1,0 +1,13 @@
+{
+  "captured_on": "2026-11-04",
+  "case_id": "C-6648e4baf12a",
+  "model": "muse-spark-1.3",
+  "api_base_url": "https://api.meta.ai/v1",
+  "model_requests": 10,
+  "tool_attempts": 9,
+  "sha256": "04d3239002e3dabd6488367be5597480eb3e16e760bfc603cfd0e30891a416df",
+  "source_reference": "video/data/case-report.json",
+  "recording_reference": "video/source-captures/workflow.cast",
+  "raw_tool_artifacts_bundled": false,
+  "disclosure": "A real previously completed Meta investigation over fictional logs. Loading it makes no model request. Canonical evidence and query receipts are revalidated locally."
+}

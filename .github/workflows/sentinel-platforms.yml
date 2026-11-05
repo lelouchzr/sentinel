@@ -1,8 +1,9 @@
 name: Sentinel macOS validation
 
 on:
+  workflow_dispatch:
   push:
-    branches: [main, projet/sentinel]
+    branches: [main]
     paths:
       - "src/**"
       - "tests/**"

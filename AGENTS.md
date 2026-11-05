@@ -20,11 +20,13 @@
   response and visibly labeled test provider for regression tests.
 - The hackathon demonstration targets macOS. Further Linux/Windows work is paused; retain the
   historical platform evidence without claiming fresh validation.
-- `main` contains SENTINEL. Preserve the former Storyscape project on
-  `archive/storyscape-2026-11-05` and the earlier Slim archive on `archive/slim-2026-11-04`.
-  Do not alter the original Storyscape checkout or stop its running services.
+- `main` is the only public branch and contains SENTINEL. Earlier projects and original history
+  are preserved in the separate private archive. Do not recreate their deleted public branches.
+  Do not alter original checkouts or stop their running services.
 - Preserve licenses, media attribution, original generation manifests and historical evidence.
   Historical FRAME/Storyscape credits describe their original creation and must not be rewritten.
 - The public repository has anonymized Git author contact and local-path metadata. Keep the
   untouched original repository private; do not push its old refs or PR history into public clones.
   Use a public no-reply address for new commits. Never reintroduce private paths in public material.
+- The optional recorded case is an explicitly labeled real past Meta run. Revalidate its evidence
+  and receipts; never present replay as a fresh model request or silently load it into live runs.

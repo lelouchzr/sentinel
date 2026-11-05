@@ -14,6 +14,7 @@ class CaseBrief(Model):
     dataset_id: str
     title: str
     status: str
+    provider: str
     signals: list[Alert]
     evidence_count: int
     first_timestamp: str | None
@@ -59,6 +60,7 @@ def case_brief(cases: Cases, case_id: str) -> CaseBrief:
         dataset_id=case.dataset_id,
         title=case.title,
         status=case.status,
+        provider=case.provider,
         signals=signals,
         evidence_count=len(events),
         first_timestamp=min(timestamps, default=None),
@@ -87,6 +89,7 @@ def brief_text(brief: CaseBrief) -> str:
     lines = [
         f"{brief.case_id} · {brief.status.upper()}",
         one_line(brief.title),
+        "Provider: " + one_line(brief.provider),
         "",
         "WHY THIS CASE",
     ]

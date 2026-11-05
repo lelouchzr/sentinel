@@ -111,7 +111,13 @@ def run_progress(case: Case, at: datetime | None = None) -> RunProgress:
 def progress_text(progress: RunProgress) -> str:
     if not progress.has_run:
         return "No model run · Manual investigation is available\nInspect evidence and add notes; F6 suggests the next checks."
-    provider = "OFFLINE TEST MODE" if "OFFLINE TEST" in progress.provider else progress.provider
+    provider = (
+        "RECORDED META RUN"
+        if progress.provider.startswith("RECORDED")
+        else "OFFLINE TEST MODE"
+        if "OFFLINE TEST" in progress.provider
+        else progress.provider
+    )
     models = str(progress.model_requests) + (
         f"/{progress.model_limit}" if progress.model_limit else ""
     )

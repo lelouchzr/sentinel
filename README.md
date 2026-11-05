@@ -11,6 +11,31 @@ a real local MCP subprocess, inspect original records, export a report, and resu
 No website, external database, Docker, cloud account for storage, or GPU is required.
 Live AI requires access to Meta Model API. Manual investigation works without an API key.
 
+## Try a complete investigation without an API key
+
+```sh
+uv run sentinel demo --recorded-case
+```
+
+This explicit option opens the **real Meta investigation recorded for the film**, labeled
+**RECORDED META RUN** in its title/provider, case brief and activity status. It makes no model
+request. All 27 evidence records, original source references and quantitative query receipts are
+revalidated against the imported fictional logs before the case is installed. You can inspect
+its four findings, pivot through entities, export it and reopen it. Existing analyst notes are
+preserved on repeated launches. The normal `demo` command still starts without a recorded case.
+
+The packaged example includes canonical evidence and receipts. Historical individual tool-file
+paths are labeled as recorded references; those runtime files are not bundled. A new validation
+artifact records what was checked. The original captured export and its SHA-256 are retained in
+package data. Live follow-up questions require your Meta configuration and start only when you
+submit them; they use the real MCP/model workflow.
+
+A short walkthrough: **Enter** inspects a source record, **Escape** returns, **F6** explains the
+case, **F4** returns to its timeline and **F5** exports both report formats. Open the Case review
+tab to compare observed facts, hypotheses and open questions.
+See the real [recorded case brief](docs/screenshots/recorded-case-brief-140.svg) and
+[recorded operation status](docs/screenshots/recorded-run-status-140.svg) captures.
+
 ## Why SENTINEL exists
 
 Administrators and small security teams often start an investigation with scattered logs:
@@ -55,10 +80,9 @@ recovers a stale running status as interrupted, retaining completed evidence and
 process locks protect investigations that are still active. Allow a few seconds for
 first ingestion. The default dataset produces 15 alerts; every displayed value comes from storage.
 
-The former Storyscape project is preserved on
-[`archive/storyscape-2026-11-05`](https://github.com/lelouchzr/sentinel/tree/archive/storyscape-2026-11-05).
-Its original local checkout remains intact. Public history uses anonymized author contact and
-local-path metadata; the untouched original history is retained in a separate private archive.
+Earlier projects and their untouched original history are retained in a separate private archive.
+Their original local checkouts remain intact. The public repository has only `main`, with
+anonymized author contact and local-path metadata.
 See [repository preservation](docs/preservation.md) before changing or updating that checkout.
 See the [publication review](docs/publication-review.md) for the scope and limits of the audit.
 
@@ -134,7 +158,7 @@ uv build
 uv run python scripts/platform_smoke.py
 ```
 
-CI currently validates macOS on `main` and `projet/sentinel`. It tests actual MCP children,
+CI validates macOS on `main` and can also be started through workflow dispatch. It tests actual MCP children,
 Textual Pilot, clean wheel installation, provenance, reset and persistence without model credentials.
 Further Linux/Windows work is on hold; historical native results are documented separately.
 The optional bundled asciicast recorder remains POSIX-only; use an external recorder on Windows.
